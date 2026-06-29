@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Padel People — Property Dashboard</title>
+<style>
+  :root{
+    --green:#0a7d4b; --green-dark:#075a36; --ink:#13201a; --muted:#5d6b63;
+    --bg:#f4f7f5; --card:#ffffff; --line:#e3eae6;
+    --amber:#b8860b; --amber-bg:#fdf6e3; --red:#b3261e; --red-bg:#fdeceb; --ok:#0a7d4b; --ok-bg:#e7f4ee;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;padding:28px 18px 60px}
+  .wrap{max-width:1180px;margin:0 auto}
+  header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:8px}
+  h1{font-size:26px;letter-spacing:-.02em}
+  h1 span{color:var(--green)}
+  .sub{color:var(--muted);font-size:14px;margin-top:2px}
+  .spec{background:var(--green);color:#fff;border-radius:12px;padding:12px 16px;font-size:13px;margin:18px 0 22px;display:flex;flex-wrap:wrap;gap:8px 22px}
+  .spec b{font-weight:600}
+  .stats{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:120px}
+  .stat .n{font-size:22px;font-weight:700;color:var(--green-dark)}
+  .stat .l{font-size:12px;color:var(--muted)}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+  .controls button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 14px;border-radius:20px;cursor:pointer}
+  .controls button.active{background:var(--green);color:#fff;border-color:var(--green)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;transition:.15s}
+  .card:hover{box-shadow:0 6px 22px rgba(10,125,75,.10);transform:translateY(-2px)}
+  .card h3{font-size:16px;letter-spacing:-.01em}
+  .thumb{width:100%;height:158px;object-fit:cover;border-radius:10px;display:block;background:#e7ece9;border:1px solid var(--line)}
+  .region{font-size:12px;color:var(--muted);margin-top:2px}
+  .rentbig{font-size:24px;font-weight:700;color:var(--green-dark)}
+  .rentbig small{font-size:13px;color:var(--muted);font-weight:500}
+  .rows{display:flex;flex-direction:column;gap:6px;font-size:13px}
+  .row{display:flex;justify-content:space-between;gap:10px;border-top:1px dashed var(--line);padding-top:6px}
+  .row span:first-child{color:var(--muted)}
+  .badges{display:flex;flex-wrap:wrap;gap:6px}
+  .b{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px}
+  .b.ok{background:var(--ok-bg);color:var(--ok)}
+  .b.amber{background:var(--amber-bg);color:var(--amber)}
+  .b.red{background:var(--red-bg);color:var(--red)}
+  .notes{font-size:12.5px;color:var(--muted)}
+  .card a.cta{margin-top:auto;text-align:center;background:var(--green);color:#fff;text-decoration:none;font-size:13px;font-weight:600;padding:9px;border-radius:9px}
+  .card a.cta:hover{background:var(--green-dark)}
+  footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+  .nearmiss{background:#fff8ec;border:1px solid #f0e0bd;border-radius:12px;padding:14px 16px;margin-top:22px;font-size:13px}
+  .nearmiss b{color:var(--amber)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Padel <span>People</span> — Property Dashboard</h1>
+      <div class="sub">Potential indoor padel venue sites · England (London to Birmingham) · Last updated 29 June 2026</div>
+    </div>
+  </header>
+
+  <div class="spec">
+    <span><b>Spec:</b></span>
+    <span>10,000–25,000 sqft</span>
+    <span>Min 6m eaves</span>
+    <span>Good parking</span>
+    <span>Max £8.50/sqft</span>
+    <span>South England → Birmingham</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">5</div><div class="l">Live sites tracked</div></div>
+    <div class="stat"><div class="n">£5.65–7.56</div><div class="l">Rent range £/sqft</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">Confirmed 6m+ eaves</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">West Midlands</div></div>
+  </div>
+
+  <div class="controls" id="controls">
+    <button class="active" data-f="all">All (5)</button>
+    <button data-f="eavesok">Eaves 6m+ confirmed</button>
+    <button data-f="eavesflag">Eaves to confirm</button>
+    <button data-f="wm">West Midlands</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="nearmiss">
+    <b>Near-miss worth a look —</b> Brunel Drive, Newark (12,051 sqft · £5.39/sqft · former indoor-sports unit, now B2 consent · good yard &amp; parking). Ideal functional fit but just north of the Birmingham cut-off, so excluded by spec.
+    <a href="https://www.rightmove.co.uk/properties/169781132" target="_blank" rel="noopener">View →</a>
+  </div>
+
+  <footer>
+    Source: Rightmove (West Midlands, East Midlands, South East, London, East of England), live at time of search 29 June 2026. LoopNet &amp; EG Propertylink returned no readable listings. Rents shown are stated asking figures (no POA included). Always confirm eaves height, parking and planning use directly with the agent before progressing.
+  </footer>
+</div>
+
+<script>
+const sites = [
+  {id:"87569106", img:"https://media.rightmove.co.uk/property-photo/d50eaf91f/87569106/d50eaf91f6f3c4a91b75f336230992b0.png", name:"Popes Lane (Units 1-3), Oldbury", region:"Oldbury, B69 4PA · West Midlands", wm:true,
+   size:"20,030 sqft", rent:"7.04", pcm:"£11,750 pcm", eaves:"7m", eavesState:"ok", parking:"Yes — demised yard + car parking",
+   notes:"Open-plan warehouse, roller shutter, substantial yard. 0.5mi from M5 J2, Langley Green station 0.3mi. Clean fit on spec.",
+   badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
+  {id:"169522259", img:"https://media.rightmove.co.uk/property-photo/20968b3fa/169522259/20968b3fac4789234f6061377188d829.jpeg", name:"Unit 4, Bromyard Business Park", region:"Worcester, WR2 · West Midlands", wm:true,
+   size:"14,000 sqft", rent:"7.00", pcm:"£8,167 pcm", eaves:"8–10m", eavesState:"ok", parking:"Yes — 24hr manned security",
+   notes:"Steel portal frame, new shop fronts/roller shutters. Fronts A44, ~4mi from M5 J7. Strong eaves height for courts.",
+   badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
+  {id:"87897849", img:"https://media.rightmove.co.uk/property-photo/33ea11924/87897849/33ea119240d1f81993e0e846443b2781.jpeg", name:"21-27 Stewarts Road, Finedon Rd Ind. Est.", region:"Wellingborough, NN8 · Northamptonshire", wm:false,
+   size:"23,162 sqft", rent:"7.56", pcm:"£14,583 pcm", eaves:"6.2m", eavesState:"ok", parking:"Yes — large yard, 8 loading doors",
+   notes:"Detached clear-span warehouse. Meets 6m eaves. NB: available end of 2026, subject to full refurb completion.",
+   badges:[["6m+ eaves","ok"],["Avail. end 2026","amber"]]},
+  {id:"748442899526497", img:"https://media.rightmove.co.uk/property-photo/bb6b04754/748442899526497/bb6b0475475320dd17e53e376621391d.png", name:"Westpoint, Middlemore Lane West", region:"Aldridge, Walsall · West Midlands", wm:true,
+   size:"11,500 sqft", rent:"5.65", pcm:"£5,417 pcm", eaves:"5.5–7.5m", eavesState:"flag", parking:"Yes — up to 300 vehicles",
+   notes:"Concrete portal frame, gated/CCTV site, big shared yard. Cheap with great parking, but eaves dip to 5.5m at the wall — check usable clear height.",
+   badges:[["Eaves 5.5m low end","amber"],["Stated rent","ok"]]},
+  {id:"156291251", img:"https://media.rightmove.co.uk/property-photo/85cfac885/156291251/85cfac8858e932a06c6441381875eb67.jpeg", name:"Warehouse at Wix", region:"Wix, CO11 · Essex (East of England)", wm:false,
+   size:"14,600 sqft", rent:"5.96", pcm:"£7,250 pcm", eaves:"“large/high”", eavesState:"flag", parking:"Yes — ample on site",
+   notes:"Concrete floor, roller shutter, 0.4mi from A120. Agent advertises high eaves but no figure — worth a call to confirm 6m+.",
+   badges:[["Eaves “high”, unquantified","amber"],["Stated rent","ok"]]}
+];
+
+function render(filter){
+  const g = document.getElementById('grid');
+  g.innerHTML = '';
+  sites.filter(s=>{
+    if(filter==='all') return true;
+    if(filter==='eavesok') return s.eavesState==='ok';
+    if(filter==='eavesflag') return s.eavesState==='flag';
+    if(filter==='wm') return s.wm;
+  }).forEach(s=>{
+    const badges = s.badges.map(b=>`<span class="b ${b[1]}">${b[0]}</span>`).join('');
+    g.insertAdjacentHTML('beforeend', `
+      <div class="card">
+        <img class="thumb" src="${s.img}" alt="${s.name}" loading="lazy" onerror="this.style.display='none'">
+        <div>
+          <h3>${s.name}</h3>
+          <div class="region">${s.region}</div>
+        </div>
+        <div class="rentbig">£${s.rent}<small>/sqft</small> &nbsp;<small>${s.pcm}</small></div>
+        <div class="badges">${badges}</div>
+        <div class="rows">
+          <div class="row"><span>Size</span><span>${s.size}</span></div>
+          <div class="row"><span>Eaves</span><span>${s.eaves}</span></div>
+          <div class="row"><span>Parking</span><span style="text-align:right;max-width:60%">${s.parking}</span></div>
+        </div>
+        <div class="notes">${s.notes}</div>
+        <a class="cta" href="https://www.rightmove.co.uk/properties/${s.id}" target="_blank" rel="noopener">View live listing →</a>
+      </div>`);
+  });
+}
+document.getElementById('controls').addEventListener('click', e=>{
+  if(e.target.tagName!=='BUTTON') return;
+  document.querySelectorAll('#controls button').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  render(e.target.dataset.f);
+});
+render('all');
+</script>
+</body>
+</html>
