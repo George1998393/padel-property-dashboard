@@ -55,28 +55,28 @@
   <header>
     <div>
       <h1>Padel <span>People</span> — Property Dashboard</h1>
-      <div class="sub">Potential indoor padel venue sites · England (London to Birmingham) · Last updated 29 June 2026</div>
+      <div class="sub">Potential indoor padel venue sites · UK (excl. Scotland) · Last updated 29 June 2026</div>
     </div>
   </header>
 
   <div class="spec">
     <span><b>Spec:</b></span>
-    <span>10,000–25,000 sqft</span>
+    <span>10,000–30,000 sqft</span>
     <span>Min 6m eaves</span>
     <span>Good parking</span>
     <span>Max £8.50/sqft</span>
-    <span>South England → Birmingham</span>
+    <span>UK (excl. Scotland)</span>
   </div>
 
   <div class="stats">
-    <div class="stat"><div class="n">5</div><div class="l">Live sites tracked</div></div>
-    <div class="stat"><div class="n">£5.65–7.56</div><div class="l">Rent range £/sqft</div></div>
-    <div class="stat"><div class="n">3</div><div class="l">Confirmed 6m+ eaves</div></div>
-    <div class="stat"><div class="n">3</div><div class="l">West Midlands</div></div>
+    <div class="stat"><div class="n">7</div><div class="l">Live sites tracked</div></div>
+    <div class="stat"><div class="n">£5.65–7.78</div><div class="l">Rent range £/sqft</div></div>
+    <div class="stat"><div class="n">5</div><div class="l">Confirmed 6m+ eaves</div></div>
+    <div class="stat"><div class="n">4</div><div class="l">West Midlands</div></div>
   </div>
 
   <div class="controls" id="controls">
-    <button class="active" data-f="all">All (5)</button>
+    <button class="active" data-f="all">All (7)</button>
     <button data-f="eavesok">Eaves 6m+ confirmed</button>
     <button data-f="eavesflag">Eaves to confirm</button>
     <button data-f="wm">West Midlands</button>
@@ -115,7 +115,15 @@ const sites = [
   {id:"156291251", img:"https://media.rightmove.co.uk/property-photo/85cfac885/156291251/85cfac8858e932a06c6441381875eb67.jpeg", name:"Warehouse at Wix", region:"Wix, CO11 · Essex (East of England)", wm:false,
    size:"14,600 sqft", rent:"5.96", pcm:"£7,250 pcm", eaves:"“large/high”", eavesState:"flag", parking:"Yes — ample on site",
    notes:"Concrete floor, roller shutter, 0.4mi from A120. Agent advertises high eaves but no figure — worth a call to confirm 6m+.",
-   badges:[["Eaves “high”, unquantified","amber"],["Stated rent","ok"]]}
+   badges:[["Eaves “high”, unquantified","amber"],["Stated rent","ok"]]},
+  {id:"755879438355488", img:"https://media.rightmove.co.uk/property-photo/ecb97eaff/755879438355488/ecb97eaff06a079b6a22ea06a67ee9ed.png", name:"Unit 3, EIC Business Park, Alcester", region:"Alcester, B49 6EP · Warwickshire (West Midlands)", wm:true,
+   size:"18,057 sqft", rent:"5.70", pcm:"£8,577 pcm", eaves:"6.85m", eavesState:"ok", parking:"Yes — yard for 43 cars + HGV",
+   notes:"Modern clear-span unit, no pillars, 24/7 access, secure gated CCTV. Listing names ‘recreation, gym’ as suitable uses — strong padel fit. Apex 10.25m.",
+   badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
+  {id:"169104590", img:"https://media.rightmove.co.uk/property-photo/8e1d7cd3e/169104590/8e1d7cd3ee5cb5c62afd3826ee5ad785.jpeg", name:"Tyrone House, Unit A, Colwick", region:"Colwick, Nottingham NG2 4EU · East Midlands", wm:false,
+   size:"11,950 sqft", rent:"7.78", pcm:"£93,000 pa", eaves:"6.6m", eavesState:"ok", parking:"Yes — 15 spaces",
+   notes:"Steel portal frame, open-plan + mezzanine, secure gated site, EV charging. Watch-outs: only 15 spaces + Nottingham Workplace Parking Levy.",
+   badges:[["6m+ eaves","ok"],["Parking light","amber"]]}
 ];
 
 function render(filter){
