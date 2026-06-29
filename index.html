@@ -43,6 +43,10 @@
   .b.amber{background:var(--amber-bg);color:var(--amber)}
   .b.red{background:var(--red-bg);color:var(--red)}
   .notes{font-size:12.5px;color:var(--muted)}
+  .added{font-size:11.5px;color:var(--muted);margin-top:3px}
+  .added.arch{color:var(--amber);font-weight:600}
+  .card.archived{opacity:.7}
+  .empty{grid-column:1/-1;color:var(--muted);font-size:14px;padding:28px 4px}
   .card a.cta{margin-top:auto;text-align:center;background:var(--green);color:#fff;text-decoration:none;font-size:13px;font-weight:600;padding:9px;border-radius:9px}
   .card a.cta:hover{background:var(--green-dark)}
   footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
@@ -69,17 +73,18 @@
   </div>
 
   <div class="stats">
-    <div class="stat"><div class="n">7</div><div class="l">Live sites tracked</div></div>
-    <div class="stat"><div class="n">£5.65–7.78</div><div class="l">Rent range £/sqft</div></div>
-    <div class="stat"><div class="n">5</div><div class="l">Confirmed 6m+ eaves</div></div>
-    <div class="stat"><div class="n">4</div><div class="l">West Midlands</div></div>
+    <div class="stat"><div class="n" id="stLive">7</div><div class="l">Live sites tracked</div></div>
+    <div class="stat"><div class="n" id="stRent">£5.65–7.78</div><div class="l">Rent range £/sqft</div></div>
+    <div class="stat"><div class="n" id="stEaves">5</div><div class="l">Confirmed 6m+ eaves</div></div>
+    <div class="stat"><div class="n" id="stWm">4</div><div class="l">West Midlands</div></div>
   </div>
 
   <div class="controls" id="controls">
-    <button class="active" data-f="all">All (7)</button>
+    <button class="active" data-f="all" id="btnAll">All (7)</button>
     <button data-f="eavesok">Eaves 6m+ confirmed</button>
     <button data-f="eavesflag">Eaves to confirm</button>
     <button data-f="wm">West Midlands</button>
+    <button data-f="archive" id="btnArch">Archive</button>
   </div>
 
   <div class="grid" id="grid"></div>
@@ -96,52 +101,85 @@
 
 <script>
 const sites = [
-  {id:"87569106", img:"https://media.rightmove.co.uk/property-photo/d50eaf91f/87569106/d50eaf91f6f3c4a91b75f336230992b0.png", name:"Popes Lane (Units 1-3), Oldbury", region:"Oldbury, B69 4PA · West Midlands", wm:true,
+  {id:"87569106", added:"2026-06-29", img:"https://media.rightmove.co.uk/property-photo/d50eaf91f/87569106/d50eaf91f6f3c4a91b75f336230992b0.png", name:"Popes Lane (Units 1-3), Oldbury", region:"Oldbury, B69 4PA · West Midlands", wm:true,
    size:"20,030 sqft", rent:"7.04", pcm:"£11,750 pcm", eaves:"7m", eavesState:"ok", parking:"Yes — demised yard + car parking",
    notes:"Open-plan warehouse, roller shutter, substantial yard. 0.5mi from M5 J2, Langley Green station 0.3mi. Clean fit on spec.",
    badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
-  {id:"169522259", img:"https://media.rightmove.co.uk/property-photo/20968b3fa/169522259/20968b3fac4789234f6061377188d829.jpeg", name:"Unit 4, Bromyard Business Park", region:"Worcester, WR2 · West Midlands", wm:true,
+  {id:"169522259", added:"2026-06-29", img:"https://media.rightmove.co.uk/property-photo/20968b3fa/169522259/20968b3fac4789234f6061377188d829.jpeg", name:"Unit 4, Bromyard Business Park", region:"Worcester, WR2 · West Midlands", wm:true,
    size:"14,000 sqft", rent:"7.00", pcm:"£8,167 pcm", eaves:"8–10m", eavesState:"ok", parking:"Yes — 24hr manned security",
    notes:"Steel portal frame, new shop fronts/roller shutters. Fronts A44, ~4mi from M5 J7. Strong eaves height for courts.",
    badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
-  {id:"87897849", img:"https://media.rightmove.co.uk/property-photo/33ea11924/87897849/33ea119240d1f81993e0e846443b2781.jpeg", name:"21-27 Stewarts Road, Finedon Rd Ind. Est.", region:"Wellingborough, NN8 · Northamptonshire", wm:false,
+  {id:"87897849", added:"2026-06-29", img:"https://media.rightmove.co.uk/property-photo/33ea11924/87897849/33ea119240d1f81993e0e846443b2781.jpeg", name:"21-27 Stewarts Road, Finedon Rd Ind. Est.", region:"Wellingborough, NN8 · Northamptonshire", wm:false,
    size:"23,162 sqft", rent:"7.56", pcm:"£14,583 pcm", eaves:"6.2m", eavesState:"ok", parking:"Yes — large yard, 8 loading doors",
    notes:"Detached clear-span warehouse. Meets 6m eaves. NB: available end of 2026, subject to full refurb completion.",
    badges:[["6m+ eaves","ok"],["Avail. end 2026","amber"]]},
-  {id:"748442899526497", img:"https://media.rightmove.co.uk/property-photo/bb6b04754/748442899526497/bb6b0475475320dd17e53e376621391d.png", name:"Westpoint, Middlemore Lane West", region:"Aldridge, Walsall · West Midlands", wm:true,
+  {id:"748442899526497", added:"2026-06-29", img:"https://media.rightmove.co.uk/property-photo/bb6b04754/748442899526497/bb6b0475475320dd17e53e376621391d.png", name:"Westpoint, Middlemore Lane West", region:"Aldridge, Walsall · West Midlands", wm:true,
    size:"11,500 sqft", rent:"5.65", pcm:"£5,417 pcm", eaves:"5.5–7.5m", eavesState:"flag", parking:"Yes — up to 300 vehicles",
    notes:"Concrete portal frame, gated/CCTV site, big shared yard. Cheap with great parking, but eaves dip to 5.5m at the wall — check usable clear height.",
    badges:[["Eaves 5.5m low end","amber"],["Stated rent","ok"]]},
-  {id:"156291251", img:"https://media.rightmove.co.uk/property-photo/85cfac885/156291251/85cfac8858e932a06c6441381875eb67.jpeg", name:"Warehouse at Wix", region:"Wix, CO11 · Essex (East of England)", wm:false,
+  {id:"156291251", added:"2026-06-29", img:"https://media.rightmove.co.uk/property-photo/85cfac885/156291251/85cfac8858e932a06c6441381875eb67.jpeg", name:"Warehouse at Wix", region:"Wix, CO11 · Essex (East of England)", wm:false,
    size:"14,600 sqft", rent:"5.96", pcm:"£7,250 pcm", eaves:"“large/high”", eavesState:"flag", parking:"Yes — ample on site",
    notes:"Concrete floor, roller shutter, 0.4mi from A120. Agent advertises high eaves but no figure — worth a call to confirm 6m+.",
    badges:[["Eaves “high”, unquantified","amber"],["Stated rent","ok"]]},
-  {id:"755879438355488", img:"https://media.rightmove.co.uk/property-photo/ecb97eaff/755879438355488/ecb97eaff06a079b6a22ea06a67ee9ed.png", name:"Unit 3, EIC Business Park, Alcester", region:"Alcester, B49 6EP · Warwickshire (West Midlands)", wm:true,
+  {id:"755879438355488", added:"2026-06-29", img:"https://media.rightmove.co.uk/property-photo/ecb97eaff/755879438355488/ecb97eaff06a079b6a22ea06a67ee9ed.png", name:"Unit 3, EIC Business Park, Alcester", region:"Alcester, B49 6EP · Warwickshire (West Midlands)", wm:true,
    size:"18,057 sqft", rent:"5.70", pcm:"£8,577 pcm", eaves:"6.85m", eavesState:"ok", parking:"Yes — yard for 43 cars + HGV",
    notes:"Modern clear-span unit, no pillars, 24/7 access, secure gated CCTV. Listing names ‘recreation, gym’ as suitable uses — strong padel fit. Apex 10.25m.",
    badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
-  {id:"169104590", img:"https://media.rightmove.co.uk/property-photo/8e1d7cd3e/169104590/8e1d7cd3ee5cb5c62afd3826ee5ad785.jpeg", name:"Tyrone House, Unit A, Colwick", region:"Colwick, Nottingham NG2 4EU · East Midlands", wm:false,
+  {id:"169104590", added:"2026-06-29", img:"https://media.rightmove.co.uk/property-photo/8e1d7cd3e/169104590/8e1d7cd3ee5cb5c62afd3826ee5ad785.jpeg", name:"Tyrone House, Unit A, Colwick", region:"Colwick, Nottingham NG2 4EU · East Midlands", wm:false,
    size:"11,950 sqft", rent:"7.78", pcm:"£93,000 pa", eaves:"6.6m", eavesState:"ok", parking:"Yes — 15 spaces",
    notes:"Steel portal frame, open-plan + mezzanine, secure gated site, EV charging. Watch-outs: only 15 spaces + Nottingham Workplace Parking Levy.",
    badges:[["6m+ eaves","ok"],["Parking light","amber"]]}
 ];
 
+const ARCHIVE_DAYS = 10;
+const DAY = 864e5;
+function ageDays(s){ if(!s.added) return 0; return Math.floor((Date.now() - new Date(s.added+'T00:00:00')) / DAY); }
+function isArchived(s){ return ageDays(s) > ARCHIVE_DAYS; }
+function fmt(s){ return s.added ? new Date(s.added+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : ''; }
+function dateLabel(s){
+  if(!s.added) return '';
+  if(isArchived(s)) return 'Added '+fmt(s)+' · archived';
+  const left = ARCHIVE_DAYS - ageDays(s);
+  return 'Added '+fmt(s)+' · archives in '+left+' day'+(left===1?'':'s');
+}
+function setStats(){
+  const active = sites.filter(s=>!isArchived(s));
+  const arch = sites.length - active.length;
+  document.getElementById('stLive').textContent = active.length;
+  const rents = active.map(s=>parseFloat(s.rent)).filter(n=>!isNaN(n));
+  document.getElementById('stRent').textContent = rents.length ? '£'+Math.min(...rents).toFixed(2)+'–'+Math.max(...rents).toFixed(2) : '—';
+  document.getElementById('stEaves').textContent = active.filter(s=>s.eavesState==='ok').length;
+  document.getElementById('stWm').textContent = active.filter(s=>s.wm).length;
+  document.getElementById('btnAll').textContent = 'All ('+active.length+')';
+  document.getElementById('btnArch').textContent = 'Archive ('+arch+')';
+}
 function render(filter){
   const g = document.getElementById('grid');
   g.innerHTML = '';
-  sites.filter(s=>{
+  const list = sites.filter(s=>{
+    const a = isArchived(s);
+    if(filter==='archive') return a;
+    if(a) return false;
     if(filter==='all') return true;
     if(filter==='eavesok') return s.eavesState==='ok';
     if(filter==='eavesflag') return s.eavesState==='flag';
     if(filter==='wm') return s.wm;
-  }).forEach(s=>{
+    return true;
+  });
+  if(!list.length){
+    g.innerHTML = '<div class="empty">'+(filter==='archive'?('Nothing archived yet — properties move here after '+ARCHIVE_DAYS+' days on the board.'):'No sites in this view.')+'</div>';
+    return;
+  }
+  list.forEach(s=>{
     const badges = s.badges.map(b=>`<span class="b ${b[1]}">${b[0]}</span>`).join('');
+    const arch = isArchived(s);
     g.insertAdjacentHTML('beforeend', `
-      <div class="card">
+      <div class="card${arch?' archived':''}">
         <img class="thumb" src="${s.img}" alt="${s.name}" loading="lazy" onerror="this.style.display='none'">
         <div>
           <h3>${s.name}</h3>
           <div class="region">${s.region}</div>
+          <div class="added${arch?' arch':''}">${dateLabel(s)}</div>
         </div>
         <div class="rentbig">£${s.rent}<small>/sqft</small> &nbsp;<small>${s.pcm}</small></div>
         <div class="badges">${badges}</div>
@@ -161,6 +199,7 @@ document.getElementById('controls').addEventListener('click', e=>{
   e.target.classList.add('active');
   render(e.target.dataset.f);
 });
+setStats();
 render('all');
 </script>
 </body>
