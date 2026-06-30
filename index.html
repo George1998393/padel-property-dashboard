@@ -365,4 +365,63 @@ render('all');
 })();</script>
 
 
-</body></html>
+<script>(function(){
+  var KEY='pp_hidden_sites';
+  var grid=document.getElementById('grid'); if(!grid) return;
+  function getHidden(){try{return new Set((JSON.parse(localStorage.getItem(KEY)||'[]')).map(String));}catch(e){return new Set();}}
+  function saveHidden(s){try{localStorage.setItem(KEY,JSON.stringify(Array.from(s)));}catch(e){}}
+  function idOf(card){var a=card.querySelector('a[href*="/properties/"]'); if(a){var m=a.href.match(/properties\/(\d+)/); if(m)return m[1];} return null;}
+  var snap=null;
+  function buildSnapshot(){
+    if(!snap) snap={};
+    grid.querySelectorAll('.card').forEach(function(c){
+      var id=idOf(c); if(!id||snap[id]) return;
+      var regionEl=c.querySelector('.region'); var region=regionEl?regionEl.textContent:'';
+      var rentEl=c.querySelector('.rentbig'); var rent=null;
+      if(rentEl){var rm=rentEl.textContent.match(/([\d.]+)/); if(rm)rent=parseFloat(rm[1]);}
+      snap[id]={wm:/West Midlands/i.test(region), eaves6:/6m\+\s*eaves/i.test(c.textContent), rent:rent, archived:c.classList.contains('archived')};
+    });
+  }
+  function applyCounts(){
+    if(!snap) return;
+    var hidden=getHidden(), live=0, wm=0, eaves=0, rents=[];
+    Object.keys(snap).forEach(function(id){
+      if(hidden.has(id)) return; var s=snap[id]; if(s.archived) return;
+      live++; if(s.wm) wm++; if(s.eaves6) eaves++; if(s.rent!=null) rents.push(s.rent);
+    });
+    var el;
+    if((el=document.getElementById('stLive'))) el.textContent=live;
+    if((el=document.getElementById('stWm'))) el.textContent=wm;
+    if((el=document.getElementById('stEaves'))) el.textContent=eaves;
+    if((el=document.getElementById('stRent'))&&rents.length){var mn=Math.min.apply(null,rents),mx=Math.max.apply(null,rents);el.textContent='£'+mn.toFixed(2)+'–'+mx.toFixed(2);}
+    var ba=document.getElementById('btnAll'); if(ba) ba.textContent='All ('+live+')';
+  }
+  function addButtons(){
+    grid.querySelectorAll('.card').forEach(function(c){
+      if(c.querySelector('.pp-del')) return;
+      var id=idOf(c); if(!id) return;
+      c.style.position='relative';
+      var b=document.createElement('button'); b.className='pp-del'; b.type='button'; b.title='Remove this site'; b.textContent='×';
+      b.style.cssText='position:absolute;top:8px;right:8px;z-index:5;width:30px;height:30px;border-radius:50%;border:none;background:rgba(19,32,26,.6);color:#fff;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center';
+      b.addEventListener('mouseenter',function(){b.style.background='#b3261e';});
+      b.addEventListener('mouseleave',function(){b.style.background='rgba(19,32,26,.6)';});
+      b.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();var h=getHidden();h.add(id);saveHidden(h);run();});
+      c.appendChild(b);
+    });
+  }
+  function hideHidden(){var h=getHidden(); grid.querySelectorAll('.card').forEach(function(c){var id=idOf(c); if(id&&h.has(id)) c.remove();});}
+  var bar;
+  function updateBar(){
+    var n=getHidden().size;
+    if(!bar){bar=document.createElement('div'); bar.id='pp-hidebar'; bar.style.cssText='margin:0 0 14px;font-size:13px;color:var(--muted)'; grid.parentNode.insertBefore(bar,grid);}
+    if(n>0){
+      bar.innerHTML=n+' site'+(n===1?'':'s')+' hidden · <a href="#" id="pp-restore" style="color:var(--green);font-weight:600">Restore all</a>';
+      var r=document.getElementById('pp-restore'); if(r)r.addEventListener('click',function(e){e.preventDefault();saveHidden(new Set());location.reload();});
+      bar.style.display='';
+    } else bar.style.display='none';
+  }
+  var mo;
+  function run(){ if(mo)mo.disconnect(); buildSnapshot(); hideHidden(); addButtons(); applyCounts(); updateBar(); if(mo)mo.observe(grid,{childList:true}); }
+  mo=new MutationObserver(run);
+  setTimeout(run,80);
+})();</script></body></html>
