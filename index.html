@@ -158,16 +158,35 @@ Source: Rightmove (West Midlands, East Midlands, South East, London, East of Eng
     <div class="cp-card">
       <div class="cp-head"><div class="cp-ic">📋</div>
         <div><h2 class="cp-title">Club Projection</h2><p class="cp-sub">Build &amp; price a club in <input id="cpLoc" class="cp-loc" value="King's Lynn"></p></div></div>
-      <div class="cp-seclabel">Inputs</div><div class="cp-secnote">Court mix, opening hours and hire rate</div>
+      <div class="cp-seclabel">Inputs</div><div class="cp-secnote">Court mix, opening hours and peak / off-peak rates</div>
       <div class="cp-grid3">
         <div><div class="cp-flabel">Indoor courts</div><div class="cp-stepper" data-step="indoor"><button data-dir="-1">−</button><div class="cp-val"><span data-out="indoor">3</span></div><button data-dir="1">+</button></div></div>
         <div><div class="cp-flabel">Outdoor courts</div><div class="cp-stepper" data-step="outdoor"><button data-dir="-1">−</button><div class="cp-val"><span data-out="outdoor">0</span></div><button data-dir="1">+</button></div></div>
         <div><div class="cp-flabel">Covered courts</div><div class="cp-stepper" data-step="covered"><button data-dir="-1">−</button><div class="cp-val"><span data-out="covered">1</span></div><button data-dir="1">+</button></div></div>
       </div>
       <div class="cp-grid3" style="margin-top:14px">
+        <div><div class="cp-flabel">Singles courts</div><div class="cp-stepper" data-step="singles"><button data-dir="-1">−</button><div class="cp-val"><span data-out="singles">0</span></div><button data-dir="1">+</button></div></div>
         <div><div class="cp-flabel">Operating hours / day</div><div class="cp-stepper" data-step="hours"><button data-dir="-1">−</button><div class="cp-val"><span data-out="hours">14</span><small>h</small></div><button data-dir="1">+</button></div></div>
-        <div><div class="cp-flabel">Court hire rate</div><div class="cp-stepper" data-step="rate"><button data-dir="-1">−</button><div class="cp-val"><small>£</small><span data-out="rate">33</span><small>/hr</small></div><button data-dir="1">+</button></div></div>
         <div><div class="cp-flabel">Total</div><div class="cp-pill"><b id="cpTotal">4</b> total courts</div></div>
+      </div>
+      <div class="cp-grid2" style="margin-top:14px">
+        <div><div class="cp-flabel">Opens at</div><input type="time" id="cpOpen" value="07:00" style="width:100%;height:50px;border:1px solid var(--line);border-radius:11px;padding:0 14px;font-size:16px;font-weight:700;color:var(--ink);background:#fff"></div>
+        <div style="display:flex;align-items:flex-end"><div class="cp-secnote" style="margin:0 0 4px">Used to split open hours into peak vs off-peak. Closes at <span id="cpClose">21:00</span>.</div></div>
+      </div>
+      <div style="margin-top:18px">
+        <div class="cp-flabel">Hire rates (£ per hour)</div>
+        <div class="cp-secnote" style="margin-bottom:10px">Peak = weekdays from 5pm + all weekend · Off-peak = all other open hours</div>
+        <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px 14px;align-items:center;max-width:560px">
+          <div></div>
+          <div class="cp-flabel" style="margin:0;text-align:center">Peak</div>
+          <div class="cp-flabel" style="margin:0;text-align:center">Off-peak</div>
+          <div style="font-size:13.5px;font-weight:600">Standard courts</div>
+          <input type="number" min="0" data-rate="stdPeak" value="44" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+          <input type="number" min="0" data-rate="stdOff" value="33" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+          <div style="font-size:13.5px;font-weight:600">Singles courts</div>
+          <input type="number" min="0" data-rate="sinPeak" value="30" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+          <input type="number" min="0" data-rate="sinOff" value="22" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+        </div>
       </div>
       <div style="margin-top:18px"><div class="cp-flabel">Expected occupancy — how full you think the courts will be</div>
         <div style="display:flex;align-items:center;gap:14px;margin-top:8px"><input type="range" id="cpOccIn" min="0" max="100" step="0.5" value="58.5" style="flex:1;accent-color:var(--green)"><div style="min-width:92px;height:50px;border:1px solid var(--line);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;background:#fff"><span id="cpOccNum">58.5</span><small style="font-weight:600;color:var(--muted);margin-left:1px">%</small></div></div>
@@ -176,15 +195,15 @@ Source: Rightmove (West Midlands, East Midlands, South East, London, East of Eng
     <div class="cp-card">
       <div class="cp-seclabel">Results</div><div class="cp-secnote">Live projection — updates as you tweak inputs above</div>
       <div class="cp-grid3">
-        <div class="cp-result cp-primary"><div class="cp-rl">Est. Monthly Revenue</div><div class="cp-rv" id="cpMonthly">£33K</div><div class="cp-rf" id="cpMonthlyF">997 booked court-hrs/mo</div></div>
-        <div class="cp-result"><div class="cp-rl">Est. Yearly Revenue</div><div class="cp-rv" id="cpYearly">£395K</div><div class="cp-rf" id="cpYearlyF">4 courts</div></div>
-        <div class="cp-result"><div class="cp-rl">Revenue per Court</div><div class="cp-rv" id="cpPer">£8K</div><div class="cp-rf">per month</div></div>
+        <div class="cp-result cp-primary"><div class="cp-rl">Est. Monthly Revenue</div><div class="cp-rv" id="cpMonthly">£38K</div><div class="cp-rf" id="cpMonthlyF">997 booked court-hrs/mo</div></div>
+        <div class="cp-result"><div class="cp-rl">Est. Yearly Revenue</div><div class="cp-rv" id="cpYearly">£459K</div><div class="cp-rf" id="cpYearlyF">4 courts</div></div>
+        <div class="cp-result"><div class="cp-rl">Revenue per Court</div><div class="cp-rv" id="cpPer">£10K</div><div class="cp-rf">per month</div></div>
       </div>
       <div class="cp-grid2" style="margin-top:14px">
-        <div class="cp-result"><div class="cp-rl">Occupied Court-Hours / mo</div><div class="cp-rv" id="cpOH">997</div><div class="cp-rf">of <span id="cpAH">1,705</span> available at <span id="cpOccAt">58.5</span>%</div></div>
-        <div class="cp-result"><div class="cp-rl">Court-Hours Sold / yr</div><div class="cp-rv" id="cpOHy">11,967</div><div class="cp-rf">across all courts</div></div>
+        <div class="cp-result"><div class="cp-rl">Peak Revenue / mo</div><div class="cp-rv" id="cpPeakRev">£21K</div><div class="cp-rf">weekdays 5pm+ &amp; weekends</div></div>
+        <div class="cp-result"><div class="cp-rl">Off-Peak Revenue / mo</div><div class="cp-rv" id="cpOffRev">£17K</div><div class="cp-rf">weekday daytime</div></div>
       </div>
-      <div class="cp-note">Revenue = courts × open hours × occupancy × hire rate. Occupancy is your own estimate above — slide it to see best and worst case. Estimates only.</div>
+      <div class="cp-note">Revenue = each court × open hours in each time band × occupancy × that band's rate. Occupancy is your own estimate; slide it for best / worst case. Estimates only.</div>
     </div>
    </div>
   </div>
@@ -299,18 +318,47 @@ render('all');
 </script>
 
 <script>(function(){
-  var D={indoor:3,outdoor:0,covered:1,hours:14,rate:33,occ:58.5,dpm:30.44};
+  var D={indoor:3,outdoor:0,covered:1,singles:0,hours:14,open:7,occ:58.5,dpm:30.44,stdPeak:44,stdOff:33,sinPeak:30,sinOff:22};
   var S=Object.assign({},D);
-  var LIM={indoor:[0,40],outdoor:[0,40],covered:[0,40],hours:[1,24],rate:[5,200]};
+  var PEAK_START=17;
+  var LIM={indoor:[0,40],outdoor:[0,40],covered:[0,40],singles:[0,40],hours:[1,24]};
   var root=document.getElementById('tab-projection'); if(!root)return;
   function q(s){return root.querySelector(s);}
   function out(k){return root.querySelector('[data-out="'+k+'"]');}
   function money(n){if(n>=1e6)return '£'+(n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M';if(n>=1000)return '£'+Math.round(n/1000)+'K';return '£'+Math.round(n);}
   function ci(n){return Math.round(n).toLocaleString('en-GB');}
-  function compute(){var total=S.indoor+S.outdoor+S.covered;var hpc=S.hours*S.dpm,avail=total*hpc;var oh=avail*S.occ/100;var monthly=oh*S.rate;return {total:total,avail:avail,oh:oh,monthly:monthly,yearly:monthly*12,per:total?monthly/total:0};}
-  function render(){['indoor','outdoor','covered','hours','rate'].forEach(function(k){var e=out(k);if(e)e.textContent=S[k];});q('#cpTotal').textContent=S.indoor+S.outdoor+S.covered;q('#cpOccNum').textContent=S.occ;var r=compute();q('#cpMonthly').textContent=money(r.monthly);q('#cpMonthlyF').textContent=ci(r.oh)+' booked court-hrs/mo';q('#cpYearly').textContent=money(r.yearly);q('#cpYearlyF').textContent=r.total+(r.total===1?' court':' courts');q('#cpPer').textContent=money(r.per);q('#cpOH').textContent=ci(r.oh);q('#cpAH').textContent=ci(r.avail);var oa=q('#cpOccAt');if(oa)oa.textContent=S.occ;q('#cpOHy').textContent=ci(r.oh*12);root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;if(!LIM[k])return;st.querySelector('[data-dir="-1"]').disabled=S[k]<=LIM[k][0];st.querySelector('[data-dir="1"]').disabled=S[k]>=LIM[k][1];});}
+  function hhmm(x){var h=Math.floor(x)%24,m=Math.round((x-Math.floor(x))*60);return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;}
+  function compute(){
+    var std=S.indoor+S.outdoor+S.covered, total=std+S.singles;
+    var dayEnd=S.open+S.hours;
+    var offWk=Math.max(0, Math.min(dayEnd,PEAK_START)-S.open);
+    var pkWk=Math.max(0, dayEnd-Math.max(S.open,PEAK_START));
+    var peakWeek=5*pkWk+2*S.hours, offWeek=5*offWk, f=S.dpm/7;
+    var peakHpc=peakWeek*f, offHpc=offWeek*f, occ=S.occ/100;
+    var peakRev=occ*(std*peakHpc*S.stdPeak + S.singles*peakHpc*S.sinPeak);
+    var offRev =occ*(std*offHpc*S.stdOff  + S.singles*offHpc*S.sinOff);
+    var monthly=peakRev+offRev, avail=total*S.hours*S.dpm, oh=occ*avail;
+    return {std:std,total:total,avail:avail,oh:oh,peakRev:peakRev,offRev:offRev,monthly:monthly,yearly:monthly*12,per:total?monthly/total:0,dayEnd:dayEnd};
+  }
+  function render(){
+    ['indoor','outdoor','covered','singles','hours'].forEach(function(k){var e=out(k);if(e)e.textContent=S[k];});
+    q('#cpTotal').textContent=S.indoor+S.outdoor+S.covered+S.singles;
+    q('#cpOccNum').textContent=S.occ;
+    var r=compute();
+    var cc=q('#cpClose'); if(cc)cc.textContent=hhmm(r.dayEnd);
+    q('#cpMonthly').textContent=money(r.monthly);
+    q('#cpMonthlyF').textContent=ci(r.oh)+' booked court-hrs/mo';
+    q('#cpYearly').textContent=money(r.yearly);
+    q('#cpYearlyF').textContent=r.total+(r.total===1?' court':' courts');
+    q('#cpPer').textContent=money(r.per);
+    q('#cpPeakRev').textContent=money(r.peakRev);
+    q('#cpOffRev').textContent=money(r.offRev);
+    root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;if(!LIM[k])return;st.querySelector('[data-dir="-1"]').disabled=S[k]<=LIM[k][0];st.querySelector('[data-dir="1"]').disabled=S[k]>=LIM[k][1];});
+  }
   root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;st.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){var dir=+b.dataset.dir,lo=LIM[k][0],hi=LIM[k][1];S[k]=Math.max(lo,Math.min(hi,S[k]+dir));render();});});});
   var occ=q('#cpOccIn'); if(occ)occ.addEventListener('input',function(){var v=parseFloat(occ.value);if(isNaN(v))return;S.occ=v;render();});
+  var op=q('#cpOpen'); if(op)op.addEventListener('input',function(){var p=op.value.split(':');var h=parseInt(p[0],10)+(parseInt(p[1],10)||0)/60;if(!isNaN(h))S.open=h;render();});
+  root.querySelectorAll('input[data-rate]').forEach(function(inp){inp.addEventListener('input',function(){var v=parseFloat(inp.value);if(isNaN(v))return;S[inp.dataset.rate]=v;render();});});
   var tabs=document.getElementById('cpTabs');
   if(tabs){tabs.querySelectorAll('.cp-tab').forEach(function(t){t.addEventListener('click',function(){tabs.querySelectorAll('.cp-tab').forEach(function(x){x.classList.remove('active');});t.classList.add('active');var name=t.dataset.tab;document.getElementById('tab-sites').hidden=(name!=='sites');document.getElementById('tab-projection').hidden=(name!=='projection');});});}
   render();
