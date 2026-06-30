@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Padel People — Property Dashboard</title>
@@ -154,7 +153,7 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 Source: Rightmove (West Midlands, East Midlands, South East, London, East of England), live at time of search 29 June 2026. LoopNet &amp; EG Propertylink returned no readable listings. Rents shown are stated asking figures (no POA included). Always confirm eaves height, parking and planning use directly with the agent before progressing.
 </footer>
   </div><!--/tab-sites-->
-  <div id="tab-projection" class="cp-panel" hidden>
+  <div id="tab-projection" class="cp-panel" hidden="">
    <div class="cp-wrap">
     <div class="cp-card">
       <div class="cp-head"><div class="cp-ic">📋</div>
@@ -170,32 +169,22 @@ Source: Rightmove (West Midlands, East Midlands, South East, London, East of Eng
         <div><div class="cp-flabel">Court hire rate</div><div class="cp-stepper" data-step="rate"><button data-dir="-1">−</button><div class="cp-val"><small>£</small><span data-out="rate">33</span><small>/hr</small></div><button data-dir="1">+</button></div></div>
         <div><div class="cp-flabel">Total</div><div class="cp-pill"><b id="cpTotal">4</b> total courts</div></div>
       </div>
+      <div style="margin-top:18px"><div class="cp-flabel">Expected occupancy — how full you think the courts will be</div>
+        <div style="display:flex;align-items:center;gap:14px;margin-top:8px"><input type="range" id="cpOccIn" min="0" max="100" step="0.5" value="58.5" style="flex:1;accent-color:var(--green)"><div style="min-width:92px;height:50px;border:1px solid var(--line);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;background:#fff"><span id="cpOccNum">58.5</span><small style="font-weight:600;color:var(--muted);margin-left:1px">%</small></div></div>
+      </div>
     </div>
     <div class="cp-card">
       <div class="cp-seclabel">Results</div><div class="cp-secnote">Live projection — updates as you tweak inputs above</div>
       <div class="cp-grid3">
         <div class="cp-result cp-primary"><div class="cp-rl">Est. Monthly Revenue</div><div class="cp-rv" id="cpMonthly">£33K</div><div class="cp-rf" id="cpMonthlyF">997 booked court-hrs/mo</div></div>
         <div class="cp-result"><div class="cp-rl">Est. Yearly Revenue</div><div class="cp-rv" id="cpYearly">£395K</div><div class="cp-rf" id="cpYearlyF">4 courts</div></div>
-        <div class="cp-result"><div class="cp-rl">Predicted Occupancy</div><div class="cp-rv" id="cpOcc">58.5%</div><div class="cp-rf" id="cpOccF">at £33/hr</div></div>
+        <div class="cp-result"><div class="cp-rl">Revenue per Court</div><div class="cp-rv" id="cpPer">£8K</div><div class="cp-rf">per month</div></div>
       </div>
       <div class="cp-grid2" style="margin-top:14px">
-        <div class="cp-result"><div class="cp-rl">Revenue per Court</div><div class="cp-rv" id="cpPer">£8K</div><div class="cp-rf">per month</div></div>
-        <div class="cp-result"><div class="cp-rl">Occupied Court-Hours / mo</div><div class="cp-rv" id="cpOH">997</div><div class="cp-rf">of <span id="cpAH">1,705</span> available</div></div>
+        <div class="cp-result"><div class="cp-rl">Occupied Court-Hours / mo</div><div class="cp-rv" id="cpOH">997</div><div class="cp-rf">of <span id="cpAH">1,705</span> available at <span id="cpOccAt">58.5</span>%</div></div>
+        <div class="cp-result"><div class="cp-rl">Court-Hours Sold / yr</div><div class="cp-rv" id="cpOHy">11,967</div><div class="cp-rf">across all courts</div></div>
       </div>
-    </div>
-    <div class="cp-card">
-      <details class="cp-assump" open><summary><span class="cp-ic" style="width:26px;height:26px;font-size:14px;background:var(--amber-bg)">⚙️</span>Assumptions <span class="cp-chev">▾</span></summary>
-        <div style="padding-top:8px">
-          <div class="cp-arow"><div class="cp-at"><div class="cp-an">Reference hire rate</div><div class="cp-ad">The price at which the occupancy below applies</div></div><input type="range" data-a="refPrice" min="10" max="80" step="1" value="33"><input type="number" class="cp-num" data-an="refPrice" value="33"></div>
-          <div class="cp-arow"><div class="cp-at"><div class="cp-an">Occupancy at reference rate</div><div class="cp-ad">Predicted indoor occupancy at the reference price</div></div><input type="range" data-a="refOcc" min="20" max="100" step="0.5" value="58.5"><input type="number" class="cp-num" data-an="refOcc" value="58.5"></div>
-          <div class="cp-arow"><div class="cp-at"><div class="cp-an">Price sensitivity</div><div class="cp-ad">Occupancy points lost per +£1/hr on the hire rate</div></div><input type="range" data-a="sens" min="0" max="4" step="0.1" value="1.6"><input type="number" class="cp-num" data-an="sens" value="1.6"></div>
-          <div class="cp-arow"><div class="cp-at"><div class="cp-an">Covered occupancy factor</div><div class="cp-ad">Covered courts vs indoor (100% = same)</div></div><input type="range" data-a="covFac" min="40" max="100" step="1" value="100"><input type="number" class="cp-num" data-an="covFac" value="100"></div>
-          <div class="cp-arow"><div class="cp-at"><div class="cp-an">Outdoor occupancy factor</div><div class="cp-ad">Outdoor courts vs indoor — weather drag</div></div><input type="range" data-a="outFac" min="30" max="100" step="1" value="70"><input type="number" class="cp-num" data-an="outFac" value="70"></div>
-          <div class="cp-arow"><div class="cp-at"><div class="cp-an">Days per month</div><div class="cp-ad">Converts daily hours into monthly capacity</div></div><input type="range" data-a="dpm" min="28" max="31" step="0.01" value="30.44"><input type="number" class="cp-num" data-an="dpm" value="30.44"></div>
-          <div class="cp-readout" id="cpReadout"></div>
-        </div>
-      </details>
-      <div class="cp-note">Estimates only. Occupancy is modelled from the editable assumptions above (a simple price-elasticity curve), not live market data.</div>
+      <div class="cp-note">Revenue = courts × open hours × occupancy × hire rate. Occupancy is your own estimate above — slide it to see best and worst case. Estimates only.</div>
     </div>
    </div>
   </div>
@@ -309,26 +298,23 @@ setStats();
 render('all');
 </script>
 
-<script>
-(function(){
-  var D={indoor:3,outdoor:0,covered:1,hours:14,rate:33,refPrice:33,refOcc:58.5,sens:1.6,covFac:100,outFac:70,dpm:30.44};
+<script>(function(){
+  var D={indoor:3,outdoor:0,covered:1,hours:14,rate:33,occ:58.5,dpm:30.44};
   var S=Object.assign({},D);
   var LIM={indoor:[0,40],outdoor:[0,40],covered:[0,40],hours:[1,24],rate:[5,200]};
   var root=document.getElementById('tab-projection'); if(!root)return;
   function q(s){return root.querySelector(s);}
   function out(k){return root.querySelector('[data-out="'+k+'"]');}
-  function clamp(x){return Math.max(0,Math.min(100,x));}
-  function occFor(f){return clamp((S.refOcc-S.sens*(S.rate-S.refPrice))*f);}
   function money(n){if(n>=1e6)return '£'+(n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M';if(n>=1000)return '£'+Math.round(n/1000)+'K';return '£'+Math.round(n);}
   function ci(n){return Math.round(n).toLocaleString('en-GB');}
-  function compute(){var total=S.indoor+S.outdoor+S.covered;var hpc=S.hours*S.dpm,avail=total*hpc;var oi=occFor(1),oc=occFor(S.covFac/100),oo=occFor(S.outFac/100);var oh=S.indoor*hpc*oi/100+S.covered*hpc*oc/100+S.outdoor*hpc*oo/100;var monthly=oh*S.rate;return {total:total,avail:avail,oh:oh,monthly:monthly,yearly:monthly*12,per:total?monthly/total:0,blend:avail?oh/avail*100:0,oi:oi,oc:oc,oo:oo};}
-  function render(){['indoor','outdoor','covered','hours','rate'].forEach(function(k){var e=out(k);if(e)e.textContent=S[k];});q('#cpTotal').textContent=S.indoor+S.outdoor+S.covered;var r=compute();q('#cpMonthly').textContent=money(r.monthly);q('#cpMonthlyF').textContent=ci(r.oh)+' booked court-hrs/mo';q('#cpYearly').textContent=money(r.yearly);q('#cpYearlyF').textContent=r.total+(r.total===1?' court':' courts');q('#cpOcc').textContent=r.blend.toFixed(1)+'%';q('#cpOccF').textContent='at £'+S.rate+'/hr';q('#cpPer').textContent=money(r.per);q('#cpOH').textContent=ci(r.oh);q('#cpAH').textContent=ci(r.avail);q('#cpReadout').innerHTML='At <b>£'+S.rate+'/hr</b> the model predicts <b>'+r.oi.toFixed(1)+'%</b> indoor, <b>'+r.oc.toFixed(1)+'%</b> covered and <b>'+r.oo.toFixed(1)+'%</b> outdoor occupancy. Blended across '+r.total+' court'+(r.total===1?'':'s')+': <b>'+r.blend.toFixed(1)+'%</b>.';root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;if(!LIM[k])return;st.querySelector('[data-dir="-1"]').disabled=S[k]<=LIM[k][0];st.querySelector('[data-dir="1"]').disabled=S[k]>=LIM[k][1];});}
+  function compute(){var total=S.indoor+S.outdoor+S.covered;var hpc=S.hours*S.dpm,avail=total*hpc;var oh=avail*S.occ/100;var monthly=oh*S.rate;return {total:total,avail:avail,oh:oh,monthly:monthly,yearly:monthly*12,per:total?monthly/total:0};}
+  function render(){['indoor','outdoor','covered','hours','rate'].forEach(function(k){var e=out(k);if(e)e.textContent=S[k];});q('#cpTotal').textContent=S.indoor+S.outdoor+S.covered;q('#cpOccNum').textContent=S.occ;var r=compute();q('#cpMonthly').textContent=money(r.monthly);q('#cpMonthlyF').textContent=ci(r.oh)+' booked court-hrs/mo';q('#cpYearly').textContent=money(r.yearly);q('#cpYearlyF').textContent=r.total+(r.total===1?' court':' courts');q('#cpPer').textContent=money(r.per);q('#cpOH').textContent=ci(r.oh);q('#cpAH').textContent=ci(r.avail);var oa=q('#cpOccAt');if(oa)oa.textContent=S.occ;q('#cpOHy').textContent=ci(r.oh*12);root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;if(!LIM[k])return;st.querySelector('[data-dir="-1"]').disabled=S[k]<=LIM[k][0];st.querySelector('[data-dir="1"]').disabled=S[k]>=LIM[k][1];});}
   root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;st.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){var dir=+b.dataset.dir,lo=LIM[k][0],hi=LIM[k][1];S[k]=Math.max(lo,Math.min(hi,S[k]+dir));render();});});});
-  root.querySelectorAll('input[data-a]').forEach(function(sl){var key=sl.dataset.a,num=root.querySelector('input[data-an="'+key+'"]');sl.addEventListener('input',function(){var v=parseFloat(sl.value);if(isNaN(v))return;S[key]=v;num.value=v;render();});num.addEventListener('input',function(){var v=parseFloat(num.value);if(isNaN(v))return;S[key]=v;sl.value=v;render();});});
+  var occ=q('#cpOccIn'); if(occ)occ.addEventListener('input',function(){var v=parseFloat(occ.value);if(isNaN(v))return;S.occ=v;render();});
   var tabs=document.getElementById('cpTabs');
   if(tabs){tabs.querySelectorAll('.cp-tab').forEach(function(t){t.addEventListener('click',function(){tabs.querySelectorAll('.cp-tab').forEach(function(x){x.classList.remove('active');});t.classList.add('active');var name=t.dataset.tab;document.getElementById('tab-sites').hidden=(name!=='sites');document.getElementById('tab-projection').hidden=(name!=='projection');});});}
   render();
-})();
-</script>
-</body>
-</html>
+})();</script>
+
+
+</body></html>
