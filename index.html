@@ -205,7 +205,25 @@ Source: Rightmove (West Midlands, East Midlands, South East, London, East of Eng
       </div>
       <div class="cp-note">Revenue = each court × open hours in each time band × occupancy × that band's rate. Occupancy is your own estimate; slide it for best / worst case. Estimates only.</div>
     </div>
-   </div>
+   <div class="cp-card" id="cpCostsCard">
+      <div class="cp-seclabel">Costs &amp; EBITDA</div>
+      <div class="cp-secnote">Annual. Enter staff and rent &amp; rates; utilities, maintenance and software are calculated (percentages editable).</div>
+      <div class="cp-grid2">
+        <div><div class="cp-flabel">Staff (£ / yr)</div><input type="number" id="cpStaff" value="90000" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+        <div><div class="cp-flabel">Rent &amp; rates (£ / yr)</div><input type="number" id="cpRR" value="100000" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+      </div>
+      <div class="cp-grid3" style="margin-top:14px">
+        <div><div class="cp-flabel">Utilities — % of rent &amp; rates</div><input type="number" step="0.1" id="cpUtil" value="1" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+        <div><div class="cp-flabel">Maintenance — % of revenue</div><input type="number" step="0.1" id="cpMaint" value="1.2" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+        <div><div class="cp-flabel">Software — % of revenue</div><input type="number" step="0.1" id="cpSoft" value="3.5" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+      </div>
+      <div class="cp-grid3" style="margin-top:16px">
+        <div class="cp-result"><div class="cp-rl">Total annual costs</div><div class="cp-rv" id="cpTotalCosts">£0</div><div class="cp-rf">per year</div></div>
+        <div class="cp-result cp-primary"><div class="cp-rl">EBITDA</div><div class="cp-rv" id="cpEbitda">£0</div><div class="cp-rf" id="cpEbitdaF">0% margin</div></div>
+        <div class="cp-result"><div class="cp-rl">Revenue</div><div class="cp-rv" id="cpRevYr">£0</div><div class="cp-rf">per year</div></div>
+      </div>
+      <div class="cp-note" id="cpCostBreak"></div>
+    </div></div>
   </div><div id="tab-map" class="cp-panel" hidden="">
     <div class="cp-card" style="max-width:1120px">
       <div class="cp-head"><div class="cp-ic">🗺️</div><div><h2 class="cp-title">Opportunity Map</h2><p class="cp-sub">Click anywhere in England &amp; Wales to score the catchment</p></div></div>
@@ -342,43 +360,39 @@ render('all');
   var LIM={indoor:[0,40],outdoor:[0,40],covered:[0,40],singles:[0,40],hours:[1,24]};
   var root=document.getElementById('tab-projection'); if(!root)return;
   function q(s){return root.querySelector(s);}
+  function IN(id){return root.querySelector('#'+id);}
+  function num(id,d){var e=IN(id);var v=e?parseFloat(e.value):NaN;return isNaN(v)?d:v;}
   function out(k){return root.querySelector('[data-out="'+k+'"]');}
-  function money(n){if(n>=1e6)return '£'+(n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M';if(n>=1000)return '£'+Math.round(n/1000)+'K';return '£'+Math.round(n);}
+  function money(n){var neg=n<0;n=Math.abs(n);var s;if(n>=1e6)s='£'+(n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M';else if(n>=1000)s='£'+Math.round(n/1000)+'K';else s='£'+Math.round(n);return neg?'-'+s:s;}
   function ci(n){return Math.round(n).toLocaleString('en-GB');}
-  function hhmm(x){var h=Math.floor(x)%24,m=Math.round((x-Math.floor(x))*60);return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;}
-  function compute(){
-    var std=S.indoor+S.outdoor+S.covered, total=std+S.singles;
-    var dayEnd=S.open+S.hours;
-    var offWk=Math.max(0, Math.min(dayEnd,PEAK_START)-S.open);
-    var pkWk=Math.max(0, dayEnd-Math.max(S.open,PEAK_START));
-    var peakWeek=5*pkWk+2*S.hours, offWeek=5*offWk, f=S.dpm/7;
-    var peakHpc=peakWeek*f, offHpc=offWeek*f, occ=S.occ/100;
-    var peakRev=occ*(std*peakHpc*S.stdPeak + S.singles*peakHpc*S.sinPeak);
-    var offRev =occ*(std*offHpc*S.stdOff  + S.singles*offHpc*S.sinOff);
-    var monthly=peakRev+offRev, avail=total*S.hours*S.dpm, oh=occ*avail;
-    return {std:std,total:total,avail:avail,oh:oh,peakRev:peakRev,offRev:offRev,monthly:monthly,yearly:monthly*12,per:total?monthly/total:0,dayEnd:dayEnd};
-  }
+  function compute(){var std=S.indoor+S.outdoor+S.covered, total=std+S.singles; var dayEnd=S.open+S.hours; var offWk=Math.max(0,Math.min(dayEnd,PEAK_START)-S.open); var pkWk=Math.max(0,dayEnd-Math.max(S.open,PEAK_START)); var peakWeek=5*pkWk+2*S.hours, offWeek=5*offWk, f=S.dpm/7; var peakHpc=peakWeek*f, offHpc=offWeek*f, occ=S.occ/100; var peakRev=occ*(std*peakHpc*S.stdPeak+S.singles*peakHpc*S.sinPeak); var offRev=occ*(std*offHpc*S.stdOff+S.singles*offHpc*S.sinOff); var monthly=peakRev+offRev; var avail=total*S.hours*S.dpm, oh=occ*avail; return {std:std,total:total,avail:avail,oh:oh,peakRev:peakRev,offRev:offRev,monthly:monthly,yearly:monthly*12,per:total?monthly/total:0};}
   function render(){
     ['indoor','outdoor','covered','singles','hours'].forEach(function(k){var e=out(k);if(e)e.textContent=S[k];});
     q('#cpTotal').textContent=S.indoor+S.outdoor+S.covered+S.singles;
     q('#cpOccNum').textContent=S.occ;
     var r=compute();
-    var cc=q('#cpClose'); if(cc)cc.textContent=hhmm(r.dayEnd);
-    q('#cpMonthly').textContent=money(r.monthly);
-    q('#cpMonthlyF').textContent=ci(r.oh)+' booked court-hrs/mo';
-    q('#cpYearly').textContent=money(r.yearly);
-    q('#cpYearlyF').textContent=r.total+(r.total===1?' court':' courts');
-    q('#cpPer').textContent=money(r.per);
-    q('#cpPeakRev').textContent=money(r.peakRev);
-    q('#cpOffRev').textContent=money(r.offRev);
+    q('#cpMonthly').textContent=money(r.monthly); q('#cpMonthlyF').textContent=ci(r.oh)+' booked court-hrs/mo';
+    q('#cpYearly').textContent=money(r.yearly); q('#cpYearlyF').textContent=r.total+(r.total===1?' court':' courts');
+    q('#cpPer').textContent=money(r.per); q('#cpPeakRev').textContent=money(r.peakRev); q('#cpOffRev').textContent=money(r.offRev);
+    var annual=r.yearly;
+    var staff=num('cpStaff',0), rr=num('cpRR',0), utilP=num('cpUtil',1), maintP=num('cpMaint',1.2), softP=num('cpSoft',3.5);
+    var utilities=rr*utilP/100, maintenance=annual*maintP/100, software=annual*softP/100;
+    var totalCosts=staff+rr+utilities+maintenance+software;
+    var ebitda=annual-totalCosts, margin=annual?ebitda/annual*100:0;
+    if(IN('cpRevYr'))IN('cpRevYr').textContent=money(annual);
+    if(IN('cpTotalCosts'))IN('cpTotalCosts').textContent=money(totalCosts);
+    if(IN('cpEbitda')){IN('cpEbitda').textContent=money(ebitda); IN('cpEbitda').style.color=ebitda<0?'#ffd7d3':'#fff';}
+    if(IN('cpEbitdaF'))IN('cpEbitdaF').textContent=margin.toFixed(1)+'% margin';
+    if(IN('cpCostBreak'))IN('cpCostBreak').innerHTML='Staff '+money(staff)+' · Rent & rates '+money(rr)+' · Utilities '+money(utilities)+' ('+utilP+'% of R&R) · Maintenance '+money(maintenance)+' ('+maintP+'% of rev) · Software '+money(software)+' ('+softP+'% of rev)';
     root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;if(!LIM[k])return;st.querySelector('[data-dir="-1"]').disabled=S[k]<=LIM[k][0];st.querySelector('[data-dir="1"]').disabled=S[k]>=LIM[k][1];});
   }
   root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;st.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){var dir=+b.dataset.dir,lo=LIM[k][0],hi=LIM[k][1];S[k]=Math.max(lo,Math.min(hi,S[k]+dir));render();});});});
   var occ=q('#cpOccIn'); if(occ)occ.addEventListener('input',function(){var v=parseFloat(occ.value);if(isNaN(v))return;S.occ=v;render();});
   var op=q('#cpOpen'); if(op)op.addEventListener('input',function(){var p=op.value.split(':');var h=parseInt(p[0],10)+(parseInt(p[1],10)||0)/60;if(!isNaN(h))S.open=h;render();});
   root.querySelectorAll('input[data-rate]').forEach(function(inp){inp.addEventListener('input',function(){var v=parseFloat(inp.value);if(isNaN(v))return;S[inp.dataset.rate]=v;render();});});
+  ['cpStaff','cpRR','cpUtil','cpMaint','cpSoft'].forEach(function(id){var e=IN(id); if(e) e.addEventListener('input',render);});
   var tabs=document.getElementById('cpTabs');
-  if(tabs){tabs.querySelectorAll('.cp-tab').forEach(function(t){t.addEventListener('click',function(){tabs.querySelectorAll('.cp-tab').forEach(function(x){x.classList.remove('active');});t.classList.add('active');var name=t.dataset.tab;document.getElementById('tab-sites').hidden=(name!=='sites');document.getElementById('tab-projection').hidden=(name!=='projection');});});}
+  if(tabs){tabs.querySelectorAll('.cp-tab').forEach(function(t){t.addEventListener('click',function(){tabs.querySelectorAll('.cp-tab').forEach(function(x){x.classList.remove('active');});t.classList.add('active');var name=t.dataset.tab;document.querySelectorAll('.cp-panel').forEach(function(p){p.hidden=(p.id!=='tab-'+name);});});});}
   render();
 })();</script>
 
