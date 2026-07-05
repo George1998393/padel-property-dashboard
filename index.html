@@ -102,6 +102,10 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 .cp-readout{font-size:12.5px;color:var(--muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
 .cp-readout b{color:var(--ink)}
 .cp-note{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.6}
+
+.cp-pchip{padding:7px 13px;border:1px solid var(--line);border-radius:20px;background:#fff;font-size:12.5px;font-weight:600;cursor:pointer;margin:0 6px 6px 0;color:var(--muted)}
+.cp-pchip.active{background:var(--green);color:#fff;border-color:var(--green)}
+.cp-pchip:hover{border-color:var(--green)}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"></head>
 <body>
@@ -115,7 +119,7 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 <div class="cp-tabs" id="cpTabs">
 <button class="cp-tab active" data-tab="sites">Property Sites</button>
 <button class="cp-tab" data-tab="projection">Club Projection</button>
-<button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="data">Data Dashboard</button></div>
+<button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="data">Data Dashboard</button><button class="cp-tab" data-tab="planning">Planning</button></div>
 <div id="tab-sites" class="cp-panel">
 
 <div class="spec">
@@ -243,7 +247,18 @@ Source: Rightmove (West Midlands, East Midlands, South East, London, East of Eng
 </div>
 <div class="cp-note" id="cpMapMeta">Loading clubs…</div>
 </div>
-</div><div id="tab-data" class="cp-panel" hidden=""><div id="cpDataHost"><div style="color:var(--muted);font-size:13px;padding:20px">Loading…</div></div></div>
+</div><div id="tab-planning" class="cp-panel" hidden="">
+    <div class="cp-card" style="max-width:1120px">
+      <div class="cp-head"><div class="cp-ic">🏗️</div><div><h2 class="cp-title">Planning applications</h2><p class="cp-sub">UK padel-court planning applications — who's building, where, and the status</p></div></div>
+      <div id="cpPlanChips" style="margin:6px 0 12px"></div>
+      <input id="cpPlanSearch" type="text" autocomplete="off" placeholder="🔍  Search description, town or council…" style="width:100%;height:44px;border:1px solid var(--line);border-radius:11px;padding:0 14px;font-size:14px;margin-bottom:12px;background:#fff">
+      <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start">
+        <div style="flex:1;min-width:320px"><div id="cpPlanMap" style="height:460px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#eef2f0"></div></div>
+        <div style="flex:1;min-width:320px"><div class="cp-flabel" id="cpPlanCount" style="margin-bottom:6px">Loading…</div><div id="cpPlanList" style="max-height:460px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff"></div></div>
+      </div>
+      <div class="cp-note">Source: PlanIt (planit.org.uk), aggregating UK council planning portals. Green = permitted/approved, amber = undecided, red = rejected/withdrawn. Refreshed weekly · not exhaustive — confirm on the council page.</div>
+    </div>
+  </div><div id="tab-data" class="cp-panel" hidden=""><div id="cpDataHost"><div style="color:var(--muted);font-size:13px;padding:20px">Loading…</div></div></div>
 </div>
 
 <script>
@@ -537,4 +552,17 @@ setTimeout(run,80);
   document.addEventListener('input',function(e){ if(e.target&&e.target.id==='cpRad'){ $('cpRadV').textContent=e.target.value+' min'; if(last){ drawCircle(last); renderPanel(last.lat,last.lng);} clearTimeout(rt); rt=setTimeout(buildRanking,350); } });
   function showTab(name){ document.querySelectorAll('.cp-tab').forEach(function(b){b.classList.toggle('active',b.dataset.tab===name);}); document.querySelectorAll('.cp-panel').forEach(function(p){p.hidden=(p.id!=='tab-'+name);}); if(name==='map'){ initMap(); loadData(); ensureRankUI(); setupSearch(); setTimeout(function(){ if(map) map.invalidateSize(); },180); } }
   document.addEventListener('click',function(e){ var b=e.target.closest?e.target.closest('.cp-tab'):null; if(b&&b.dataset.tab){ showTab(b.dataset.tab); } });
-})();</script><script>(function(){var loaded=false;function load(){if(loaded)return;loaded=true;var host=document.getElementById('cpDataHost');if(!host)return;fetch('dashboard.html?cb='+Date.now()).then(function(r){return r.text();}).then(function(h){host.innerHTML=h;}).catch(function(e){host.innerHTML='<div style="color:#b3261e;padding:20px">Could not load dashboard ('+e+')</div>';});}/*cpDataHost load*/document.addEventListener('click',function(e){var b=e.target.closest?e.target.closest('.cp-tab'):null;if(b&&b.dataset.tab==='data'){load();}});})();</script></body></html>
+})();</script><script>(function(){var loaded=false;function load(){if(loaded)return;loaded=true;var host=document.getElementById('cpDataHost');if(!host)return;fetch('dashboard.html?cb='+Date.now()).then(function(r){return r.text();}).then(function(h){host.innerHTML=h;}).catch(function(e){host.innerHTML='<div style="color:#b3261e;padding:20px">Could not load dashboard ('+e+')</div>';});}/*cpDataHost load*/document.addEventListener('click',function(e){var b=e.target.closest?e.target.closest('.cp-tab'):null;if(b&&b.dataset.tab==='data'){load();}});})();</script><script>/*cpPlanMap init*/(function(){
+  var loaded=false, pmap, apps=[], markers, fstatus=null, fq='';
+  function $(id){return document.getElementById(id);}
+  function scolor(s){ if(/permit|condition/i.test(s))return '#0a7d4b'; if(/undecid|referr|unresolv/i.test(s))return '#b8860b'; if(/reject|withdraw/i.test(s))return '#b3261e'; return '#8a938d'; }
+  function badge(s){ return '<span style="display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;color:#fff;background:'+scolor(s)+'">'+(s||'Unknown')+'</span>'; }
+  function initMap(){ if(pmap||typeof L==='undefined') return; pmap=L.map('cpPlanMap',{scrollWheelZoom:true}).setView([52.7,-1.7],6); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(pmap); setTimeout(function(){pmap.invalidateSize();},150); }
+  function plot(list){ if(!pmap) return; if(markers)markers.remove(); markers=L.layerGroup(); list.forEach(function(a){ if(a[5]&&a[6]) L.circleMarker([a[5],a[6]],{radius:4,color:scolor(a[3]),weight:1,fillColor:scolor(a[3]),fillOpacity:.7}).bindTooltip(a[2]+' · '+a[3]+'<br>'+a[0].slice(0,80)).addTo(markers); }); markers.addTo(pmap); }
+  function filtered(){ return apps.filter(function(a){ if(fstatus && a[3]!==fstatus) return false; if(fq){ var q=fq.toLowerCase(); if((a[0]+' '+a[1]+' '+a[2]).toLowerCase().indexOf(q)<0) return false; } return true; }); }
+  function render(){ var list=filtered(); plot(list); var host=$('cpPlanList'); host.innerHTML=list.slice(0,300).map(function(a){ return '<div style="padding:11px 12px;border-top:1px solid var(--line)"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="font-weight:600;font-size:13px">'+a[2]+'</div><div style="white-space:nowrap">'+badge(a[3])+'</div></div><div style="font-size:12.5px;margin:3px 0;color:var(--ink)">'+a[0]+'</div><div style="font-size:12px;color:var(--muted)">'+(a[1]||'')+' · '+(a[4]||'')+' · <a href="'+a[7]+'" target="_blank" rel="noopener" style="color:var(--green);font-weight:600">view</a></div></div>'; }).join('')+(list.length>300?'<div style="padding:12px;color:var(--muted);font-size:12px">Showing first 300 of '+list.length+'. Filter to narrow.</div>':''); if($('cpPlanCount'))$('cpPlanCount').textContent=list.length+' applications'; }
+  function chips(){ var counts={}; apps.forEach(function(a){var s=a[3]||'Unknown';counts[s]=(counts[s]||0)+1;}); var order=['Permitted','Conditions','Undecided','Rejected','Withdrawn','Unknown']; var html='<button class="cp-pchip active" data-s="">All ('+apps.length+')</button>'; order.forEach(function(s){ if(counts[s]) html+='<button class="cp-pchip" data-s="'+s+'">'+s+' ('+counts[s]+')</button>'; }); $('cpPlanChips').innerHTML=html; }
+  function load(){ if(loaded)return; loaded=true; initMap(); fetch('planning.json?cb='+Date.now()).then(function(r){return r.json();}).then(function(d){ apps=d; chips(); render(); }).catch(function(e){ if($('cpPlanList'))$('cpPlanList').innerHTML='<div style="padding:16px;color:#b3261e">Could not load planning data ('+e+')</div>'; }); }
+  document.addEventListener('input',function(e){ if(e.target&&e.target.id==='cpPlanSearch'){ fq=e.target.value; render(); } });
+  document.addEventListener('click',function(e){ var c=e.target.closest?e.target.closest('.cp-pchip'):null; if(c){ fstatus=c.dataset.s||null; document.querySelectorAll('.cp-pchip').forEach(function(x){x.classList.toggle('active',x===c);}); render(); return; } var tb=e.target.closest?e.target.closest('.cp-tab'):null; if(tb&&tb.dataset.tab==='planning'){ load(); setTimeout(function(){if(pmap)pmap.invalidateSize();},200); } });
+})();</script></body></html>
