@@ -119,7 +119,7 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 <div class="cp-tabs" id="cpTabs">
 <button class="cp-tab active" data-tab="sites">Property Sites</button>
 <button class="cp-tab" data-tab="projection">Club Projection</button>
-<button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="data">Data Dashboard</button><button class="cp-tab" data-tab="planning">Planning</button></div>
+<button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="data">Data Dashboard</button><button class="cp-tab" data-tab="planning">Planning</button><button class="cp-tab" data-tab="planner">Court Planner</button></div>
 <div id="tab-sites" class="cp-panel">
 
 <div class="spec">
@@ -573,4 +573,218 @@ setTimeout(run,80);
     var c=e.target.closest?e.target.closest('.cp-pchip'):null; if(c){ fstatus=c.dataset.s||null; document.querySelectorAll('.cp-pchip').forEach(function(x){x.classList.toggle('active',x===c);}); render(); return; }
     var tb=e.target.closest?e.target.closest('.cp-tab'):null; if(tb&&tb.dataset.tab==='planning'){ load(); setTimeout(function(){if(pmap)pmap.invalidateSize();},200); }
   });
-})();</script></body></html>
+})();</script>
+<style>
+#tab-planner .pl-toolbar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end;margin-bottom:14px}
+#tab-planner .pl-field{display:flex;flex-direction:column;gap:3px}
+#tab-planner .pl-field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+#tab-planner .pl-field input{width:92px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+#tab-planner .pl-btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink)}
+#tab-planner .pl-btn:hover{background:var(--ok-bg);border-color:var(--green)}
+#tab-planner .pl-btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
+#tab-planner .pl-btn.primary:hover{background:var(--green-dark)}
+#tab-planner .pl-btn.dbl{border-left:5px solid #0a7d4b}
+#tab-planner .pl-btn.sgl{border-left:5px solid #2f7fd6}
+#tab-planner .pl-btn.obs{border-left:5px solid #b3261e}
+#tab-planner .pl-btn.pil{border-left:5px solid #6b7280}
+#tab-planner .pl-wrap{display:flex;gap:18px;flex-wrap:wrap}
+#tab-planner .pl-stage{flex:1 1 640px;min-width:320px}
+#tab-planner .pl-canvas-box{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#f8faf9}
+#tab-planner canvas{display:block;width:100%;touch-action:none;cursor:default}
+#tab-planner .pl-side{flex:0 0 250px;display:flex;flex-direction:column;gap:12px}
+#tab-planner .pl-stat{background:var(--ok-bg);border-radius:10px;padding:12px 14px}
+#tab-planner .pl-stat b{display:block;font-size:24px;font-weight:800;color:var(--green-dark)}
+#tab-planner .pl-stat span{font-size:12px;color:var(--muted)}
+#tab-planner .pl-selbox{border:1px solid var(--line);border-radius:10px;padding:12px}
+#tab-planner .pl-selbox h4{margin:0 0 8px;font-size:13px}
+#tab-planner .pl-selbox .row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+#tab-planner .pl-selbox input[type=text]{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:7px;font-size:13px}
+#tab-planner .pl-legend{font-size:12px;color:var(--muted);line-height:1.7}
+#tab-planner .pl-legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:middle}
+#tab-planner .pl-warn{color:#b3261e;font-weight:600}
+</style>
+<div id="tab-planner" class="cp-panel" hidden>
+  <div class="cp-card">
+    <div class="cp-head"><div class="cp-ic">📐</div><div><h2 class="cp-title">Court Layout Planner</h2></div></div>
+    <div class="cp-note">Set your space, drop in courts, drag to arrange. Standard padel court = 20×10 m (doubles) or 20×6 m (singles). Grid = 1 m.</div>
+    <div class="pl-toolbar">
+      <div class="pl-field"><label>Length (m)</label><input id="plLen" type="number" min="5" max="200" step="0.5" value="40"></div>
+      <div class="pl-field"><label>Width (m)</label><input id="plWid" type="number" min="5" max="200" step="0.5" value="34"></div>
+      <button class="pl-btn dbl" data-add="double">＋ Double 20×10</button>
+      <button class="pl-btn sgl" data-add="single">＋ Single 20×6</button>
+      <button class="pl-btn obs" data-add="obstacle">＋ Obstacle</button>
+      <button class="pl-btn pil" data-add="pillar">＋ Pillar</button>
+      <div class="pl-field"><label>Gap between (m)</label><input id="plGap" type="number" min="0" max="10" step="0.5" value="1"></div>
+      <button class="pl-btn primary" id="plAuto">Auto-fill max courts</button>
+      <button class="pl-btn" id="plClear">Clear</button>
+    </div>
+    <div class="pl-wrap">
+      <div class="pl-stage">
+        <div class="pl-canvas-box"><canvas id="plCanvas"></canvas></div>
+        <div class="pl-legend" style="margin-top:8px">
+          <i style="background:#0a7d4b"></i>Double court &nbsp; <i style="background:#2f7fd6"></i>Single court &nbsp;
+          <i style="background:#b3261e"></i>Obstacle &nbsp; <i style="background:#6b7280"></i>Pillar &nbsp;
+          <span class="pl-warn">Red outline = outside area or overlapping</span>
+        </div>
+      </div>
+      <div class="pl-side">
+        <div class="pl-stat"><b id="plCount">0</b><span>courts placed (<span id="plDbl">0</span> double · <span id="plSgl">0</span> single)</span></div>
+        <div class="pl-stat"><b id="plUtil">0%</b><span>court coverage of area (<span id="plAreaM">0</span> m² of <span id="plAreaT">0</span> m²)</span></div>
+        <div class="pl-selbox">
+          <h4 id="plSelTitle">Nothing selected</h4>
+          <div class="row" id="plSelControls" style="display:none">
+            <button class="pl-btn" id="plRot">Rotate 90°</button>
+            <button class="pl-btn" id="plDup">Duplicate</button>
+            <button class="pl-btn" id="plDel">Delete</button>
+          </div>
+          <input type="text" id="plTag" placeholder="Add a label (e.g. Court 1)" style="display:none">
+          <div class="pl-legend">Click a court to select. Drag to move (snaps to ½ m). Rotating swaps 20×10 ↔ 10×20.</div>
+        </div>
+        <div class="row" style="display:flex;gap:6px">
+          <button class="pl-btn" id="plPng">Export PNG</button>
+          <button class="pl-btn" id="plSave">Save</button>
+          <button class="pl-btn" id="plLoad">Load</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var root=document.getElementById('tab-planner'); if(!root) return;
+  function $(id){return root.querySelector('#'+id);}
+  var cv=$('plCanvas'), ctx=cv.getContext('2d');
+  var DPR=window.devicePixelRatio||1;
+  var TYPES={double:{w:20,h:10,color:'#0a7d4b',fill:'rgba(10,125,75,.14)',name:'Double'},
+             single:{w:20,h:6,color:'#2f7fd6',fill:'rgba(47,127,214,.14)',name:'Single'},
+             obstacle:{w:4,h:4,color:'#b3261e',fill:'rgba(179,38,30,.16)',name:'Obstacle'},
+             pillar:{w:0.6,h:0.6,color:'#6b7280',fill:'rgba(107,114,128,.4)',name:'Pillar'}};
+  var objs=[], sel=null, uid=1;
+  var L=40, W=34, scale=1, padPx=16;
+  function area(){L=parseFloat($('plLen').value)||1; W=parseFloat($('plWid').value)||1;}
+  function fit(){
+    var boxW=cv.parentElement.clientWidth||700;
+    boxW=Math.max(320,boxW);
+    var availW=boxW-padPx*2;
+    scale=availW/L;
+    var pxH=W*scale+padPx*2;
+    var maxH=620;
+    if(pxH>maxH){scale=(maxH-padPx*2)/W; }
+    var cssW=L*scale+padPx*2, cssH=W*scale+padPx*2;
+    cv.style.width=cssW+'px'; cv.style.height=cssH+'px';
+    cv.width=cssW*DPR; cv.height=cssH*DPR;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  function mx(m){return padPx+m*scale;} // metre x -> px
+  function my(m){return padPx+m*scale;}
+  function snap(v){return Math.round(v*2)/2;}
+  function outside(o){return o.x<-0.001||o.y<-0.001||o.x+o.w>L+0.001||o.y+o.h>W+0.001;}
+  function overlaps(o){ if(o.type==='pillar'||o.type==='obstacle')return false;
+    return objs.some(function(b){ if(b===o||b.type==='pillar'||b.type==='obstacle')return false;
+      return o.x<b.x+b.w-0.01 && o.x+o.w>b.x+0.01 && o.y<b.y+b.h-0.01 && o.y+o.h>b.y+0.01;});}
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    // area background
+    ctx.fillStyle='#fff'; ctx.fillRect(mx(0),my(0),L*scale,W*scale);
+    // grid 1m
+    ctx.lineWidth=1; ctx.strokeStyle='#eef3f0';
+    for(var i=0;i<=Math.ceil(L);i++){var x=mx(Math.min(i,L));ctx.beginPath();ctx.moveTo(x,my(0));ctx.lineTo(x,my(W));ctx.stroke();}
+    for(var j=0;j<=Math.ceil(W);j++){var y=my(Math.min(j,W));ctx.beginPath();ctx.moveTo(mx(0),y);ctx.lineTo(mx(L),y);ctx.stroke();}
+    // 5m grid
+    ctx.strokeStyle='#dde7e1';
+    for(var i2=0;i2<=L;i2+=5){var x2=mx(i2);ctx.beginPath();ctx.moveTo(x2,my(0));ctx.lineTo(x2,my(W));ctx.stroke();}
+    for(var j2=0;j2<=W;j2+=5){var y2=my(j2);ctx.beginPath();ctx.moveTo(mx(0),y2);ctx.lineTo(mx(L),y2);ctx.stroke();}
+    // area border
+    ctx.lineWidth=2; ctx.strokeStyle='#0f1a14'; ctx.strokeRect(mx(0),my(0),L*scale,W*scale);
+    // objects
+    objs.forEach(function(o){
+      var t=TYPES[o.type]; var bad=outside(o)||overlaps(o);
+      ctx.fillStyle=t.fill; ctx.fillRect(mx(o.x),my(o.y),o.w*scale,o.h*scale);
+      ctx.lineWidth=(o===sel)?3:2; ctx.strokeStyle=bad?'#b3261e':(o===sel?'#0f1a14':t.color);
+      ctx.strokeRect(mx(o.x),my(o.y),o.w*scale,o.h*scale);
+      // court centre line + service box for courts
+      if(o.type==='double'||o.type==='single'){
+        ctx.strokeStyle=t.color; ctx.lineWidth=1;
+        var cx=mx(o.x+o.w/2), cy=my(o.y+o.h/2);
+        // net line across the short axis (through middle of 20m length)
+        if(o.w>=o.h){ctx.beginPath();ctx.moveTo(cx,my(o.y));ctx.lineTo(cx,my(o.y+o.h));ctx.stroke();
+          var s3=o.w*scale/ (o.w/3); }
+        else {ctx.beginPath();ctx.moveTo(mx(o.x),cy);ctx.lineTo(mx(o.x+o.w),cy);ctx.stroke();}
+      }
+      // label
+      var lbl=o.label||t.name;
+      ctx.fillStyle=bad?'#b3261e':t.color; ctx.font='600 '+Math.max(9,Math.min(13,scale*1.2))+'px -apple-system,Arial';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      if(scale*o.h>14) ctx.fillText(lbl,mx(o.x+o.w/2),my(o.y+o.h/2));
+    });
+    stats();
+  }
+  function stats(){
+    var d=objs.filter(function(o){return o.type==='double';}).length;
+    var s=objs.filter(function(o){return o.type==='single';}).length;
+    $('plCount').textContent=d+s; $('plDbl').textContent=d; $('plSgl').textContent=s;
+    var used=objs.filter(function(o){return o.type==='double'||o.type==='single';}).reduce(function(a,o){return a+o.w*o.h;},0);
+    var tot=L*W; $('plAreaM').textContent=Math.round(used); $('plAreaT').textContent=Math.round(tot);
+    $('plUtil').textContent=(tot?Math.round(used/tot*100):0)+'%';
+  }
+  function add(type,x,y){
+    var t=TYPES[type]; var o={id:uid++,type:type,w:t.w,h:t.h,
+      x:(x==null?snap((L-t.w)/2):x), y:(y==null?snap((W-t.h)/2):y), label:''};
+    o.x=Math.max(0,Math.min(L-o.w,o.x)); o.y=Math.max(0,Math.min(W-o.h,o.y));
+    objs.push(o); select(o); draw();
+  }
+  function select(o){ sel=o;
+    var st=$('plSelTitle'), ctl=$('plSelControls'), tag=$('plTag');
+    if(o){st.textContent=(TYPES[o.type].name)+' — '+o.w+'×'+o.h+' m'; ctl.style.display='flex'; tag.style.display='block'; tag.value=o.label||'';}
+    else {st.textContent='Nothing selected'; ctl.style.display='none'; tag.style.display='none';}
+  }
+  // pointer interaction
+  var drag=null;
+  function ptM(e){var r=cv.getBoundingClientRect();var px=(e.clientX-r.left),py=(e.clientY-r.top);return {x:(px-padPx)/scale,y:(py-padPx)/scale};}
+  function hit(p){for(var i=objs.length-1;i>=0;i--){var o=objs[i];if(p.x>=o.x&&p.x<=o.x+o.w&&p.y>=o.y&&p.y<=o.y+o.h)return o;}return null;}
+  cv.addEventListener('pointerdown',function(e){var p=ptM(e);var o=hit(p);select(o);
+    if(o){drag={o:o,dx:p.x-o.x,dy:p.y-o.y};cv.setPointerCapture(e.pointerId);cv.style.cursor='grabbing';}
+    draw();});
+  cv.addEventListener('pointermove',function(e){var p=ptM(e);
+    if(drag){drag.o.x=snap(p.x-drag.dx);drag.o.y=snap(p.y-drag.dy);draw();}
+    else {cv.style.cursor=hit(p)?'grab':'default';}});
+  cv.addEventListener('pointerup',function(e){drag=null;cv.style.cursor='default';});
+  // controls
+  root.querySelectorAll('[data-add]').forEach(function(b){b.addEventListener('click',function(){add(b.dataset.add);});});
+  $('plRot').addEventListener('click',function(){if(!sel)return;var cx=sel.x+sel.w/2,cy=sel.y+sel.h/2;var nw=sel.h,nh=sel.w;sel.w=nw;sel.h=nh;sel.x=snap(cx-nw/2);sel.y=snap(cy-nh/2);sel.x=Math.max(0,Math.min(L-sel.w,sel.x));sel.y=Math.max(0,Math.min(W-sel.h,sel.y));select(sel);draw();});
+  $('plDup').addEventListener('click',function(){if(!sel)return;var o=Object.assign({},sel);o.id=uid++;o.x=snap(Math.min(L-o.w,o.x+2));o.y=snap(Math.min(W-o.h,o.y+2));objs.push(o);select(o);draw();});
+  $('plDel').addEventListener('click',function(){if(!sel)return;objs=objs.filter(function(o){return o!==sel;});select(null);draw();});
+  $('plTag').addEventListener('input',function(){if(sel){sel.label=this.value;draw();}});
+  $('plClear').addEventListener('click',function(){objs=[];select(null);draw();});
+  $('plLen').addEventListener('input',function(){area();fit();draw();});
+  $('plWid').addEventListener('input',function(){area();fit();draw();});
+  $('plAuto').addEventListener('click',function(){autofill();});
+  function autofill(){
+    area(); var gap=parseFloat($('plGap').value)||0; var m=1; // 1m perimeter margin
+    // keep existing obstacles/pillars, clear courts
+    objs=objs.filter(function(o){return o.type==='obstacle'||o.type==='pillar';});
+    function place(cw,ch){
+      var out=[]; var usableW=L-2*m, usableH=W-2*m;
+      var cols=Math.floor((usableW+gap)/(cw+gap));
+      var rows=Math.floor((usableH+gap)/(ch+gap));
+      if(cols<1||rows<1)return out;
+      var totW=cols*cw+(cols-1)*gap, totH=rows*ch+(rows-1)*gap;
+      var ox=snap((L-totW)/2), oy=snap((W-totH)/2);
+      for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){out.push({id:uid++,type:'double',w:cw,h:ch,x:snap(ox+c*(cw+gap)),y:snap(oy+r*(ch+gap)),label:''});}
+      return out;
+    }
+    var a=place(20,10), b=place(10,20);
+    var best=a.length>=b.length?a:b;
+    best.forEach(function(o){objs.push(o);});
+    best.forEach(function(o,i){o.label='Court '+(i+1);});
+    select(null); draw();
+  }
+  $('plPng').addEventListener('click',function(){var url=cv.toDataURL('image/png');var a=document.createElement('a');a.href=url;a.download='padel-layout.png';a.click();});
+  $('plSave').addEventListener('click',function(){try{localStorage.setItem('pp_planner',JSON.stringify({L:L,W:W,objs:objs}));$('plSave').textContent='Saved ✓';setTimeout(function(){$('plSave').textContent='Save';},1200);}catch(e){}});
+  $('plLoad').addEventListener('click',function(){try{var d=JSON.parse(localStorage.getItem('pp_planner'));if(!d)return;$('plLen').value=d.L;$('plWid').value=d.W;objs=d.objs||[];objs.forEach(function(o){o.id=uid++;});area();fit();select(null);draw();}catch(e){}});
+  window.addEventListener('resize',function(){fit();draw();});
+  // init
+  area(); fit(); autofill();
+})();
+</script>
+</body></html>
