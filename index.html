@@ -109,14 +109,14 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 <header>
 <div>
 <h1>Padel <span>People</span> — Property Dashboard</h1>
-<div class="sub">Potential indoor padel venue sites · UK (excl. Scotland) · Last updated 30 June 2026</div>
+<div class="sub">Potential indoor padel venue sites · UK (excl. Scotland) · Last updated 5 July 2026</div>
 </div>
 </header>
-  <div class="cp-tabs" id="cpTabs">
-    <button class="cp-tab active" data-tab="sites">Property Sites</button>
-    <button class="cp-tab" data-tab="projection">Club Projection</button>
-  <button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="data">Data Dashboard</button></div>
-  <div id="tab-sites" class="cp-panel">
+<div class="cp-tabs" id="cpTabs">
+<button class="cp-tab active" data-tab="sites">Property Sites</button>
+<button class="cp-tab" data-tab="projection">Club Projection</button>
+<button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="data">Data Dashboard</button></div>
+<div id="tab-sites" class="cp-panel">
 
 <div class="spec">
 <span><b>Spec:</b></span>
@@ -152,98 +152,98 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 <footer>
 Source: Rightmove (West Midlands, East Midlands, South East, London, East of England), live at time of search 29 June 2026. LoopNet &amp; EG Propertylink returned no readable listings. Rents shown are stated asking figures (no POA included). Always confirm eaves height, parking and planning use directly with the agent before progressing.
 </footer>
-  </div><!--/tab-sites-->
-  <div id="tab-projection" class="cp-panel" hidden="">
-   <div class="cp-wrap">
-    <div class="cp-card">
-      <div class="cp-head"><div class="cp-ic">📋</div>
-        <div><h2 class="cp-title">Club Projection</h2><p class="cp-sub">Estimate monthly &amp; yearly revenue for a club layout</p></div></div>
-      <div class="cp-seclabel">Inputs</div><div class="cp-secnote">Court mix, opening hours and peak / off-peak rates</div>
-      <div class="cp-grid3">
-        <div><div class="cp-flabel">Indoor courts</div><div class="cp-stepper" data-step="indoor"><button data-dir="-1">−</button><div class="cp-val"><span data-out="indoor">3</span></div><button data-dir="1">+</button></div></div>
-        <div><div class="cp-flabel">Outdoor courts</div><div class="cp-stepper" data-step="outdoor"><button data-dir="-1">−</button><div class="cp-val"><span data-out="outdoor">0</span></div><button data-dir="1">+</button></div></div>
-        <div><div class="cp-flabel">Covered courts</div><div class="cp-stepper" data-step="covered"><button data-dir="-1">−</button><div class="cp-val"><span data-out="covered">1</span></div><button data-dir="1">+</button></div></div>
-      </div>
-      <div class="cp-grid3" style="margin-top:14px">
-        <div><div class="cp-flabel">Singles courts</div><div class="cp-stepper" data-step="singles"><button data-dir="-1">−</button><div class="cp-val"><span data-out="singles">0</span></div><button data-dir="1">+</button></div></div>
-        <div><div class="cp-flabel">Operating hours / day</div><div class="cp-stepper" data-step="hours"><button data-dir="-1">−</button><div class="cp-val"><span data-out="hours">14</span><small>h</small></div><button data-dir="1">+</button></div></div>
-        <div><div class="cp-flabel">Total</div><div class="cp-pill"><b id="cpTotal">4</b> total courts</div></div>
-      </div>
-      <div class="cp-grid2" style="margin-top:14px">
-        <div><div class="cp-flabel">Opens at</div><input type="time" id="cpOpen" value="07:00" style="width:100%;height:50px;border:1px solid var(--line);border-radius:11px;padding:0 14px;font-size:16px;font-weight:700;color:var(--ink);background:#fff"></div>
-        <div style="display:flex;align-items:flex-end"><div class="cp-secnote" style="margin:0 0 4px">Used to split open hours into peak vs off-peak. Closes at <span id="cpClose">21:00</span>.</div></div>
-      </div>
-      <div style="margin-top:18px">
-        <div class="cp-flabel">Hire rates (£ per hour)</div>
-        <div class="cp-secnote" style="margin-bottom:10px">Peak = weekdays from 5pm + all weekend · Off-peak = all other open hours</div>
-        <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px 14px;align-items:center;max-width:560px">
-          <div></div>
-          <div class="cp-flabel" style="margin:0;text-align:center">Peak</div>
-          <div class="cp-flabel" style="margin:0;text-align:center">Off-peak</div>
-          <div style="font-size:13.5px;font-weight:600">Standard courts</div>
-          <input type="number" min="0" data-rate="stdPeak" value="44" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
-          <input type="number" min="0" data-rate="stdOff" value="33" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
-          <div style="font-size:13.5px;font-weight:600">Singles courts</div>
-          <input type="number" min="0" data-rate="sinPeak" value="30" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
-          <input type="number" min="0" data-rate="sinOff" value="22" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
-        </div>
-      </div>
-      <div style="margin-top:18px"><div class="cp-flabel">Expected occupancy — how full you think the courts will be</div>
-        <div style="display:flex;align-items:center;gap:14px;margin-top:8px"><input type="range" id="cpOccIn" min="0" max="100" step="0.5" value="58.5" style="flex:1;accent-color:var(--green)"><div style="min-width:92px;height:50px;border:1px solid var(--line);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;background:#fff"><span id="cpOccNum">58.5</span><small style="font-weight:600;color:var(--muted);margin-left:1px">%</small></div></div>
-      </div>
-    </div>
-    <div class="cp-card">
-      <div class="cp-seclabel">Results</div><div class="cp-secnote">Live projection — updates as you tweak inputs above</div>
-      <div class="cp-grid3">
-        <div class="cp-result cp-primary"><div class="cp-rl">Est. Monthly Revenue</div><div class="cp-rv" id="cpMonthly">£38K</div><div class="cp-rf" id="cpMonthlyF">997 booked court-hrs/mo</div></div>
-        <div class="cp-result"><div class="cp-rl">Est. Yearly Revenue</div><div class="cp-rv" id="cpYearly">£459K</div><div class="cp-rf" id="cpYearlyF">4 courts</div></div>
-        <div class="cp-result"><div class="cp-rl">Revenue per Court</div><div class="cp-rv" id="cpPer">£10K</div><div class="cp-rf">per month</div></div>
-      </div>
-      <div class="cp-grid2" style="margin-top:14px">
-        <div class="cp-result"><div class="cp-rl">Peak Revenue / mo</div><div class="cp-rv" id="cpPeakRev">£21K</div><div class="cp-rf">weekdays 5pm+ &amp; weekends</div></div>
-        <div class="cp-result"><div class="cp-rl">Off-Peak Revenue / mo</div><div class="cp-rv" id="cpOffRev">£17K</div><div class="cp-rf">weekday daytime</div></div>
-      </div>
-      <div class="cp-note">Revenue = each court × open hours in each time band × occupancy × that band's rate. Occupancy is your own estimate; slide it for best / worst case. Estimates only.</div>
-    </div>
-   <div class="cp-card" id="cpCostsCard">
-      <div class="cp-seclabel">Costs &amp; EBITDA</div>
-      <div class="cp-secnote">Annual. Enter staff, rent &amp; rates and any other costs; utilities, maintenance and software are calculated (percentages editable).</div>
-      <div class="cp-grid3">
-        <div><div class="cp-flabel">Staff (£ / yr)</div><input type="number" id="cpStaff" value="90000" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
-        <div><div class="cp-flabel">Rent &amp; rates (£ / yr)</div><input type="number" id="cpRR" value="100000" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
-        <div><div class="cp-flabel">Other costs (£ / yr)</div><input type="number" id="cpOther" value="0" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
-      </div>
-      <div class="cp-grid3" style="margin-top:14px">
-        <div><div class="cp-flabel">Utilities — % of rent &amp; rates</div><input type="number" step="0.1" id="cpUtil" value="1" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
-        <div><div class="cp-flabel">Maintenance — % of revenue</div><input type="number" step="0.1" id="cpMaint" value="1.2" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
-        <div><div class="cp-flabel">Software — % of revenue</div><input type="number" step="0.1" id="cpSoft" value="3.5" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
-      </div>
-      <div class="cp-grid3" style="margin-top:16px">
-        <div class="cp-result"><div class="cp-rl">Total annual costs</div><div class="cp-rv" id="cpTotalCosts">£0</div><div class="cp-rf">per year</div></div>
-        <div class="cp-result cp-primary"><div class="cp-rl">EBITDA</div><div class="cp-rv" id="cpEbitda">£0</div><div class="cp-rf" id="cpEbitdaF">0% margin</div></div>
-        <div class="cp-result"><div class="cp-rl">Revenue</div><div class="cp-rv" id="cpRevYr">£0</div><div class="cp-rf">per year</div></div>
-      </div>
-      <div class="cp-note" id="cpCostBreak"></div>
-    </div></div>
-  </div><div id="tab-map" class="cp-panel" hidden="">
-    <div class="cp-card" style="max-width:1120px">
-      <div class="cp-head"><div class="cp-ic">🗺️</div><div><h2 class="cp-title">Opportunity Map</h2><p class="cp-sub">Click anywhere in England &amp; Wales to score the catchment</p></div></div>
-      <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start">
-        <div style="flex:2;min-width:340px">
-          <div id="cpMap" style="height:540px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#eef2f0"></div>
-          <div style="margin-top:12px;display:flex;align-items:center;gap:12px">
-            <span class="cp-flabel" style="margin:0">Drive time</span>
-            <input type="range" id="cpRad" min="5" max="45" step="5" value="20" style="flex:1;accent-color:var(--green)">
-            <b id="cpRadV" style="min-width:64px;text-align:right">20 min</b>
-          </div>
-        </div>
-        <div style="flex:1;min-width:280px" id="cpMapPanel">
-          <div style="border:1px dashed var(--line);border-radius:12px;padding:20px;font-size:13px;color:var(--muted)">Click the map to see existing supply vs catchment population, and an opportunity score.</div>
-        </div>
-      </div>
-      <div class="cp-note" id="cpMapMeta">Loading clubs…</div>
-    </div>
-  </div><div id="tab-data" class="cp-panel" hidden=""><div id="cpDataHost"><div style="color:var(--muted);font-size:13px;padding:20px">Loading…</div></div></div>
+</div><!--/tab-sites-->
+<div id="tab-projection" class="cp-panel" hidden="">
+<div class="cp-wrap">
+<div class="cp-card">
+<div class="cp-head"><div class="cp-ic">📋</div>
+<div><h2 class="cp-title">Club Projection</h2><p class="cp-sub">Estimate monthly &amp; yearly revenue for a club layout</p></div></div>
+<div class="cp-seclabel">Inputs</div><div class="cp-secnote">Court mix, opening hours and peak / off-peak rates</div>
+<div class="cp-grid3">
+<div><div class="cp-flabel">Indoor courts</div><div class="cp-stepper" data-step="indoor"><button data-dir="-1">−</button><div class="cp-val"><span data-out="indoor">3</span></div><button data-dir="1">+</button></div></div>
+<div><div class="cp-flabel">Outdoor courts</div><div class="cp-stepper" data-step="outdoor"><button data-dir="-1">−</button><div class="cp-val"><span data-out="outdoor">0</span></div><button data-dir="1">+</button></div></div>
+<div><div class="cp-flabel">Covered courts</div><div class="cp-stepper" data-step="covered"><button data-dir="-1">−</button><div class="cp-val"><span data-out="covered">1</span></div><button data-dir="1">+</button></div></div>
+</div>
+<div class="cp-grid3" style="margin-top:14px">
+<div><div class="cp-flabel">Singles courts</div><div class="cp-stepper" data-step="singles"><button data-dir="-1">−</button><div class="cp-val"><span data-out="singles">0</span></div><button data-dir="1">+</button></div></div>
+<div><div class="cp-flabel">Operating hours / day</div><div class="cp-stepper" data-step="hours"><button data-dir="-1">−</button><div class="cp-val"><span data-out="hours">14</span><small>h</small></div><button data-dir="1">+</button></div></div>
+<div><div class="cp-flabel">Total</div><div class="cp-pill"><b id="cpTotal">4</b> total courts</div></div>
+</div>
+<div class="cp-grid2" style="margin-top:14px">
+<div><div class="cp-flabel">Opens at</div><input type="time" id="cpOpen" value="07:00" style="width:100%;height:50px;border:1px solid var(--line);border-radius:11px;padding:0 14px;font-size:16px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div style="display:flex;align-items:flex-end"><div class="cp-secnote" style="margin:0 0 4px">Used to split open hours into peak vs off-peak. Closes at <span id="cpClose">21:00</span>.</div></div>
+</div>
+<div style="margin-top:18px">
+<div class="cp-flabel">Hire rates (£ per hour)</div>
+<div class="cp-secnote" style="margin-bottom:10px">Peak = weekdays from 5pm + all weekend · Off-peak = all other open hours</div>
+<div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px 14px;align-items:center;max-width:560px">
+<div></div>
+<div class="cp-flabel" style="margin:0;text-align:center">Peak</div>
+<div class="cp-flabel" style="margin:0;text-align:center">Off-peak</div>
+<div style="font-size:13.5px;font-weight:600">Standard courts</div>
+<input type="number" min="0" data-rate="stdPeak" value="44" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+<input type="number" min="0" data-rate="stdOff" value="33" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+<div style="font-size:13.5px;font-weight:600">Singles courts</div>
+<input type="number" min="0" data-rate="sinPeak" value="30" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+<input type="number" min="0" data-rate="sinOff" value="22" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+</div>
+</div>
+<div style="margin-top:18px"><div class="cp-flabel">Expected occupancy — how full you think the courts will be</div>
+<div style="display:flex;align-items:center;gap:14px;margin-top:8px"><input type="range" id="cpOccIn" min="0" max="100" step="0.5" value="58.5" style="flex:1;accent-color:var(--green)"><div style="min-width:92px;height:50px;border:1px solid var(--line);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;background:#fff"><span id="cpOccNum">58.5</span><small style="font-weight:600;color:var(--muted);margin-left:1px">%</small></div></div>
+</div>
+</div>
+<div class="cp-card">
+<div class="cp-seclabel">Results</div><div class="cp-secnote">Live projection — updates as you tweak inputs above</div>
+<div class="cp-grid3">
+<div class="cp-result cp-primary"><div class="cp-rl">Est. Monthly Revenue</div><div class="cp-rv" id="cpMonthly">£38K</div><div class="cp-rf" id="cpMonthlyF">997 booked court-hrs/mo</div></div>
+<div class="cp-result"><div class="cp-rl">Est. Yearly Revenue</div><div class="cp-rv" id="cpYearly">£459K</div><div class="cp-rf" id="cpYearlyF">4 courts</div></div>
+<div class="cp-result"><div class="cp-rl">Revenue per Court</div><div class="cp-rv" id="cpPer">£10K</div><div class="cp-rf">per month</div></div>
+</div>
+<div class="cp-grid2" style="margin-top:14px">
+<div class="cp-result"><div class="cp-rl">Peak Revenue / mo</div><div class="cp-rv" id="cpPeakRev">£21K</div><div class="cp-rf">weekdays 5pm+ &amp; weekends</div></div>
+<div class="cp-result"><div class="cp-rl">Off-Peak Revenue / mo</div><div class="cp-rv" id="cpOffRev">£17K</div><div class="cp-rf">weekday daytime</div></div>
+</div>
+<div class="cp-note">Revenue = each court × open hours in each time band × occupancy × that band's rate. Occupancy is your own estimate; slide it for best / worst case. Estimates only.</div>
+</div>
+<div class="cp-card" id="cpCostsCard">
+<div class="cp-seclabel">Costs &amp; EBITDA</div>
+<div class="cp-secnote">Annual. Enter staff, rent &amp; rates and any other costs; utilities, maintenance and software are calculated (percentages editable).</div>
+<div class="cp-grid3">
+<div><div class="cp-flabel">Staff (£ / yr)</div><input type="number" id="cpStaff" value="90000" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div><div class="cp-flabel">Rent &amp; rates (£ / yr)</div><input type="number" id="cpRR" value="100000" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div><div class="cp-flabel">Other costs (£ / yr)</div><input type="number" id="cpOther" value="0" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+</div>
+<div class="cp-grid3" style="margin-top:14px">
+<div><div class="cp-flabel">Utilities — % of rent &amp; rates</div><input type="number" step="0.1" id="cpUtil" value="1" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div><div class="cp-flabel">Maintenance — % of revenue</div><input type="number" step="0.1" id="cpMaint" value="1.2" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div><div class="cp-flabel">Software — % of revenue</div><input type="number" step="0.1" id="cpSoft" value="3.5" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+</div>
+<div class="cp-grid3" style="margin-top:16px">
+<div class="cp-result"><div class="cp-rl">Total annual costs</div><div class="cp-rv" id="cpTotalCosts">£0</div><div class="cp-rf">per year</div></div>
+<div class="cp-result cp-primary"><div class="cp-rl">EBITDA</div><div class="cp-rv" id="cpEbitda">£0</div><div class="cp-rf" id="cpEbitdaF">0% margin</div></div>
+<div class="cp-result"><div class="cp-rl">Revenue</div><div class="cp-rv" id="cpRevYr">£0</div><div class="cp-rf">per year</div></div>
+</div>
+<div class="cp-note" id="cpCostBreak"></div>
+</div></div>
+</div><div id="tab-map" class="cp-panel" hidden="">
+<div class="cp-card" style="max-width:1120px">
+<div class="cp-head"><div class="cp-ic">🗺️</div><div><h2 class="cp-title">Opportunity Map</h2><p class="cp-sub">Click anywhere in England &amp; Wales to score the catchment</p></div></div>
+<div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start">
+<div style="flex:2;min-width:340px">
+<div id="cpMap" style="height:540px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#eef2f0"></div>
+<div style="margin-top:12px;display:flex;align-items:center;gap:12px">
+<span class="cp-flabel" style="margin:0">Drive time</span>
+<input type="range" id="cpRad" min="5" max="45" step="5" value="20" style="flex:1;accent-color:var(--green)">
+<b id="cpRadV" style="min-width:64px;text-align:right">20 min</b>
+</div>
+</div>
+<div style="flex:1;min-width:280px" id="cpMapPanel">
+<div style="border:1px dashed var(--line);border-radius:12px;padding:20px;font-size:13px;color:var(--muted)">Click the map to see existing supply vs catchment population, and an opportunity score.</div>
+</div>
+</div>
+<div class="cp-note" id="cpMapMeta">Loading clubs…</div>
+</div>
+</div><div id="tab-data" class="cp-panel" hidden=""><div id="cpDataHost"><div style="color:var(--muted);font-size:13px;padding:20px">Loading…</div></div></div>
 </div>
 
 <script>
@@ -279,7 +279,59 @@ badges:[["6m+ eaves","ok"],["Parking light","amber"]]},
 {id:"146882993", added:"2026-06-30", img:"https://media.rightmove.co.uk/property-photo/1caea4d88/146882993/1caea4d88146890db54bb7c49fafffbf.jpeg", name:"Unit 1 Deva Works, Saltney", region:"Saltney, Chester CH4 8RH · Flintshire (Wales)", wm:false,
 size:"11,741 sqft", rent:"5.50", pcm:"£5,381 pcm", eaves:"8m", eavesState:"ok", parking:"Yes — allocated car parking + yard",
 notes:"Refurbished semi-detached warehouse, electric roller shutter, 8m min eaves, kitchenette/WC. On the Wales/Chester border, 2.3mi to Chester rail. Note: overhead gantry crane in situ (removable).",
-badges:[["6m+ eaves","ok"],["Stated rent","ok"]]}
+badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
+{id:"87739488", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/b8502eaa8/87739488/b8502eaa8da97b4803969282f990c2b7.png", name:"Unit C, 83/84 Livingstone Road, Andover", region:"Andover, SP10 5QZ · Hampshire (South East)", wm:false,
+size:"23,591 sqft", rent:"8.48", pcm:"£16,667 pcm", eaves:"7.4m", eavesState:"ok", parking:"Yes — 16 allocated + loading yard",
+notes:"Clear-span steel portal warehouse on Walworth Business Park, two loading doors, 3-phase power, secure site. Parking on the lighter side at 16 spaces — check overflow.",
+badges:[["6m+ eaves","ok"],["Parking light","amber"]]},
+{id:"756046902191249", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/ff92ef64e/756046902191249/ff92ef64ea8aaad71ee34bc23b823d7b.jpeg", name:"7 & 8 Crown Way, Walworth Business Park", region:"Andover, SP10 5LU · Hampshire (South East)", wm:false,
+size:"10,184 sqft", rent:"7.75", pcm:"£6,577 pcm", eaves:"6m+", eavesState:"ok", parking:"Yes — 20 spaces, excellent provision",
+notes:"Purpose-built warehouse with easy A303/M3 access, two loading doors, three-phase power. Smallest-size fit on spec but cheap and available now.",
+badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
+{id:"89436243", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/4d3873cc8/89436243/4d3873cc8719fd811746060bb4d7ffa1.jpeg", name:"Unit E, Lefa Business Park, Sidcup", region:"Sidcup, DA14 · Greater London (Bexley)", wm:false,
+size:"25,808 sqft", rent:"10.00", pcm:"£21,507 pcm", eaves:"5.5–6.35m", eavesState:"flag", parking:"Yes — 34 spaces, front &amp; rear",
+notes:"Detached steel portal unit with covered loading bay, dedicated yard, 24/7 access. At the £10 London cap; eaves dip to 5.5m at the low end — confirm usable height over courts.",
+badges:[["Eaves 5.5m low end","amber"],["£10 London/Surrey cap","amber"]]},
+{id:"138811778", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/9357ec98f/138811778/9357ec98f92367b06c1f4d1b7abf3766.jpeg", name:"24-27 Regis Road, Kentish Town", region:"Kentish Town, NW5 3EW · Greater London (Camden)", wm:false,
+size:"25,000 sqft", rent:"10.00", pcm:"£20,833 pcm", eaves:"6m", eavesState:"ok", parking:"Yes — separate parking area + secure yard",
+notes:"Single-storey detached brick warehouse with its own secure yard in Zone 2 London. 6m internal height is at the minimum — rare inner-London catchment at the £10 cap.",
+badges:[["6m+ eaves","ok"],["£10 London/Surrey cap","amber"]]},
+{id:"760550179644769", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/e9e857c3b/760550179644769/e9e857c3bd8dcf052e4bb788a7552d93.jpeg", name:"Unit 14 Avro Park, Doncaster", region:"Doncaster, DN9 3GP · South Yorkshire", wm:false,
+size:"29,789 sqft", rent:"8.50", pcm:"£21,101 pcm", eaves:"8m min", eavesState:"ok", parking:"Yes — concrete yard + parking areas",
+notes:"High-quality detached warehouse next to Doncaster Sheffield Airport, close to M18/A1(M)/M1. 8m minimum eaves, available immediately (also offered for sale). Right at the £8.50 cap.",
+badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
+{id:"752061843712240", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/ce4cbc03f/752061843712240/ce4cbc03fbdda362107ab3359464eda5.jpeg", name:"Warehouse, Cochranes Wharf, Middlesbrough", region:"Middlesbrough, Dockside Road · Teesside (North East)", wm:false,
+size:"19,949 sqft", rent:"4.50", pcm:"£7,479 pcm", eaves:"8.2m", eavesState:"ok", parking:"Yes — on-site (detail TBC)",
+notes:"Detached steel portal warehouse, EPC A, 8.2m eaves rising to ~11m ridge, roller shutter doors. Very cheap per sqft — confirm parking allocation and dockside access with agent.",
+badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
+{id:"760571033778849", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/e375fd77a/760571033778849/e375fd77ad53da70a0a657ac8dcea87d.jpeg", name:"Unit 6, Harleston Works, Sheffield", region:"Sheffield, S4 7QG · South Yorkshire", wm:false,
+size:"22,869 sqft", rent:"3.72", pcm:"£7,083 pcm", eaves:"9m", eavesState:"ok", parking:"TBC — ask agent",
+notes:"Double-bay high workshop with 9m eaves and overhead cranage (engineering fit-out to strip out). Cheapest £/sqft on the board — but parking is unstated, so check before viewing.",
+badges:[["6m+ eaves","ok"],["Parking TBC","amber"]]},
+{id:"754386809127408", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/c18854290/754386809127408/c18854290a5f029320698bb15f16ead0.png", name:"373 Trafford Park Road, Manchester", region:"Trafford Park, M17 · Greater Manchester (North West)", wm:false,
+size:"17,216 sqft", rent:"7.84", pcm:"£11,250 pcm", eaves:"11.5m (main)", eavesState:"ok", parking:"Yes — self-contained car park + yard",
+notes:"Brick-built high-bay warehouse: main span 11.5m eaves (side warehouse 5.6m), 500kVA supply, close to M60 J9/J10. Prominent Trafford Park position with strong catchment.",
+badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
+{id:"173743805", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/e088d81ca/173743805/e088d81ca9bb5c6afe0a1aeb122e8cad.jpeg", name:"Unit 17-18 Barrs Fold Road, Bolton", region:"Westhoughton, Bolton BL5 3XP · Greater Manchester (North West)", wm:false,
+size:"20,235 sqft", rent:"7.25", pcm:"£12,225 pcm", eaves:"6.8m", eavesState:"ok", parking:"Yes — 60+ spaces, 2 secure yards",
+notes:"Modern detached open-plan unit 1mi from M61 J6. 6.8m eaves, two drive-in roller shutters, over 60 parking spaces. Strong all-round fit, available now.",
+badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
+{id:"90175362", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/0028efb32/90175362/0028efb32ba776b82d3b561da541c275.jpeg", name:"Unit 18, The Valiant, Earls Colne", region:"Earls Colne, Colchester CO6 2NS · Essex (East of England)", wm:false,
+size:"15,338 sqft", rent:"7.82", pcm:"£10,000 pcm", eaves:"5.7m (10m ridge)", eavesState:"flag", parking:"Yes — large concrete yard",
+notes:"Detached industrial/workshop on 0.45-acre site with big external yard. 5.7m eaves but 10m to ridge — courts could sit centrally under the pitch; confirm with agent.",
+badges:[["Eaves 5.7m, 10m ridge","amber"],["Stated rent","ok"]]},
+{id:"760554497570448", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/8080cdf59/760554497570448/8080cdf59b82403540897bc8d7ec093c.jpeg", name:"4 Thorby Avenue, March", region:"March, PE15 0AZ · Cambridgeshire (East of England)", wm:false,
+size:"17,821 sqft", rent:"5.33", pcm:"£7,917 pcm", eaves:"6.3m (main)", eavesState:"ok", parking:"Yes — yard + parking front &amp; rear",
+notes:"Detached workshop/warehouse: main areas 6.3m single-span eaves (rear lean-to 5–6.5m), 10t crane, two-storey offices. Cheap for Cambridgeshire.",
+badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
+{id:"760554912970369", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/3b969d7f2/760554912970369/3b969d7f27220386f8580c1933de292f.jpeg", name:"Orchard House, Glebe Road, Huntingdon", region:"Huntingdon, PE29 7DL · Cambridgeshire (East of England)", wm:false,
+size:"15,471 sqft", rent:"6.14", pcm:"£7,917 pcm", eaves:"6m + 8.6m ext", eavesState:"ok", parking:"Light — 10 spaces + secure yard",
+notes:"Main warehouse 6m eaves single span plus separately accessed 8.6m high-bay extension; substantial mezzanine in situ. Only 10 marked spaces — check overflow parking.",
+badges:[["6m+ eaves","ok"],["Parking light","amber"]]},
+{id:"172972400", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/6b057f992/172972400/6b057f992bbe3d23da1fea84dbb29569.jpeg", name:"Swanton Road, Norwich", region:"Norwich, NR2 4LH · Norfolk (East of England)", wm:false,
+size:"29,287 sqft", rent:"4.95", pcm:"£12,083 pcm", eaves:"5.87–9.5m", eavesState:"flag", parking:"Yes — forecourt parking",
+notes:"Large open-plan warehouse with 9 roller shutters and internal loading area. 5.87m minimum eaves rising to 9.5m apex — flag the low end but big, cheap city-edge space.",
+badges:[["Eaves 5.87m low end","amber"],["Stated rent","ok"]]}
 ];
 
 const ARCHIVE_DAYS = 10;
@@ -355,128 +407,127 @@ render('all');
 </script>
 
 <script>(function(){
-  var D={indoor:3,outdoor:0,covered:1,singles:0,hours:14,open:7,occ:58.5,dpm:30.44,stdPeak:44,stdOff:33,sinPeak:30,sinOff:22};
-  var S=Object.assign({},D); var PEAK_START=17;
-  var LIM={indoor:[0,40],outdoor:[0,40],covered:[0,40],singles:[0,40],hours:[1,24]};
-  var root=document.getElementById('tab-projection'); if(!root)return;
-  function q(s){return root.querySelector(s);}
-  function IN(id){return root.querySelector('#'+id);}
-  function num(id,d){var e=IN(id);var v=e?parseFloat(e.value):NaN;return isNaN(v)?d:v;}
-  function out(k){return root.querySelector('[data-out="'+k+'"]');}
-  function money(n){var neg=n<0;n=Math.abs(n);var s;if(n>=1e6)s='£'+(n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M';else if(n>=1000)s='£'+Math.round(n/1000)+'K';else s='£'+Math.round(n);return neg?'-'+s:s;}
-  function ci(n){return Math.round(n).toLocaleString('en-GB');}
-  function compute(){var std=S.indoor+S.outdoor+S.covered, total=std+S.singles; var dayEnd=S.open+S.hours; var offWk=Math.max(0,Math.min(dayEnd,PEAK_START)-S.open); var pkWk=Math.max(0,dayEnd-Math.max(S.open,PEAK_START)); var peakWeek=5*pkWk+2*S.hours, offWeek=5*offWk, f=S.dpm/7; var peakHpc=peakWeek*f, offHpc=offWeek*f, occ=S.occ/100; var peakRev=occ*(std*peakHpc*S.stdPeak+S.singles*peakHpc*S.sinPeak); var offRev=occ*(std*offHpc*S.stdOff+S.singles*offHpc*S.sinOff); var monthly=peakRev+offRev; var avail=total*S.hours*S.dpm, oh=occ*avail; return {std:std,total:total,avail:avail,oh:oh,peakRev:peakRev,offRev:offRev,monthly:monthly,yearly:monthly*12,per:total?monthly/total:0};}
-  function render(){
-    ['indoor','outdoor','covered','singles','hours'].forEach(function(k){var e=out(k);if(e)e.textContent=S[k];});
-    q('#cpTotal').textContent=S.indoor+S.outdoor+S.covered+S.singles; q('#cpOccNum').textContent=S.occ;
-    var r=compute();
-    q('#cpMonthly').textContent=money(r.monthly); q('#cpMonthlyF').textContent=ci(r.oh)+' booked court-hrs/mo';
-    q('#cpYearly').textContent=money(r.yearly); q('#cpYearlyF').textContent=r.total+(r.total===1?' court':' courts');
-    q('#cpPer').textContent=money(r.per); q('#cpPeakRev').textContent=money(r.peakRev); q('#cpOffRev').textContent=money(r.offRev);
-    var annual=r.yearly;
-    var staff=num('cpStaff',0), rr=num('cpRR',0), other=num('cpOther',0), utilP=num('cpUtil',1), maintP=num('cpMaint',1.2), softP=num('cpSoft',3.5);
-    var utilities=rr*utilP/100, maintenance=annual*maintP/100, software=annual*softP/100;
-    var totalCosts=staff+rr+utilities+maintenance+software+other;
-    var ebitda=annual-totalCosts, margin=annual?ebitda/annual*100:0;
-    if(IN('cpRevYr'))IN('cpRevYr').textContent=money(annual);
-    if(IN('cpTotalCosts'))IN('cpTotalCosts').textContent=money(totalCosts);
-    if(IN('cpEbitda')){IN('cpEbitda').textContent=money(ebitda); IN('cpEbitda').style.color=ebitda<0?'#ffd7d3':'#fff';}
-    if(IN('cpEbitdaF'))IN('cpEbitdaF').textContent=margin.toFixed(1)+'% margin';
-    if(IN('cpCostBreak'))IN('cpCostBreak').innerHTML='Staff '+money(staff)+' · Rent & rates '+money(rr)+' · Utilities '+money(utilities)+' ('+utilP+'% of R&R) · Maintenance '+money(maintenance)+' ('+maintP+'% of rev) · Software '+money(software)+' ('+softP+'% of rev) · Other '+money(other);
-    root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;if(!LIM[k])return;st.querySelector('[data-dir="-1"]').disabled=S[k]<=LIM[k][0];st.querySelector('[data-dir="1"]').disabled=S[k]>=LIM[k][1];});
-  }
-  root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;st.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){var dir=+b.dataset.dir,lo=LIM[k][0],hi=LIM[k][1];S[k]=Math.max(lo,Math.min(hi,S[k]+dir));render();});});});
-  var occ=q('#cpOccIn'); if(occ)occ.addEventListener('input',function(){var v=parseFloat(occ.value);if(isNaN(v))return;S.occ=v;render();});
-  var op=q('#cpOpen'); if(op)op.addEventListener('input',function(){var p=op.value.split(':');var h=parseInt(p[0],10)+(parseInt(p[1],10)||0)/60;if(!isNaN(h))S.open=h;render();});
-  root.querySelectorAll('input[data-rate]').forEach(function(inp){inp.addEventListener('input',function(){var v=parseFloat(inp.value);if(isNaN(v))return;S[inp.dataset.rate]=v;render();});});
-  ['cpStaff','cpRR','cpOther','cpUtil','cpMaint','cpSoft'].forEach(function(id){var e=IN(id); if(e) e.addEventListener('input',render);});
-  var tabs=document.getElementById('cpTabs');
-  if(tabs){tabs.querySelectorAll('.cp-tab').forEach(function(t){t.addEventListener('click',function(){tabs.querySelectorAll('.cp-tab').forEach(function(x){x.classList.remove('active');});t.classList.add('active');var name=t.dataset.tab;document.querySelectorAll('.cp-panel').forEach(function(p){p.hidden=(p.id!=='tab-'+name);});});});}
-  render();
+var D={indoor:3,outdoor:0,covered:1,singles:0,hours:14,open:7,occ:58.5,dpm:30.44,stdPeak:44,stdOff:33,sinPeak:30,sinOff:22};
+var S=Object.assign({},D); var PEAK_START=17;
+var LIM={indoor:[0,40],outdoor:[0,40],covered:[0,40],singles:[0,40],hours:[1,24]};
+var root=document.getElementById('tab-projection'); if(!root)return;
+function q(s){return root.querySelector(s);}
+function IN(id){return root.querySelector('#'+id);}
+function num(id,d){var e=IN(id);var v=e?parseFloat(e.value):NaN;return isNaN(v)?d:v;}
+function out(k){return root.querySelector('[data-out="'+k+'"]');}
+function money(n){var neg=n<0;n=Math.abs(n);var s;if(n>=1e6)s='£'+(n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M';else if(n>=1000)s='£'+Math.round(n/1000)+'K';else s='£'+Math.round(n);return neg?'-'+s:s;}
+function ci(n){return Math.round(n).toLocaleString('en-GB');}
+function compute(){var std=S.indoor+S.outdoor+S.covered, total=std+S.singles; var dayEnd=S.open+S.hours; var offWk=Math.max(0,Math.min(dayEnd,PEAK_START)-S.open); var pkWk=Math.max(0,dayEnd-Math.max(S.open,PEAK_START)); var peakWeek=5*pkWk+2*S.hours, offWeek=5*offWk, f=S.dpm/7; var peakHpc=peakWeek*f, offHpc=offWeek*f, occ=S.occ/100; var peakRev=occ*(std*peakHpc*S.stdPeak+S.singles*peakHpc*S.sinPeak); var offRev=occ*(std*offHpc*S.stdOff+S.singles*offHpc*S.sinOff); var monthly=peakRev+offRev; var avail=total*S.hours*S.dpm, oh=occ*avail; return {std:std,total:total,avail:avail,oh:oh,peakRev:peakRev,offRev:offRev,monthly:monthly,yearly:monthly*12,per:total?monthly/total:0};}
+function render(){
+['indoor','outdoor','covered','singles','hours'].forEach(function(k){var e=out(k);if(e)e.textContent=S[k];});
+q('#cpTotal').textContent=S.indoor+S.outdoor+S.covered+S.singles; q('#cpOccNum').textContent=S.occ;
+var r=compute();
+q('#cpMonthly').textContent=money(r.monthly); q('#cpMonthlyF').textContent=ci(r.oh)+' booked court-hrs/mo';
+q('#cpYearly').textContent=money(r.yearly); q('#cpYearlyF').textContent=r.total+(r.total===1?' court':' courts');
+q('#cpPer').textContent=money(r.per); q('#cpPeakRev').textContent=money(r.peakRev); q('#cpOffRev').textContent=money(r.offRev);
+var annual=r.yearly;
+var staff=num('cpStaff',0), rr=num('cpRR',0), other=num('cpOther',0), utilP=num('cpUtil',1), maintP=num('cpMaint',1.2), softP=num('cpSoft',3.5);
+var utilities=rr*utilP/100, maintenance=annual*maintP/100, software=annual*softP/100;
+var totalCosts=staff+rr+utilities+maintenance+software+other;
+var ebitda=annual-totalCosts, margin=annual?ebitda/annual*100:0;
+if(IN('cpRevYr'))IN('cpRevYr').textContent=money(annual);
+if(IN('cpTotalCosts'))IN('cpTotalCosts').textContent=money(totalCosts);
+if(IN('cpEbitda')){IN('cpEbitda').textContent=money(ebitda); IN('cpEbitda').style.color=ebitda<0?'#ffd7d3':'#fff';}
+if(IN('cpEbitdaF'))IN('cpEbitdaF').textContent=margin.toFixed(1)+'% margin';
+if(IN('cpCostBreak'))IN('cpCostBreak').innerHTML='Staff '+money(staff)+' · Rent & rates '+money(rr)+' · Utilities '+money(utilities)+' ('+utilP+'% of R&R) · Maintenance '+money(maintenance)+' ('+maintP+'% of rev) · Software '+money(software)+' ('+softP+'% of rev) · Other '+money(other);
+root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;if(!LIM[k])return;st.querySelector('[data-dir="-1"]').disabled=S[k]<=LIM[k][0];st.querySelector('[data-dir="1"]').disabled=S[k]>=LIM[k][1];});
+}
+root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;st.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){var dir=+b.dataset.dir,lo=LIM[k][0],hi=LIM[k][1];S[k]=Math.max(lo,Math.min(hi,S[k]+dir));render();});});});
+var occ=q('#cpOccIn'); if(occ)occ.addEventListener('input',function(){var v=parseFloat(occ.value);if(isNaN(v))return;S.occ=v;render();});
+var op=q('#cpOpen'); if(op)op.addEventListener('input',function(){var p=op.value.split(':');var h=parseInt(p[0],10)+(parseInt(p[1],10)||0)/60;if(!isNaN(h))S.open=h;render();});
+root.querySelectorAll('input[data-rate]').forEach(function(inp){inp.addEventListener('input',function(){var v=parseFloat(inp.value);if(isNaN(v))return;S[inp.dataset.rate]=v;render();});});
+['cpStaff','cpRR','cpOther','cpUtil','cpMaint','cpSoft'].forEach(function(id){var e=IN(id); if(e) e.addEventListener('input',render);});
+var tabs=document.getElementById('cpTabs');
+if(tabs){tabs.querySelectorAll('.cp-tab').forEach(function(t){t.addEventListener('click',function(){tabs.querySelectorAll('.cp-tab').forEach(function(x){x.classList.remove('active');});t.classList.add('active');var name=t.dataset.tab;document.querySelectorAll('.cp-panel').forEach(function(p){p.hidden=(p.id!=='tab-'+name);});});});}
+render();
 })();</script>
 
-
 <script>(function(){
-  var KEY='pp_hidden_sites';
-  var grid=document.getElementById('grid'); if(!grid) return;
-  function getHidden(){try{return new Set((JSON.parse(localStorage.getItem(KEY)||'[]')).map(String));}catch(e){return new Set();}}
-  function saveHidden(s){try{localStorage.setItem(KEY,JSON.stringify(Array.from(s)));}catch(e){}}
-  function idOf(card){var a=card.querySelector('a[href*="/properties/"]'); if(a){var m=a.href.match(/properties\/(\d+)/); if(m)return m[1];} return null;}
-  var snap=null;
-  function buildSnapshot(){
-    if(!snap) snap={};
-    grid.querySelectorAll('.card').forEach(function(c){
-      var id=idOf(c); if(!id||snap[id]) return;
-      var regionEl=c.querySelector('.region'); var region=regionEl?regionEl.textContent:'';
-      var rentEl=c.querySelector('.rentbig'); var rent=null;
-      if(rentEl){var rm=rentEl.textContent.match(/([\d.]+)/); if(rm)rent=parseFloat(rm[1]);}
-      snap[id]={wm:/West Midlands/i.test(region), eaves6:/6m\+\s*eaves/i.test(c.textContent), rent:rent, archived:c.classList.contains('archived')};
-    });
-  }
-  function applyCounts(){
-    if(!snap) return;
-    var hidden=getHidden(), live=0, wm=0, eaves=0, rents=[];
-    Object.keys(snap).forEach(function(id){
-      if(hidden.has(id)) return; var s=snap[id]; if(s.archived) return;
-      live++; if(s.wm) wm++; if(s.eaves6) eaves++; if(s.rent!=null) rents.push(s.rent);
-    });
-    var el;
-    if((el=document.getElementById('stLive'))) el.textContent=live;
-    if((el=document.getElementById('stWm'))) el.textContent=wm;
-    if((el=document.getElementById('stEaves'))) el.textContent=eaves;
-    if((el=document.getElementById('stRent'))&&rents.length){var mn=Math.min.apply(null,rents),mx=Math.max.apply(null,rents);el.textContent='£'+mn.toFixed(2)+'–'+mx.toFixed(2);}
-    var ba=document.getElementById('btnAll'); if(ba) ba.textContent='All ('+live+')';
-  }
-  function addButtons(){
-    grid.querySelectorAll('.card').forEach(function(c){
-      if(c.querySelector('.pp-del')) return;
-      var id=idOf(c); if(!id) return;
-      c.style.position='relative';
-      var b=document.createElement('button'); b.className='pp-del'; b.type='button'; b.title='Remove this site'; b.textContent='×';
-      b.style.cssText='position:absolute;top:8px;right:8px;z-index:5;width:30px;height:30px;border-radius:50%;border:none;background:rgba(19,32,26,.6);color:#fff;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center';
-      b.addEventListener('mouseenter',function(){b.style.background='#b3261e';});
-      b.addEventListener('mouseleave',function(){b.style.background='rgba(19,32,26,.6)';});
-      b.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();var h=getHidden();h.add(id);saveHidden(h);run();});
-      c.appendChild(b);
-    });
-  }
-  function hideHidden(){var h=getHidden(); grid.querySelectorAll('.card').forEach(function(c){var id=idOf(c); if(id&&h.has(id)) c.remove();});}
-  var bar;
-  function updateBar(){
-    var n=getHidden().size;
-    if(!bar){bar=document.createElement('div'); bar.id='pp-hidebar'; bar.style.cssText='margin:0 0 14px;font-size:13px;color:var(--muted)'; grid.parentNode.insertBefore(bar,grid);}
-    if(n>0){
-      bar.innerHTML=n+' site'+(n===1?'':'s')+' hidden · <a href="#" id="pp-restore" style="color:var(--green);font-weight:600">Restore all</a>';
-      var r=document.getElementById('pp-restore'); if(r)r.addEventListener('click',function(e){e.preventDefault();saveHidden(new Set());location.reload();});
-      bar.style.display='';
-    } else bar.style.display='none';
-  }
-  var mo;
-  function run(){ if(mo)mo.disconnect(); buildSnapshot(); hideHidden(); addButtons(); applyCounts(); updateBar(); if(mo)mo.observe(grid,{childList:true}); }
-  mo=new MutationObserver(run);
-  setTimeout(run,80);
+var KEY='pp_hidden_sites';
+var grid=document.getElementById('grid'); if(!grid) return;
+function getHidden(){try{return new Set((JSON.parse(localStorage.getItem(KEY)||'[]')).map(String));}catch(e){return new Set();}}
+function saveHidden(s){try{localStorage.setItem(KEY,JSON.stringify(Array.from(s)));}catch(e){}}
+function idOf(card){var a=card.querySelector('a[href*="/properties/"]'); if(a){var m=a.href.match(/properties\/(\d+)/); if(m)return m[1];} return null;}
+var snap=null;
+function buildSnapshot(){
+if(!snap) snap={};
+grid.querySelectorAll('.card').forEach(function(c){
+var id=idOf(c); if(!id||snap[id]) return;
+var regionEl=c.querySelector('.region'); var region=regionEl?regionEl.textContent:'';
+var rentEl=c.querySelector('.rentbig'); var rent=null;
+if(rentEl){var rm=rentEl.textContent.match(/([\d.]+)/); if(rm)rent=parseFloat(rm[1]);}
+snap[id]={wm:/West Midlands/i.test(region), eaves6:/6m\+\s*eaves/i.test(c.textContent), rent:rent, archived:c.classList.contains('archived')};
+});
+}
+function applyCounts(){
+if(!snap) return;
+var hidden=getHidden(), live=0, wm=0, eaves=0, rents=[];
+Object.keys(snap).forEach(function(id){
+if(hidden.has(id)) return; var s=snap[id]; if(s.archived) return;
+live++; if(s.wm) wm++; if(s.eaves6) eaves++; if(s.rent!=null) rents.push(s.rent);
+});
+var el;
+if((el=document.getElementById('stLive'))) el.textContent=live;
+if((el=document.getElementById('stWm'))) el.textContent=wm;
+if((el=document.getElementById('stEaves'))) el.textContent=eaves;
+if((el=document.getElementById('stRent'))&&rents.length){var mn=Math.min.apply(null,rents),mx=Math.max.apply(null,rents);el.textContent='£'+mn.toFixed(2)+'–'+mx.toFixed(2);}
+var ba=document.getElementById('btnAll'); if(ba) ba.textContent='All ('+live+')';
+}
+function addButtons(){
+grid.querySelectorAll('.card').forEach(function(c){
+if(c.querySelector('.pp-del')) return;
+var id=idOf(c); if(!id) return;
+c.style.position='relative';
+var b=document.createElement('button'); b.className='pp-del'; b.type='button'; b.title='Remove this site'; b.textContent='×';
+b.style.cssText='position:absolute;top:8px;right:8px;z-index:5;width:30px;height:30px;border-radius:50%;border:none;background:rgba(19,32,26,.6);color:#fff;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center';
+b.addEventListener('mouseenter',function(){b.style.background='#b3261e';});
+b.addEventListener('mouseleave',function(){b.style.background='rgba(19,32,26,.6)';});
+b.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();var h=getHidden();h.add(id);saveHidden(h);run();});
+c.appendChild(b);
+});
+}
+function hideHidden(){var h=getHidden(); grid.querySelectorAll('.card').forEach(function(c){var id=idOf(c); if(id&&h.has(id)) c.remove();});}
+var bar;
+function updateBar(){
+var n=getHidden().size;
+if(!bar){bar=document.createElement('div'); bar.id='pp-hidebar'; bar.style.cssText='margin:0 0 14px;font-size:13px;color:var(--muted)'; grid.parentNode.insertBefore(bar,grid);}
+if(n>0){
+bar.innerHTML=n+' site'+(n===1?'':'s')+' hidden · <a href="#" id="pp-restore" style="color:var(--green);font-weight:600">Restore all</a>';
+var r=document.getElementById('pp-restore'); if(r)r.addEventListener('click',function(e){e.preventDefault();saveHidden(new Set());location.reload();});
+bar.style.display='';
+} else bar.style.display='none';
+}
+var mo;
+function run(){ if(mo)mo.disconnect(); buildSnapshot(); hideHidden(); addButtons(); applyCounts(); updateBar(); if(mo)mo.observe(grid,{childList:true}); }
+mo=new MutationObserver(run);
+setTimeout(run,80);
 })();</script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>(function(){
-  var inited=false, dataLoaded=false, map, clubs=[], pop=[], marker, circle, clubLayer, last=null, rankRows=[];
-  var TARGET_PER10K=10000/6000, DEMAND_FULL=120000, KMH=40, MIN_POP=30000, OUTDOOR_W=0.5;
-  function $(id){return document.getElementById(id);}
-  function radiusKm(){ return (+$('cpRad').value)/60*KMH; }
-  function km(aLat,aLng,bLat,bLng){var R=6371,dLat=(bLat-aLat)*Math.PI/180,dLng=(bLng-aLng)*Math.PI/180;var s=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(aLat*Math.PI/180)*Math.cos(bLat*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);return 2*R*Math.asin(Math.sqrt(s));}
-  function scoreOf(P,eff){ if(P<=0) return 0; var per10=eff/(P/10000); var sat=Math.max(0,Math.min(1,1-per10/TARGET_PER10K)); var dem=Math.max(0,Math.min(1,P/DEMAND_FULL)); return Math.round(sat*dem*100); }
-  function color(s){return s>=66?'#0a7d4b':s>=33?'#b8860b':'#b3261e';}
-  function ind(c){return c[3]||0;} function outd(c){return c[4]||0;}
-  function catchment(lat,lng,radKm){var indoor=0,outdoor=0,clubCount=0,near=[];for(var i=0;i<clubs.length;i++){var c=clubs[i];var d=km(lat,lng,c[1],c[2]);if(d<=radKm){indoor+=ind(c);outdoor+=outd(c);clubCount++;near.push([c[0],ind(c)+outd(c),d]);}}var eff=indoor+outdoor*OUTDOOR_W;var people=0;for(var j=0;j<pop.length;j++){var t=pop[j];if(km(lat,lng,t[1],t[2])<=radKm)people+=t[3];}var per10=people?eff/(people/10000):0;var roomT=people/6000-eff;return {people:people,indoor:indoor,outdoor:outdoor,eff:eff,clubCount:clubCount,near:near,per10:per10,roomT:roomT,score:scoreOf(people,eff)};}
-  function plotClubs(){ if(!map||!clubs.length) return; if(clubLayer) clubLayer.remove(); clubLayer=L.layerGroup(); clubs.forEach(function(c){ var tot=ind(c)+outd(c); L.circleMarker([c[1],c[2]],{radius:3,color:'#0a7d4b',weight:1,fillColor:'#0a7d4b',fillOpacity:.55}).bindTooltip(c[0]+' · '+tot+' courts'+(outd(c)?' ('+outd(c)+' outdoor)':'')).addTo(clubLayer); }); clubLayer.addTo(map); }
-  function loadData(){ if(dataLoaded) return; dataLoaded=true; Promise.all([fetch('clubs.json').then(function(r){return r.json();}),fetch('population.json').then(function(r){return r.json();})]).then(function(res){ clubs=res[0]; pop=res[1]; var tot=clubs.reduce(function(a,x){return a+ind(x)+outd(x);},0); $('cpMapMeta').textContent=clubs.length+' clubs · '+tot+' courts (TrustPadel + Padel Directory + Playtomic) · outdoor counted at 50% · England & Wales. Updated weekly.'; plotClubs(); buildRanking(); }).catch(function(e){ $('cpMapMeta').textContent='Could not load map data ('+e+')'; }); }
-  function stat(l,v){ return '<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">'+l+'</div><div style="font-size:17px;font-weight:700">'+v+'</div></div>'; }
-  function renderPanel(lat,lng){ var mins=+$('cpRad').value, r=catchment(lat,lng,radiusKm()); r.near.sort(function(a,b){return a[2]-b[2];}); var nb=r.near.slice(0,6).map(function(n){return '<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;border-top:1px solid var(--line)"><span>'+n[0]+'</span><span style="color:var(--muted)">'+n[1]+' courts · '+n[2].toFixed(1)+'km</span></div>';}).join('')||'<div style="font-size:12.5px;color:var(--muted)">No clubs within '+mins+' min drive</div>'; $('cpMapPanel').innerHTML='<div style="border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff"><div class="cp-flabel" style="margin:0">Opportunity score</div><div style="font-size:42px;font-weight:800;color:'+color(r.score)+';line-height:1.05">'+r.score+'<small style="font-size:18px;color:var(--muted);font-weight:700"> /100</small></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">'+stat('Catchment population',r.people.toLocaleString('en-GB'))+stat('Existing courts',(r.indoor+r.outdoor)+' ('+r.indoor+' indoor / '+r.outdoor+' outdoor)')+stat('Effective supply',r.eff.toFixed(1)+' courts')+stat('Room at 1/6,000',Math.max(0,Math.round(r.roomT))+'')+'</div><div class="cp-secnote" style="margin:12px 0 4px">Outdoor courts count at 50% (weak competition for an indoor venue). Score blends under-supply (vs 1 court / 6,000) with population in reach. '+mins+'-min drive catchment.</div><div class="cp-flabel" style="margin:14px 0 2px">Nearest clubs</div>'+nb+'</div>'; }
-  function drawCircle(latlng){ if(circle) circle.remove(); circle=L.circle(latlng,{radius:radiusKm()*1000,color:'#0a7d4b',weight:1,fillColor:'#0a7d4b',fillOpacity:.06}).addTo(map); }
-  function pick(lat,lng){ if(marker) marker.remove(); marker=L.marker([lat,lng]).addTo(map); drawCircle(L.latLng(lat,lng)); last=L.latLng(lat,lng); renderPanel(lat,lng); }
-  function buildRanking(){ if(!clubs.length||!pop.length) return; var radKm=radiusKm(); var all=[]; for(var i=0;i<pop.length;i++){ var t=pop[i]; if(t[3]<MIN_POP) continue; var r=catchment(t[1],t[2],radKm); all.push({name:t[0],lat:t[1],lng:t[2],score:r.score,per10:r.per10,room:r.roomT,people:r.people,tot:r.indoor+r.outdoor}); } all.sort(function(a,b){return b.score-a.score || b.room-a.room;}); var picked=[], sep=radKm*1.5; for(var k=0;k<all.length;k++){var a=all[k];var ok=true;for(var m=0;m<picked.length;m++){if(km(a.lat,a.lng,picked[m].lat,picked[m].lng)<sep){ok=false;break;}}if(ok)picked.push(a);if(picked.length>=120)break;} rankRows=picked; renderRanking(); }
-  function renderRanking(){ var host=$('cpRankList'); if(!host) return; var html=rankRows.map(function(r,i){ return '<div class="cp-rankrow" data-lat="'+r.lat+'" data-lng="'+r.lng+'" style="display:grid;grid-template-columns:32px 1fr 52px 66px 88px 54px;gap:8px;align-items:center;padding:7px 8px;border-top:1px solid var(--line);cursor:pointer;font-size:12.5px"><span style="color:var(--muted)">'+(i+1)+'</span><span style="font-weight:600">'+r.name+'</span><span style="font-weight:800;color:'+color(r.score)+'">'+r.score+'</span><span style="color:var(--muted)">'+r.per10.toFixed(2)+'/10k</span><span style="color:var(--muted)">'+r.people.toLocaleString('en-GB')+'</span><span style="color:var(--muted)">'+r.tot+' crt</span></div>'; }).join(''); host.innerHTML='<div style="display:grid;grid-template-columns:32px 1fr 52px 66px 88px 54px;gap:8px;padding:0 8px 6px;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)"><span>#</span><span>Area</span><span>Score</span><span>Crt/10k</span><span>Population</span><span>Courts</span></div>'+html; }
-  function ensureRankUI(){ if($('cpRankWrap')||!$('cpMapMeta')) return; var card=$('cpMapMeta').parentElement; var w=document.createElement('div'); w.id='cpRankWrap'; w.style.marginTop='18px'; w.innerHTML='<div class="cp-seclabel">Opportunity ranking — highest to lowest</div><div class="cp-secnote">Distinct areas (nearby towns de-duplicated), scored by under-supply per head (vs 1 court / 6,000, outdoor at 50%) within the drive-time catchment. Click a row to jump the map.</div><div id="cpRankList" style="max-height:440px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff"></div>'; card.appendChild(w); $('cpRankList').addEventListener('click',function(e){ var row=e.target.closest('.cp-rankrow'); if(row){ var la=+row.dataset.lat, ln=+row.dataset.lng; map.setView([la,ln],10); pick(la,ln); } }); }
-  function initMap(){ if(inited) return; if(typeof L==='undefined'){ setTimeout(initMap,200); return; } inited=true; map=L.map('cpMap',{scrollWheelZoom:true}).setView([52.7,-1.7],6); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(map); plotClubs(); map.on('click',function(e){ pick(e.latlng.lat,e.latlng.lng); }); ensureRankUI(); setTimeout(function(){map.invalidateSize();},150); }
-  var rt;
-  document.addEventListener('input',function(e){ if(e.target&&e.target.id==='cpRad'){ $('cpRadV').textContent=e.target.value+' min'; if(last){ drawCircle(last); renderPanel(last.lat,last.lng);} clearTimeout(rt); rt=setTimeout(buildRanking,350); } });
-  function showTab(name){ document.querySelectorAll('.cp-tab').forEach(function(b){b.classList.toggle('active',b.dataset.tab===name);}); document.querySelectorAll('.cp-panel').forEach(function(p){p.hidden=(p.id!=='tab-'+name);}); if(name==='map'){ initMap(); loadData(); ensureRankUI(); setTimeout(function(){ if(map) map.invalidateSize(); },180); } }
-  document.addEventListener('click',function(e){ var b=e.target.closest?e.target.closest('.cp-tab'):null; if(b&&b.dataset.tab){ showTab(b.dataset.tab); } });
+var inited=false, dataLoaded=false, map, clubs=[], pop=[], marker, circle, clubLayer, last=null, rankRows=[];
+var TARGET_PER10K=10000/6000, DEMAND_FULL=120000, KMH=40, MIN_POP=30000, OUTDOOR_W=0.5;
+function $(id){return document.getElementById(id);}
+function radiusKm(){ return (+$('cpRad').value)/60*KMH; }
+function km(aLat,aLng,bLat,bLng){var R=6371,dLat=(bLat-aLat)*Math.PI/180,dLng=(bLng-aLng)*Math.PI/180;var s=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(aLat*Math.PI/180)*Math.cos(bLat*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);return 2*R*Math.asin(Math.sqrt(s));}
+function scoreOf(P,eff){ if(P<=0) return 0; var per10=eff/(P/10000); var sat=Math.max(0,Math.min(1,1-per10/TARGET_PER10K)); var dem=Math.max(0,Math.min(1,P/DEMAND_FULL)); return Math.round(sat*dem*100); }
+function color(s){return s>=66?'#0a7d4b':s>=33?'#b8860b':'#b3261e';}
+function ind(c){return c[3]||0;} function outd(c){return c[4]||0;}
+function catchment(lat,lng,radKm){var indoor=0,outdoor=0,clubCount=0,near=[];for(var i=0;i<clubs.length;i++){var c=clubs[i];var d=km(lat,lng,c[1],c[2]);if(d<=radKm){indoor+=ind(c);outdoor+=outd(c);clubCount++;near.push([c[0],ind(c)+outd(c),d]);}}var eff=indoor+outdoor*OUTDOOR_W;var people=0;for(var j=0;j<pop.length;j++){var t=pop[j];if(km(lat,lng,t[1],t[2])<=radKm)people+=t[3];}var per10=people?eff/(people/10000):0;var roomT=people/6000-eff;return {people:people,indoor:indoor,outdoor:outdoor,eff:eff,clubCount:clubCount,near:near,per10:per10,roomT:roomT,score:scoreOf(people,eff)};}
+function plotClubs(){ if(!map||!clubs.length) return; if(clubLayer) clubLayer.remove(); clubLayer=L.layerGroup(); clubs.forEach(function(c){ var tot=ind(c)+outd(c); L.circleMarker([c[1],c[2]],{radius:3,color:'#0a7d4b',weight:1,fillColor:'#0a7d4b',fillOpacity:.55}).bindTooltip(c[0]+' · '+tot+' courts'+(outd(c)?' ('+outd(c)+' outdoor)':'')).addTo(clubLayer); }); clubLayer.addTo(map); }
+function loadData(){ if(dataLoaded) return; dataLoaded=true; Promise.all([fetch('clubs.json').then(function(r){return r.json();}),fetch('population.json').then(function(r){return r.json();})]).then(function(res){ clubs=res[0]; pop=res[1]; var tot=clubs.reduce(function(a,x){return a+ind(x)+outd(x);},0); $('cpMapMeta').textContent=clubs.length+' clubs · '+tot+' courts (TrustPadel + Padel Directory + Playtomic) · outdoor counted at 50% · England & Wales. Updated weekly.'; plotClubs(); buildRanking(); }).catch(function(e){ $('cpMapMeta').textContent='Could not load map data ('+e+')'; }); }
+function stat(l,v){ return '<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">'+l+'</div><div style="font-size:17px;font-weight:700">'+v+'</div></div>'; }
+function renderPanel(lat,lng){ var mins=+$('cpRad').value, r=catchment(lat,lng,radiusKm()); r.near.sort(function(a,b){return a[2]-b[2];}); var nb=r.near.slice(0,6).map(function(n){return '<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;border-top:1px solid var(--line)"><span>'+n[0]+'</span><span style="color:var(--muted)">'+n[1]+' courts · '+n[2].toFixed(1)+'km</span></div>';}).join('')||'<div style="font-size:12.5px;color:var(--muted)">No clubs within '+mins+' min drive</div>'; $('cpMapPanel').innerHTML='<div style="border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff"><div class="cp-flabel" style="margin:0">Opportunity score</div><div style="font-size:42px;font-weight:800;color:'+color(r.score)+';line-height:1.05">'+r.score+'<small style="font-size:18px;color:var(--muted);font-weight:700"> /100</small></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">'+stat('Catchment population',r.people.toLocaleString('en-GB'))+stat('Existing courts',(r.indoor+r.outdoor)+' ('+r.indoor+' indoor / '+r.outdoor+' outdoor)')+stat('Effective supply',r.eff.toFixed(1)+' courts')+stat('Room at 1/6,000',Math.max(0,Math.round(r.roomT))+'')+'</div><div class="cp-secnote" style="margin:12px 0 4px">Outdoor courts count at 50% (weak competition for an indoor venue). Score blends under-supply (vs 1 court / 6,000) with population in reach. '+mins+'-min drive catchment.</div><div class="cp-flabel" style="margin:14px 0 2px">Nearest clubs</div>'+nb+'</div>'; }
+function drawCircle(latlng){ if(circle) circle.remove(); circle=L.circle(latlng,{radius:radiusKm()*1000,color:'#0a7d4b',weight:1,fillColor:'#0a7d4b',fillOpacity:.06}).addTo(map); }
+function pick(lat,lng){ if(marker) marker.remove(); marker=L.marker([lat,lng]).addTo(map); drawCircle(L.latLng(lat,lng)); last=L.latLng(lat,lng); renderPanel(lat,lng); }
+function buildRanking(){ if(!clubs.length||!pop.length) return; var radKm=radiusKm(); var all=[]; for(var i=0;i<pop.length;i++){ var t=pop[i]; if(t[3]<MIN_POP) continue; var r=catchment(t[1],t[2],radKm); all.push({name:t[0],lat:t[1],lng:t[2],score:r.score,per10:r.per10,room:r.roomT,people:r.people,tot:r.indoor+r.outdoor}); } all.sort(function(a,b){return b.score-a.score || b.room-a.room;}); var picked=[], sep=radKm*1.5; for(var k=0;k<all.length;k++){var a=all[k];var ok=true;for(var m=0;m<picked.length;m++){if(km(a.lat,a.lng,picked[m].lat,picked[m].lng)<sep){ok=false;break;}}if(ok)picked.push(a);if(picked.length>=120)break;} rankRows=picked; renderRanking(); }
+function renderRanking(){ var host=$('cpRankList'); if(!host) return; var html=rankRows.map(function(r,i){ return '<div class="cp-rankrow" data-lat="'+r.lat+'" data-lng="'+r.lng+'" style="display:grid;grid-template-columns:32px 1fr 52px 66px 88px 54px;gap:8px;align-items:center;padding:7px 8px;border-top:1px solid var(--line);cursor:pointer;font-size:12.5px"><span style="color:var(--muted)">'+(i+1)+'</span><span style="font-weight:600">'+r.name+'</span><span style="font-weight:800;color:'+color(r.score)+'">'+r.score+'</span><span style="color:var(--muted)">'+r.per10.toFixed(2)+'/10k</span><span style="color:var(--muted)">'+r.people.toLocaleString('en-GB')+'</span><span style="color:var(--muted)">'+r.tot+' crt</span></div>'; }).join(''); host.innerHTML='<div style="display:grid;grid-template-columns:32px 1fr 52px 66px 88px 54px;gap:8px;padding:0 8px 6px;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)"><span>#</span><span>Area</span><span>Score</span><span>Crt/10k</span><span>Population</span><span>Courts</span></div>'+html; }
+function ensureRankUI(){ if($('cpRankWrap')||!$('cpMapMeta')) return; var card=$('cpMapMeta').parentElement; var w=document.createElement('div'); w.id='cpRankWrap'; w.style.marginTop='18px'; w.innerHTML='<div class="cp-seclabel">Opportunity ranking — highest to lowest</div><div class="cp-secnote">Distinct areas (nearby towns de-duplicated), scored by under-supply per head (vs 1 court / 6,000, outdoor at 50%) within the drive-time catchment. Click a row to jump the map.</div><div id="cpRankList" style="max-height:440px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff"></div>'; card.appendChild(w); $('cpRankList').addEventListener('click',function(e){ var row=e.target.closest('.cp-rankrow'); if(row){ var la=+row.dataset.lat, ln=+row.dataset.lng; map.setView([la,ln],10); pick(la,ln); } }); }
+function initMap(){ if(inited) return; if(typeof L==='undefined'){ setTimeout(initMap,200); return; } inited=true; map=L.map('cpMap',{scrollWheelZoom:true}).setView([52.7,-1.7],6); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(map); plotClubs(); map.on('click',function(e){ pick(e.latlng.lat,e.latlng.lng); }); ensureRankUI(); setTimeout(function(){map.invalidateSize();},150); }
+var rt;
+document.addEventListener('input',function(e){ if(e.target&&e.target.id==='cpRad'){ $('cpRadV').textContent=e.target.value+' min'; if(last){ drawCircle(last); renderPanel(last.lat,last.lng);} clearTimeout(rt); rt=setTimeout(buildRanking,350); } });
+function showTab(name){ document.querySelectorAll('.cp-tab').forEach(function(b){b.classList.toggle('active',b.dataset.tab===name);}); document.querySelectorAll('.cp-panel').forEach(function(p){p.hidden=(p.id!=='tab-'+name);}); if(name==='map'){ initMap(); loadData(); ensureRankUI(); setTimeout(function(){ if(map) map.invalidateSize(); },180); } }
+document.addEventListener('click',function(e){ var b=e.target.closest?e.target.closest('.cp-tab'):null; if(b&&b.dataset.tab){ showTab(b.dataset.tab); } });
 })();</script><script>(function(){var loaded=false;function load(){if(loaded)return;loaded=true;var host=document.getElementById('cpDataHost');if(!host)return;fetch('dashboard.html?cb='+Date.now()).then(function(r){return r.text();}).then(function(h){host.innerHTML=h;}).catch(function(e){host.innerHTML='<div style="color:#b3261e;padding:20px">Could not load dashboard ('+e+')</div>';});}/*cpDataHost load*/document.addEventListener('click',function(e){var b=e.target.closest?e.target.closest('.cp-tab'):null;if(b&&b.dataset.tab==='data'){load();}});})();</script></body></html>
