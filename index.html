@@ -581,6 +581,7 @@ setTimeout(run,80);
 #tab-planner .pl-field input{width:92px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;font-size:14px}
 #tab-planner .pl-btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink)}
 #tab-planner .pl-btn:hover{background:var(--ok-bg);border-color:var(--green)}
+#tab-planner .pl-btn:disabled{opacity:.42;cursor:default;background:#fff}
 #tab-planner .pl-btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
 #tab-planner .pl-btn.primary:hover{background:var(--green-dark)}
 #tab-planner .pl-btn.dbl{border-left:5px solid #0a7d4b}
@@ -632,13 +633,13 @@ setTimeout(run,80);
         <div class="pl-stat"><b id="plUtil">0%</b><span>court coverage of area (<span id="plAreaM">0</span> m² of <span id="plAreaT">0</span> m²)</span></div>
         <div class="pl-selbox">
           <h4 id="plSelTitle">Nothing selected</h4>
-          <div class="row" id="plSelControls" style="display:none">
-            <button class="pl-btn" id="plRot">Rotate 90°</button>
-            <button class="pl-btn" id="plDup">Duplicate</button>
-            <button class="pl-btn" id="plDel">Delete</button>
+          <div class="row" id="plSelControls">
+            <button class="pl-btn" id="plRot" disabled>Turn 90° ⟳</button>
+            <button class="pl-btn" id="plDup" disabled>Duplicate</button>
+            <button class="pl-btn" id="plDel" disabled>Delete</button>
           </div>
           <input type="text" id="plTag" placeholder="Add a label (e.g. Court 1)" style="display:none">
-          <div class="pl-legend">Click a court to select. Drag to move (snaps to ½ m). Rotating swaps 21×11 ↔ 11×21.</div>
+          <div class="pl-legend">Click a court to select it, then <b>Turn 90°</b> to flip it vertical ⇄ horizontal — or just <b>double-click</b> a court. Drag to move (snaps to ½ m).</div>
         </div>
         <div class="row" style="display:flex;gap:6px">
           <button class="pl-btn" id="plPng">Export PNG</button>
@@ -706,19 +707,30 @@ setTimeout(run,80);
       ctx.strokeRect(mx(o.x),my(o.y),o.w*scale,o.h*scale);
       // court centre line + service box for courts
       if(o.type==='double'||o.type==='single'){
+        var ins=0.5, px0=o.x+ins, py0=o.y+ins, pw=o.w-2*ins, ph=o.h-2*ins;
         ctx.strokeStyle=t.color; ctx.lineWidth=1;
-        var cx=mx(o.x+o.w/2), cy=my(o.y+o.h/2);
-        // net line across the short axis (through middle of 20m length)
-        if(o.w>=o.h){ctx.beginPath();ctx.moveTo(cx,my(o.y));ctx.lineTo(cx,my(o.y+o.h));ctx.stroke();
-          var s3=o.w*scale/ (o.w/3); }
-        else {ctx.beginPath();ctx.moveTo(mx(o.x),cy);ctx.lineTo(mx(o.x+o.w),cy);ctx.stroke();}
+        ctx.strokeRect(mx(px0),my(py0),pw*scale,ph*scale);
+        ctx.beginPath();
+        if(pw>=ph){
+          var yA=my(py0), yB=my(py0+ph), s1=mx(px0+3), s2=mx(px0+pw-3);
+          ctx.moveTo(s1,yA);ctx.lineTo(s1,yB); ctx.moveTo(s2,yA);ctx.lineTo(s2,yB);
+          var cyy=my(py0+ph/2); ctx.moveTo(s1,cyy);ctx.lineTo(s2,cyy);
+          ctx.stroke();
+          ctx.lineWidth=2.5; ctx.beginPath(); var nx=mx(px0+pw/2); ctx.moveTo(nx,yA);ctx.lineTo(nx,yB); ctx.stroke();
+        } else {
+          var xA=mx(px0), xB=mx(px0+pw), t1=my(py0+3), t2=my(py0+ph-3);
+          ctx.moveTo(xA,t1);ctx.lineTo(xB,t1); ctx.moveTo(xA,t2);ctx.lineTo(xB,t2);
+          var cxx=mx(px0+pw/2); ctx.moveTo(cxx,t1);ctx.lineTo(cxx,t2);
+          ctx.stroke();
+          ctx.lineWidth=2.5; ctx.beginPath(); var ny=my(py0+ph/2); ctx.moveTo(xA,ny);ctx.lineTo(xB,ny); ctx.stroke();
+        }
       }
-      if((o.type==='double'||o.type==='single')&&logoReady){var lw=Math.min(o.w,o.h)*scale*0.42;lw=Math.min(lw,o.w*scale*0.6);var lx=mx(o.x+o.w/2)-lw/2;var ly=my(o.y)+Math.min(o.w,o.h)*scale*0.07;ctx.drawImage(logoImg,lx,ly,lw,lw);}
-      // label
+      if((o.type==='double'||o.type==='single')&&logoReady){var lw=Math.min(o.w,o.h)*scale*0.3;var lx=mx(o.x+o.w/2)-lw/2;var ly=my(o.y)+(o.h*scale)*0.09;ctx.drawImage(logoImg,lx,ly,lw,lw);}
+      // label (bottom, clears the logo)
       var lbl=o.label||t.name;
-      ctx.fillStyle=bad?'#b3261e':t.color; ctx.font='600 '+Math.max(9,Math.min(13,scale*1.2))+'px -apple-system,Arial';
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      if(scale*o.h>14) ctx.fillText(lbl,mx(o.x+o.w/2),my(o.y+o.h/2));
+      ctx.fillStyle=bad?'#b3261e':t.color; ctx.font='700 '+Math.max(9,Math.min(13,scale*1.05))+'px -apple-system,Arial';
+      ctx.textAlign='center'; ctx.textBaseline='bottom';
+      if(scale*o.h>24) ctx.fillText(lbl,mx(o.x+o.w/2),my(o.y+o.h)-4);
     });
     stats();
   }
@@ -737,10 +749,12 @@ setTimeout(run,80);
     objs.push(o); select(o); draw();
   }
   function select(o){ sel=o;
-    var st=$('plSelTitle'), ctl=$('plSelControls'), tag=$('plTag');
-    if(o){st.textContent=(TYPES[o.type].name)+' — '+o.w+'×'+o.h+' m'; ctl.style.display='flex'; tag.style.display='block'; tag.value=o.label||'';}
-    else {st.textContent='Nothing selected'; ctl.style.display='none'; tag.style.display='none';}
+    var st=$('plSelTitle'), tag=$('plTag');
+    var btns=root.querySelectorAll('#plSelControls button');
+    if(o){st.textContent=(TYPES[o.type].name)+' — '+o.w+'×'+o.h+' m'; tag.style.display='block'; tag.value=o.label||''; btns.forEach(function(b){b.disabled=false;});}
+    else {st.textContent='Select a court to turn or edit it'; tag.style.display='none'; btns.forEach(function(b){b.disabled=true;});}
   }
+  function turn(o){var cx=o.x+o.w/2,cy=o.y+o.h/2,nw=o.h,nh=o.w;o.w=nw;o.h=nh;o.x=snap(cx-nw/2);o.y=snap(cy-nh/2);o.x=Math.max(0,Math.min(L-o.w,o.x));o.y=Math.max(0,Math.min(W-o.h,o.y));}
   // pointer interaction
   var drag=null;
   function ptM(e){var r=cv.getBoundingClientRect();var px=(e.clientX-r.left),py=(e.clientY-r.top);return {x:(px-padPx)/scale,y:(py-padPx)/scale};}
@@ -752,9 +766,10 @@ setTimeout(run,80);
     if(drag){drag.o.x=snap(p.x-drag.dx);drag.o.y=snap(p.y-drag.dy);draw();}
     else {cv.style.cursor=hit(p)?'grab':'default';}});
   cv.addEventListener('pointerup',function(e){drag=null;cv.style.cursor='default';});
+  cv.addEventListener('dblclick',function(e){var p=ptM(e);var o=hit(p);if(o){select(o);turn(o);draw();}});
   // controls
   root.querySelectorAll('[data-add]').forEach(function(b){b.addEventListener('click',function(){add(b.dataset.add);});});
-  $('plRot').addEventListener('click',function(){if(!sel)return;var cx=sel.x+sel.w/2,cy=sel.y+sel.h/2;var nw=sel.h,nh=sel.w;sel.w=nw;sel.h=nh;sel.x=snap(cx-nw/2);sel.y=snap(cy-nh/2);sel.x=Math.max(0,Math.min(L-sel.w,sel.x));sel.y=Math.max(0,Math.min(W-sel.h,sel.y));select(sel);draw();});
+  $('plRot').addEventListener('click',function(){if(!sel)return;turn(sel);select(sel);draw();});
   $('plDup').addEventListener('click',function(){if(!sel)return;var o=Object.assign({},sel);o.id=uid++;o.x=snap(Math.min(L-o.w,o.x+2));o.y=snap(Math.min(W-o.h,o.y+2));objs.push(o);select(o);draw();});
   $('plDel').addEventListener('click',function(){if(!sel)return;objs=objs.filter(function(o){return o!==sel;});select(null);draw();});
   $('plTag').addEventListener('input',function(){if(sel){sel.label=this.value;draw();}});
@@ -763,23 +778,27 @@ setTimeout(run,80);
   $('plWid').addEventListener('input',function(){area();fit();draw();});
   $('plAuto').addEventListener('click',function(){autofill();});
   function autofill(){
-    area(); var gap=parseFloat($('plGap').value)||0; var m=1; // 1m perimeter margin
-    // keep existing obstacles/pillars, clear courts
+    area(); var g=parseFloat($('plGap').value)||0;
     objs=objs.filter(function(o){return o.type==='obstacle'||o.type==='pillar';});
-    function place(cw,ch){
-      var out=[]; var usableW=L-2*m, usableH=W-2*m;
-      var cols=Math.floor((usableW+gap)/(cw+gap));
-      var rows=Math.floor((usableH+gap)/(ch+gap));
-      if(cols<1||rows<1)return out;
-      var totW=cols*cw+(cols-1)*gap, totH=rows*ch+(rows-1)*gap;
-      var ox=snap((L-totW)/2), oy=snap((W-totH)/2);
-      for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){out.push({id:uid++,type:'double',w:cw,h:ch,x:snap(ox+c*(cw+gap)),y:snap(oy+r*(ch+gap)),label:''});}
-      return out;
+    var cw=TYPES.double.w, ch=TYPES.double.h; var ors=[[cw,ch],[ch,cw]];
+    var memo={};
+    function best(remH){
+      var key=Math.round(remH*2); if(key in memo) return memo[key];
+      var res={count:0,rows:[]};
+      for(var k=0;k<ors.length;k++){ var w=ors[k][0], hh=ors[k][1];
+        if(hh<=remH+1e-6){ var perRow=Math.floor((L+g)/(w+g));
+          if(perRow>=1){ var sub=best(remH-hh-g); var c=perRow+sub.count;
+            if(c>res.count) res={count:c,rows:[{w:w,h:hh,n:perRow}].concat(sub.rows)}; } } }
+      memo[key]=res; return res;
     }
-    var a=place(21,11), b=place(11,21);
-    var best=a.length>=b.length?a:b;
-    best.forEach(function(o){objs.push(o);});
-    best.forEach(function(o,i){o.label='Court '+(i+1);});
+    var plan=best(W);
+    var totalH=plan.rows.reduce(function(a,r){return a+r.h;},0)+(plan.rows.length-1)*g;
+    var y=snap(Math.max(0,(W-totalH)/2)); var idx=1;
+    plan.rows.forEach(function(row){
+      var rowW=row.n*row.w+(row.n-1)*g; var ox=snap(Math.max(0,(L-rowW)/2));
+      for(var c=0;c<row.n;c++){ objs.push({id:uid++,type:'double',w:row.w,h:row.h,x:snap(ox+c*(row.w+g)),y:y,label:'Court '+(idx++)}); }
+      y=snap(y+row.h+g);
+    });
     select(null); draw();
   }
   $('plPng').addEventListener('click',function(){var url=cv.toDataURL('image/png');var a=document.createElement('a');a.href=url;a.download='padel-layout.png';a.click();});
