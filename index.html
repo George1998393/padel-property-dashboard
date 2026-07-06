@@ -588,6 +588,10 @@ setTimeout(run,80);
 #tab-planner .pl-btn.sgl{border-left:5px solid #2f7fd6}
 #tab-planner .pl-btn.obs{border-left:5px solid #b3261e}
 #tab-planner .pl-btn.pil{border-left:5px solid #6b7280}
+#tab-planner .pl-btn.wc{border-left:5px solid #7c3aed}
+#tab-planner .pl-btn.sh{border-left:5px solid #0891b2}
+#tab-planner .pl-btn.so{border-left:5px solid #a16207}
+#tab-planner .pl-btn.tx{border-left:5px solid #0f1a14}
 #tab-planner .pl-wrap{display:flex;gap:18px;flex-wrap:wrap}
 #tab-planner .pl-stage{flex:1 1 640px;min-width:320px}
 #tab-planner .pl-canvas-box{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#f8faf9}
@@ -615,6 +619,10 @@ setTimeout(run,80);
       <button class="pl-btn sgl" data-add="single">＋ Single 21×7</button>
       <button class="pl-btn obs" data-add="obstacle">＋ Obstacle</button>
       <button class="pl-btn pil" data-add="pillar">＋ Pillar</button>
+      <button class="pl-btn wc" data-add="toilet">＋ Toilets</button>
+      <button class="pl-btn sh" data-add="shower">＋ Showers</button>
+      <button class="pl-btn so" data-add="social">＋ Social area</button>
+      <button class="pl-btn tx" data-add="text">＋ Text</button>
       <div class="pl-field"><label>Gap between (m)</label><input id="plGap" type="number" min="0" max="10" step="0.5" value="1"></div>
       <button class="pl-btn primary" id="plAuto">Auto-fill max courts</button>
       <button class="pl-btn" id="plClear">Clear</button>
@@ -623,9 +631,8 @@ setTimeout(run,80);
       <div class="pl-stage">
         <div class="pl-canvas-box"><canvas id="plCanvas"></canvas></div>
         <div class="pl-legend" style="margin-top:8px">
-          <i style="background:#0a7d4b"></i>Double court &nbsp; <i style="background:#2f7fd6"></i>Single court &nbsp;
-          <i style="background:#b3261e"></i>Obstacle &nbsp; <i style="background:#6b7280"></i>Pillar &nbsp;
-          <span class="pl-warn">Red outline = outside area, overlapping, or over a pillar/obstacle</span>
+          <i style="background:#0a7d4b"></i>Court &nbsp; <i style="background:#7c3aed"></i>Toilets &nbsp; <i style="background:#0891b2"></i>Showers &nbsp; <i style="background:#a16207"></i>Social area &nbsp; <i style="background:#b3261e"></i>Obstacle &nbsp; <i style="background:#6b7280"></i>Pillar &nbsp;
+          <span class="pl-warn">Red = court overlaps another item or is outside the area. Everything drawn to scale (1 m grid).</span>
         </div>
       </div>
       <div class="pl-side">
@@ -638,7 +645,11 @@ setTimeout(run,80);
             <button class="pl-btn" id="plDup" disabled>Duplicate</button>
             <button class="pl-btn" id="plDel" disabled>Delete</button>
           </div>
-          <input type="text" id="plTag" placeholder="Add a label (e.g. Court 1)" style="display:none">
+          <div class="row" id="plResize" style="display:none">
+            <label style="font-size:11px;color:var(--muted)">W&nbsp;<input id="plW" type="number" step="0.5" min="0.5" style="width:58px;padding:5px 6px;border:1px solid var(--line);border-radius:7px"></label>
+            <label style="font-size:11px;color:var(--muted)">H&nbsp;<input id="plH" type="number" step="0.5" min="0.5" style="width:58px;padding:5px 6px;border:1px solid var(--line);border-radius:7px"></label>
+          </div>
+          <input type="text" id="plTag" placeholder="Label / text…" style="display:none">
           <div class="pl-legend">Click a court to select it, then <b>Turn 90°</b> to flip it vertical ⇄ horizontal — or just <b>double-click</b> a court. Drag to move (snaps to ½ m).</div>
         </div>
         <div class="row" style="display:flex;gap:6px">
@@ -661,7 +672,11 @@ setTimeout(run,80);
   var TYPES={double:{w:21,h:11,color:'#0a7d4b',fill:'rgba(10,125,75,.14)',name:'Double'},
              single:{w:21,h:7,color:'#2f7fd6',fill:'rgba(47,127,214,.14)',name:'Single'},
              obstacle:{w:4,h:4,color:'#b3261e',fill:'rgba(179,38,30,.16)',name:'Obstacle'},
-             pillar:{w:0.6,h:0.6,color:'#6b7280',fill:'rgba(107,114,128,.4)',name:'Pillar'}};
+             pillar:{w:0.6,h:0.6,color:'#6b7280',fill:'rgba(107,114,128,.4)',name:'Pillar'},
+             toilet:{w:3,h:4,color:'#7c3aed',fill:'rgba(124,58,237,.12)',name:'Toilets',icon:'\uD83D\uDEBB'},
+             shower:{w:3,h:4,color:'#0891b2',fill:'rgba(8,145,178,.12)',name:'Showers',icon:'\uD83D\uDEBF'},
+             social:{w:8,h:6,color:'#a16207',fill:'rgba(161,98,7,.10)',name:'Social area'},
+             text:{w:5,h:1.2,color:'#0f1a14',fill:'rgba(0,0,0,0)',name:'Text'}};
   var objs=[], sel=null, uid=1;
   var L=40, W=34, scale=1, padPx=16;
   function area(){L=parseFloat($('plLen').value)||1; W=parseFloat($('plWid').value)||1;}
@@ -682,9 +697,20 @@ setTimeout(run,80);
   function my(m){return padPx+m*scale;}
   function snap(v){return Math.round(v*2)/2;}
   function outside(o){return o.x<-0.001||o.y<-0.001||o.x+o.w>L+0.001||o.y+o.h>W+0.001;}
-  function overlaps(o){ if(o.type==='pillar'||o.type==='obstacle')return false;
-    return objs.some(function(b){ if(b===o)return false;
+  function overlaps(o){ if(o.type!=='double'&&o.type!=='single')return false;
+    return objs.some(function(b){ if(b===o||b.type==='text')return false;
       return o.x<b.x+b.w-0.01 && o.x+o.w>b.x+0.01 && o.y<b.y+b.h-0.01 && o.y+o.h>b.y+0.01;});}
+  function drawSocial(o){
+    var pitch=2.4, cols=Math.floor(o.w/pitch), rows=Math.floor(o.h/pitch);
+    if(cols<1||rows<1||scale<5) return;
+    var offx=(o.w-cols*pitch)/2, offy=(o.h-rows*pitch)/2, chS=0.45*scale, off=0.72*scale, tr=0.45*scale;
+    for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){
+      var cxp=mx(o.x+offx+c*pitch+pitch/2), cyp=my(o.y+offy+r*pitch+pitch/2);
+      ctx.fillStyle='#d8c48f'; ctx.strokeStyle='#8a6d1f'; ctx.lineWidth=1;
+      [[0,-off],[0,off],[-off,0],[off,0]].forEach(function(d){ctx.fillRect(cxp+d[0]-chS/2,cyp+d[1]-chS/2,chS,chS);ctx.strokeRect(cxp+d[0]-chS/2,cyp+d[1]-chS/2,chS,chS);});
+      ctx.beginPath();ctx.arc(cxp,cyp,tr,0,2*Math.PI);ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle='#8a6d1f';ctx.lineWidth=1.2;ctx.stroke();
+    }
+  }
   function draw(){
     ctx.clearRect(0,0,cv.width,cv.height);
     // area background
@@ -701,12 +727,21 @@ setTimeout(run,80);
     ctx.lineWidth=2; ctx.strokeStyle='#0f1a14'; ctx.strokeRect(mx(0),my(0),L*scale,W*scale);
     // objects
     objs.forEach(function(o){
-      var t=TYPES[o.type]; var bad=outside(o)||overlaps(o);
+      var t=TYPES[o.type]; var isCourt=(o.type==='double'||o.type==='single');
+      if(o.type==='text'){
+        var fs=Math.max(0.6,o.h*0.8);
+        ctx.fillStyle=o.color||'#0f1a14'; ctx.font='700 '+Math.max(10,fs*scale)+'px -apple-system,Arial';
+        ctx.textAlign='left'; ctx.textBaseline='middle';
+        ctx.fillText(o.label||'Text', mx(o.x)+3, my(o.y+o.h/2));
+        if(o===sel){ctx.setLineDash([4,3]);ctx.lineWidth=1;ctx.strokeStyle='#0f1a14';ctx.strokeRect(mx(o.x),my(o.y),o.w*scale,o.h*scale);ctx.setLineDash([]);}
+        return;
+      }
+      var bad=outside(o)||overlaps(o);
       ctx.fillStyle=t.fill; ctx.fillRect(mx(o.x),my(o.y),o.w*scale,o.h*scale);
       ctx.lineWidth=(o===sel)?3:2; ctx.strokeStyle=bad?'#b3261e':(o===sel?'#0f1a14':t.color);
       ctx.strokeRect(mx(o.x),my(o.y),o.w*scale,o.h*scale);
       // court centre line + service box for courts
-      if(o.type==='double'||o.type==='single'){
+      if(isCourt){
         var ins=0.5, px0=o.x+ins, py0=o.y+ins, pw=o.w-2*ins, ph=o.h-2*ins;
         ctx.strokeStyle=t.color; ctx.lineWidth=1;
         ctx.strokeRect(mx(px0),my(py0),pw*scale,ph*scale);
@@ -725,12 +760,16 @@ setTimeout(run,80);
           ctx.lineWidth=2.5; ctx.beginPath(); var ny=my(py0+ph/2); ctx.moveTo(xA,ny);ctx.lineTo(xB,ny); ctx.stroke();
         }
       }
-      if((o.type==='double'||o.type==='single')&&logoReady){var lw=Math.min(o.w,o.h)*scale*0.3;var lx=mx(o.x+o.w/2)-lw/2;var ly=my(o.y)+(o.h*scale)*0.09;ctx.drawImage(logoImg,lx,ly,lw,lw);}
-      // label (bottom, clears the logo)
+      if(isCourt&&logoReady){var lw=Math.min(o.w,o.h)*scale*0.3;var lx=mx(o.x+o.w/2)-lw/2;var ly=my(o.y)+(o.h*scale)*0.09;ctx.drawImage(logoImg,lx,ly,lw,lw);}
+      else if(o.type==='social'){ drawSocial(o); }
+      else if(t.icon && Math.min(o.w,o.h)*scale>22){ ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font=Math.max(12,Math.min(o.w,o.h)*scale*0.5)+'px -apple-system,Arial'; ctx.fillText(t.icon, mx(o.x+o.w/2), my(o.y+o.h/2)-(o.h*scale*0.12)); }
+      // label (bottom)
       var lbl=o.label||t.name;
-      ctx.fillStyle=bad?'#b3261e':t.color; ctx.font='700 '+Math.max(9,Math.min(13,scale*1.05))+'px -apple-system,Arial';
-      ctx.textAlign='center'; ctx.textBaseline='bottom';
-      if(scale*o.h>24) ctx.fillText(lbl,mx(o.x+o.w/2),my(o.y+o.h)-4);
+      if(o.type!=='pillar' && scale*o.h>16){
+        ctx.fillStyle=bad?'#b3261e':t.color; ctx.font='700 '+Math.max(9,Math.min(13,scale*1.0))+'px -apple-system,Arial';
+        ctx.textAlign='center'; ctx.textBaseline='bottom';
+        ctx.fillText(lbl,mx(o.x+o.w/2),my(o.y+o.h)-3);
+      }
     });
     stats();
   }
@@ -744,15 +783,18 @@ setTimeout(run,80);
   }
   function add(type,x,y){
     var t=TYPES[type]; var o={id:uid++,type:type,w:t.w,h:t.h,
-      x:(x==null?snap((L-t.w)/2):x), y:(y==null?snap((W-t.h)/2):y), label:''};
+      x:(x==null?snap((L-t.w)/2):x), y:(y==null?snap((W-t.h)/2):y), label:(type==='text'?'Label':'')};
     o.x=Math.max(0,Math.min(L-o.w,o.x)); o.y=Math.max(0,Math.min(W-o.h,o.y));
     objs.push(o); select(o); draw();
+    if(type==='text'){var tg=$('plTag'); if(tg){tg.focus();tg.select();}}
   }
   function select(o){ sel=o;
-    var st=$('plSelTitle'), tag=$('plTag');
+    var st=$('plSelTitle'), tag=$('plTag'), rz=$('plResize');
     var btns=root.querySelectorAll('#plSelControls button');
-    if(o){st.textContent=(TYPES[o.type].name)+' — '+o.w+'×'+o.h+' m'; tag.style.display='block'; tag.value=o.label||''; btns.forEach(function(b){b.disabled=false;});}
-    else {st.textContent='Select a court to turn or edit it'; tag.style.display='none'; btns.forEach(function(b){b.disabled=true;});}
+    if(o){var isCourt=(o.type==='double'||o.type==='single');
+      st.textContent=(TYPES[o.type].name)+' — '+o.w+'×'+o.h+' m'; tag.style.display='block'; tag.value=o.label||''; btns.forEach(function(b){b.disabled=false;});
+      if(rz){rz.style.display=isCourt?'none':'flex'; if(!isCourt){$('plW').value=o.w;$('plH').value=o.h;}}}
+    else {st.textContent='Select an item to edit it'; tag.style.display='none'; if(rz)rz.style.display='none'; btns.forEach(function(b){b.disabled=true;});}
   }
   function turn(o){var cx=o.x+o.w/2,cy=o.y+o.h/2,nw=o.h,nh=o.w;o.w=nw;o.h=nh;o.x=snap(cx-nw/2);o.y=snap(cy-nh/2);o.x=Math.max(0,Math.min(L-o.w,o.x));o.y=Math.max(0,Math.min(W-o.h,o.y));}
   // pointer interaction
@@ -773,14 +815,16 @@ setTimeout(run,80);
   $('plDup').addEventListener('click',function(){if(!sel)return;var o=Object.assign({},sel);o.id=uid++;o.x=snap(Math.min(L-o.w,o.x+2));o.y=snap(Math.min(W-o.h,o.y+2));objs.push(o);select(o);draw();});
   $('plDel').addEventListener('click',function(){if(!sel)return;objs=objs.filter(function(o){return o!==sel;});select(null);draw();});
   $('plTag').addEventListener('input',function(){if(sel){sel.label=this.value;draw();}});
+  ['plW','plH'].forEach(function(id){var e=$(id); if(e) e.addEventListener('input',function(){if(!sel)return;var v=parseFloat(this.value);if(isNaN(v)||v<0.5)return;if(id==='plW'){sel.w=v;sel.x=Math.max(0,Math.min(L-sel.w,sel.x));}else{sel.h=v;sel.y=Math.max(0,Math.min(W-sel.h,sel.y));}draw();});});
   $('plClear').addEventListener('click',function(){objs=[];select(null);draw();});
   $('plLen').addEventListener('input',function(){area();fit();draw();});
   $('plWid').addEventListener('input',function(){area();fit();draw();});
   $('plAuto').addEventListener('click',function(){autofill();});
   function autofill(){
     area(); var g=parseFloat($('plGap').value)||0;
-    var obs=objs.filter(function(o){return o.type==='obstacle'||o.type==='pillar';});
-    objs=obs.slice();
+    var keep=objs.filter(function(o){return o.type!=='double'&&o.type!=='single';});
+    objs=keep.slice();
+    var obs=keep.filter(function(o){return o.type!=='text';});
     var cw=TYPES.double.w, ch=TYPES.double.h; var ors=[[cw,ch],[ch,cw]];
     // place as many courts as fit in a horizontal band [y,y+h], scanning left->right,
     // jumping past any pillar/obstacle that blocks the slot
