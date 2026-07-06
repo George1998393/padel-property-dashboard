@@ -591,10 +591,12 @@ setTimeout(run,80);
 #tab-planner .pl-btn.wc{border-left:5px solid #7c3aed}
 #tab-planner .pl-btn.sh{border-left:5px solid #0891b2}
 #tab-planner .pl-btn.so{border-left:5px solid #a16207}
+#tab-planner .pl-btn.of{border-left:5px solid #0369a1}
+#tab-planner .pl-btn.stg{border-left:5px solid #57534e}
 #tab-planner .pl-btn.tx{border-left:5px solid #0f1a14}
 #tab-planner .pl-wrap{display:flex;gap:18px;flex-wrap:wrap}
 #tab-planner .pl-stage{flex:1 1 640px;min-width:320px}
-#tab-planner .pl-canvas-box{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#f8faf9}
+#tab-planner .pl-canvas-box{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#eef7f1}
 #tab-planner canvas{display:block;width:100%;touch-action:none;cursor:default}
 #tab-planner .pl-side{flex:0 0 250px;display:flex;flex-direction:column;gap:12px}
 #tab-planner .pl-stat{background:var(--ok-bg);border-radius:10px;padding:12px 14px}
@@ -622,6 +624,8 @@ setTimeout(run,80);
       <button class="pl-btn wc" data-add="toilet">＋ Toilets</button>
       <button class="pl-btn sh" data-add="shower">＋ Showers</button>
       <button class="pl-btn so" data-add="social">＋ Social area</button>
+      <button class="pl-btn of" data-add="office">＋ Office</button>
+      <button class="pl-btn stg" data-add="storage">＋ Storage</button>
       <button class="pl-btn tx" data-add="text">＋ Text</button>
       <div class="pl-field"><label>Gap between (m)</label><input id="plGap" type="number" min="0" max="10" step="0.5" value="1"></div>
       <button class="pl-btn primary" id="plAuto">Auto-fill max courts</button>
@@ -631,7 +635,7 @@ setTimeout(run,80);
       <div class="pl-stage">
         <div class="pl-canvas-box"><canvas id="plCanvas"></canvas></div>
         <div class="pl-legend" style="margin-top:8px">
-          <i style="background:#0a7d4b"></i>Court &nbsp; <i style="background:#7c3aed"></i>Toilets &nbsp; <i style="background:#0891b2"></i>Showers &nbsp; <i style="background:#a16207"></i>Social area &nbsp; <i style="background:#b3261e"></i>Obstacle &nbsp; <i style="background:#6b7280"></i>Pillar &nbsp;
+          <i style="background:#0a7d4b"></i>Court &nbsp; <i style="background:#7c3aed"></i>Toilets &nbsp; <i style="background:#0891b2"></i>Showers &nbsp; <i style="background:#a16207"></i>Social &nbsp; <i style="background:#0369a1"></i>Office &nbsp; <i style="background:#57534e"></i>Storage &nbsp; <i style="background:#b3261e"></i>Obstacle &nbsp; <i style="background:#6b7280"></i>Pillar &nbsp;
           <span class="pl-warn">Red = court overlaps another item or is outside the area. Everything drawn to scale (1 m grid).</span>
         </div>
       </div>
@@ -676,6 +680,8 @@ setTimeout(run,80);
              toilet:{w:3,h:4,color:'#7c3aed',fill:'rgba(124,58,237,.12)',name:'Toilets',icon:'\uD83D\uDEBB'},
              shower:{w:3,h:4,color:'#0891b2',fill:'rgba(8,145,178,.12)',name:'Showers',icon:'\uD83D\uDEBF'},
              social:{w:8,h:6,color:'#a16207',fill:'rgba(161,98,7,.10)',name:'Social area'},
+             office:{w:4,h:5,color:'#0369a1',fill:'rgba(3,105,161,.10)',name:'Office',icon:'\uD83D\uDCBC'},
+             storage:{w:4,h:5,color:'#57534e',fill:'rgba(87,83,74,.12)',name:'Storage',icon:'\uD83D\uDCE6'},
              text:{w:5,h:1.2,color:'#0f1a14',fill:'rgba(0,0,0,0)',name:'Text'}};
   var objs=[], sel=null, uid=1;
   var L=40, W=34, scale=1, padPx=16;
@@ -700,6 +706,32 @@ setTimeout(run,80);
   function overlaps(o){ if(o.type!=='double'&&o.type!=='single')return false;
     return objs.some(function(b){ if(b===o||b.type==='text')return false;
       return o.x<b.x+b.w-0.01 && o.x+o.w>b.x+0.01 && o.y<b.y+b.h-0.01 && o.y+o.h>b.y+0.01;});}
+  function cubLayout(o,cw,cd){
+    var horiz=o.w>=o.h, wall=horiz?o.w:o.h, depth=horiz?o.h:o.w;
+    var cols=Math.max(0,Math.floor((wall+0.001)/cw));
+    var rows= depth>=2*cd+0.9?2:(depth>=cd-0.001?1:0);
+    return {horiz:horiz,wall:wall,depth:depth,cols:cols,rows:rows,cw:cw,cd:cd,count:cols*rows};
+  }
+  function drawFixtures(o,cw,cd,col){
+    var Lc=cubLayout(o,cw,cd);
+    if(Lc.count>0 && scale>=5){
+      var offA=(Lc.wall-Lc.cols*cw)/2;
+      for(var r=0;r<Lc.rows;r++)for(var c=0;c<Lc.cols;c++){
+        var perp=(r===0)?0:(Lc.depth-cd);
+        var ax=Lc.horiz?(o.x+offA+c*cw):(o.x+perp);
+        var ay=Lc.horiz?(o.y+perp):(o.y+offA+c*cw);
+        var w=Lc.horiz?cw:cd, hh=Lc.horiz?cd:cw;
+        ctx.fillStyle='#fff'; ctx.strokeStyle=col; ctx.lineWidth=1;
+        ctx.fillRect(mx(ax)+1.5,my(ay)+1.5,w*scale-3,hh*scale-3);
+        ctx.strokeRect(mx(ax)+1.5,my(ay)+1.5,w*scale-3,hh*scale-3);
+      }
+    }
+    return Lc.count;
+  }
+  function titleText(o){ var e='';
+    if(o.type==='toilet') e=' · '+cubLayout(o,0.9,1.5).count+' loos';
+    else if(o.type==='shower') e=' · '+cubLayout(o,1.0,1.2).count+' showers';
+    return (TYPES[o.type].name)+' — '+o.w+'×'+o.h+' m'+e; }
   function drawSocial(o){
     var pitch=2.4, cols=Math.floor(o.w/pitch), rows=Math.floor(o.h/pitch);
     if(cols<1||rows<1||scale<5) return;
@@ -714,7 +746,7 @@ setTimeout(run,80);
   function draw(){
     ctx.clearRect(0,0,cv.width,cv.height);
     // area background
-    ctx.fillStyle='#fff'; ctx.fillRect(mx(0),my(0),L*scale,W*scale);
+    ctx.fillStyle='#e9f5ee'; ctx.fillRect(mx(0),my(0),L*scale,W*scale);
     // grid 1m
     ctx.lineWidth=1; ctx.strokeStyle='#eef3f0';
     for(var i=0;i<=Math.ceil(L);i++){var x=mx(Math.min(i,L));ctx.beginPath();ctx.moveTo(x,my(0));ctx.lineTo(x,my(W));ctx.stroke();}
@@ -762,9 +794,12 @@ setTimeout(run,80);
       }
       if(isCourt&&logoReady){var lw=Math.min(o.w,o.h)*scale*0.3;var lx=mx(o.x+o.w/2)-lw/2;var ly=my(o.y)+(o.h*scale)*0.09;ctx.drawImage(logoImg,lx,ly,lw,lw);}
       else if(o.type==='social'){ drawSocial(o); }
-      else if(t.icon && Math.min(o.w,o.h)*scale>22){ ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font=Math.max(12,Math.min(o.w,o.h)*scale*0.5)+'px -apple-system,Arial'; ctx.fillText(t.icon, mx(o.x+o.w/2), my(o.y+o.h/2)-(o.h*scale*0.12)); }
-      // label (bottom) — shrink to fit the item width so it never overflows/overlaps
+      else if(o.type==='toilet'){ o._n=drawFixtures(o,0.9,1.5,t.color); }
+      else if(o.type==='shower'){ o._n=drawFixtures(o,1.0,1.2,t.color); }
+      else if(t.icon && Math.min(o.w,o.h)*scale>22){ ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font=Math.max(12,Math.min(o.w,o.h)*scale*0.42)+'px -apple-system,Arial'; ctx.fillText(t.icon, mx(o.x+o.w/2), my(o.y+o.h/2)-(o.h*scale*0.14)); }
+      // label (bottom) — shrink to fit; show fixture count for loos/showers
       var lbl=o.label||t.name;
+      if(o.type==='toilet'||o.type==='shower'){ lbl=lbl+' \u00d7'+(o._n!=null?o._n:0); }
       if(o.type!=='pillar' && scale*o.h>16 && lbl){
         var maxw=o.w*scale-6, fsz=Math.max(8,Math.min(13,scale*1.0));
         ctx.font='700 '+fsz+'px -apple-system,Arial';
@@ -795,7 +830,7 @@ setTimeout(run,80);
     var st=$('plSelTitle'), tag=$('plTag'), rz=$('plResize');
     var btns=root.querySelectorAll('#plSelControls button');
     if(o){var isCourt=(o.type==='double'||o.type==='single');
-      st.textContent=(TYPES[o.type].name)+' — '+o.w+'×'+o.h+' m'; tag.style.display='block'; tag.value=o.label||''; btns.forEach(function(b){b.disabled=false;});
+      st.textContent=titleText(o); tag.style.display='block'; tag.value=o.label||''; btns.forEach(function(b){b.disabled=false;});
       if(rz){rz.style.display=isCourt?'none':'flex'; if(!isCourt){$('plW').value=o.w;$('plH').value=o.h;}}}
     else {st.textContent='Select an item to edit it'; tag.style.display='none'; if(rz)rz.style.display='none'; btns.forEach(function(b){b.disabled=true;});}
   }
@@ -818,7 +853,7 @@ setTimeout(run,80);
   $('plDup').addEventListener('click',function(){if(!sel)return;var o=Object.assign({},sel);o.id=uid++;o.x=snap(Math.min(L-o.w,o.x+2));o.y=snap(Math.min(W-o.h,o.y+2));objs.push(o);select(o);draw();});
   $('plDel').addEventListener('click',function(){if(!sel)return;objs=objs.filter(function(o){return o!==sel;});select(null);draw();});
   $('plTag').addEventListener('input',function(){if(sel){sel.label=this.value;draw();}});
-  ['plW','plH'].forEach(function(id){var e=$(id); if(e) e.addEventListener('input',function(){if(!sel)return;var v=parseFloat(this.value);if(isNaN(v)||v<0.5)return;if(id==='plW'){sel.w=v;sel.x=Math.max(0,Math.min(L-sel.w,sel.x));}else{sel.h=v;sel.y=Math.max(0,Math.min(W-sel.h,sel.y));}draw();});});
+  ['plW','plH'].forEach(function(id){var e=$(id); if(e) e.addEventListener('input',function(){if(!sel)return;var v=parseFloat(this.value);if(isNaN(v)||v<0.5)return;if(id==='plW'){sel.w=v;sel.x=Math.max(0,Math.min(L-sel.w,sel.x));}else{sel.h=v;sel.y=Math.max(0,Math.min(W-sel.h,sel.y));}$('plSelTitle').textContent=titleText(sel);draw();});});
   $('plClear').addEventListener('click',function(){objs=[];select(null);draw();});
   $('plLen').addEventListener('input',function(){area();fit();draw();});
   $('plWid').addEventListener('input',function(){area();fit();draw();});
