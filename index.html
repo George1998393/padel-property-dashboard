@@ -625,7 +625,7 @@ setTimeout(run,80);
         <div class="pl-legend" style="margin-top:8px">
           <i style="background:#0a7d4b"></i>Double court &nbsp; <i style="background:#2f7fd6"></i>Single court &nbsp;
           <i style="background:#b3261e"></i>Obstacle &nbsp; <i style="background:#6b7280"></i>Pillar &nbsp;
-          <span class="pl-warn">Red outline = outside area or overlapping</span>
+          <span class="pl-warn">Red outline = outside area, overlapping, or over a pillar/obstacle</span>
         </div>
       </div>
       <div class="pl-side">
@@ -683,7 +683,7 @@ setTimeout(run,80);
   function snap(v){return Math.round(v*2)/2;}
   function outside(o){return o.x<-0.001||o.y<-0.001||o.x+o.w>L+0.001||o.y+o.h>W+0.001;}
   function overlaps(o){ if(o.type==='pillar'||o.type==='obstacle')return false;
-    return objs.some(function(b){ if(b===o||b.type==='pillar'||b.type==='obstacle')return false;
+    return objs.some(function(b){ if(b===o)return false;
       return o.x<b.x+b.w-0.01 && o.x+o.w>b.x+0.01 && o.y<b.y+b.h-0.01 && o.y+o.h>b.y+0.01;});}
   function draw(){
     ctx.clearRect(0,0,cv.width,cv.height);
@@ -779,26 +779,35 @@ setTimeout(run,80);
   $('plAuto').addEventListener('click',function(){autofill();});
   function autofill(){
     area(); var g=parseFloat($('plGap').value)||0;
-    objs=objs.filter(function(o){return o.type==='obstacle'||o.type==='pillar';});
+    var obs=objs.filter(function(o){return o.type==='obstacle'||o.type==='pillar';});
+    objs=obs.slice();
     var cw=TYPES.double.w, ch=TYPES.double.h; var ors=[[cw,ch],[ch,cw]];
-    var memo={};
-    function best(remH){
-      var key=Math.round(remH*2); if(key in memo) return memo[key];
+    // place as many courts as fit in a horizontal band [y,y+h], scanning left->right,
+    // jumping past any pillar/obstacle that blocks the slot
+    function rowPlace(y,w,h){
+      var out=[]; var x=0, guard=0;
+      while(x+w<=L+1e-6 && guard++<3000){
+        var jump=null;
+        for(var i=0;i<obs.length;i++){ var b=obs[i];
+          if(x<b.x+b.w && x+w>b.x && y<b.y+b.h && y+h>b.y){ if(jump===null||b.x+b.w>jump) jump=b.x+b.w; } }
+        if(jump!==null){ x=snap(jump+g); continue; }
+        out.push({x:snap(x),y:snap(y),w:w,h:h}); x=snap(x+w+g);
+      }
+      return out;
+    }
+    var STEP=0.5, memo={};
+    function f(y){
+      var key=Math.round(y*2); if(key in memo) return memo[key];
       var res={count:0,rows:[]};
-      for(var k=0;k<ors.length;k++){ var w=ors[k][0], hh=ors[k][1];
-        if(hh<=remH+1e-6){ var perRow=Math.floor((L+g)/(w+g));
-          if(perRow>=1){ var sub=best(remH-hh-g); var c=perRow+sub.count;
-            if(c>res.count) res={count:c,rows:[{w:w,h:hh,n:perRow}].concat(sub.rows)}; } } }
+      for(var k=0;k<ors.length;k++){ var w=ors[k][0],h=ors[k][1];
+        if(y+h<=W+1e-6){ var pls=rowPlace(y,w,h);
+          if(pls.length){ var sub=f(y+h+g); var c=pls.length+sub.count;
+            if(c>res.count) res={count:c,rows:[pls].concat(sub.rows)}; } } }
+      if(y+ch<=W+1e-6){ var s=f(y+STEP); if(s.count>res.count) res={count:s.count,rows:s.rows}; }
       memo[key]=res; return res;
     }
-    var plan=best(W);
-    var totalH=plan.rows.reduce(function(a,r){return a+r.h;},0)+(plan.rows.length-1)*g;
-    var y=snap(Math.max(0,(W-totalH)/2)); var idx=1;
-    plan.rows.forEach(function(row){
-      var rowW=row.n*row.w+(row.n-1)*g; var ox=snap(Math.max(0,(L-rowW)/2));
-      for(var c=0;c<row.n;c++){ objs.push({id:uid++,type:'double',w:row.w,h:row.h,x:snap(ox+c*(row.w+g)),y:y,label:'Court '+(idx++)}); }
-      y=snap(y+row.h+g);
-    });
+    var plan=f(0); var idx=1;
+    plan.rows.forEach(function(row){ row.forEach(function(p){ objs.push({id:uid++,type:'double',w:p.w,h:p.h,x:p.x,y:p.y,label:'Court '+(idx++)}); }); });
     select(null); draw();
   }
   $('plPng').addEventListener('click',function(){var url=cv.toDataURL('image/png');var a=document.createElement('a');a.href=url;a.download='padel-layout.png';a.click();});
