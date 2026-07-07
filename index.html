@@ -113,7 +113,7 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 <header>
 <div>
 <h1>Padel <span>People</span> — Property Dashboard</h1>
-<div class="sub">Potential indoor padel venue sites · UK (excl. Scotland) · Last updated 7 July 2026</div>
+<div class="sub">Potential indoor padel venue sites · UK (excl. Scotland) · Last updated 5 July 2026</div>
 </div>
 </header>
 <div class="cp-tabs" id="cpTabs">
@@ -346,15 +346,7 @@ badges:[["6m+ eaves","ok"],["Parking light","amber"]]},
 {id:"172972400", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/6b057f992/172972400/6b057f992bbe3d23da1fea84dbb29569.jpeg", name:"Swanton Road, Norwich", region:"Norwich, NR2 4LH · Norfolk (East of England)", wm:false,
 size:"29,287 sqft", rent:"4.95", pcm:"£12,083 pcm", eaves:"5.87–9.5m", eavesState:"flag", parking:"Yes — forecourt parking",
 notes:"Large open-plan warehouse with 9 roller shutters and internal loading area. 5.87m minimum eaves rising to 9.5m apex — flag the low end but big, cheap city-edge space.",
-badges:[["Eaves 5.87m low end","amber"],["Stated rent","ok"]]},
-{id:"173901623", added:"2026-07-07", img:"https://media.rightmove.co.uk/property-photo/7a82fe456/173901623/7a82fe4567fff0dcddca446189e0cb8d.jpeg", name:"Unit 1, Sentinel House, Malvern", region:"Malvern, WR14 1GH · Worcestershire (West Midlands)", wm:true,
-size:"29,995 sqft", rent:"7.83", pcm:"£19,583 pcm", eaves:"8.5m (haunch)", eavesState:"ok", parking:"Yes — 52 car spaces + secure yard",
-notes:"High-spec warehouse on Enigma Commercial Business Park: 26,107 sqft GIA plus 3,888 sqft mezzanine, three roller shutters, secure yard, air-con offices. 8.5m to haunch, available now. Sits at the top of the size band.",
-badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
-{id:"760560105539441", added:"2026-07-07", img:"https://media.rightmove.co.uk/property-photo/821c5bbb9/760560105539441/821c5bbb983739a6d51911d4e10c201b.jpeg", name:"Unit A, Ollerton Road, Tuxford", region:"Tuxford, Newark NG22 0PQ · Nottinghamshire (East Midlands)", wm:false,
-size:"15,990 sqft", rent:"7.54", pcm:"£10,047 pcm", eaves:"8m (haunch)", eavesState:"ok", parking:"Yes — ample loading, circulation & parking",
-notes:"Brand-new end-terrace warehouse/industrial unit with two vehicular access doors and allocated office/staff/WC. 8m to haunch. NB: ready for occupation from Q3 2026.",
-badges:[["6m+ eaves","ok"],["Avail. Q3 2026","amber"]]}
+badges:[["Eaves 5.87m low end","amber"],["Stated rent","ok"]]}
 ];
 
 const ARCHIVE_DAYS = 10;
@@ -860,33 +852,35 @@ setTimeout(run,80);
     var keep=objs.filter(function(o){return o.type!=='double'&&o.type!=='single';});
     objs=keep.slice();
     var obs=keep.filter(function(o){return o.type!=='text';});
-    var cw=TYPES.double.w, ch=TYPES.double.h; var ors=[[cw,ch],[ch,cw]];
-    // place as many courts as fit in a horizontal band [y,y+h], scanning left->right,
-    // jumping past any pillar/obstacle that blocks the slot
-    function rowPlace(y,w,h){
+    // doubles + singles, both orientations; doubles preferred, singles fill leftover space
+    var types=[{w:TYPES.double.w,h:TYPES.double.h,ty:'double'},{w:TYPES.double.h,h:TYPES.double.w,ty:'double'},
+               {w:TYPES.single.w,h:TYPES.single.h,ty:'single'},{w:TYPES.single.h,h:TYPES.single.w,ty:'single'}];
+    var minH=Math.min(TYPES.double.h,TYPES.single.h);
+    function val(ty,w,h){ return w*h*(ty==='double'?1.2:1.0); }
+    function rowPlace(y,w,h,ty){
       var out=[]; var x=0, guard=0;
-      while(x+w<=L+1e-6 && guard++<3000){
+      while(x+w<=L+1e-6 && guard++<4000){
         var jump=null;
         for(var i=0;i<obs.length;i++){ var b=obs[i];
           if(x<b.x+b.w && x+w>b.x && y<b.y+b.h && y+h>b.y){ if(jump===null||b.x+b.w>jump) jump=b.x+b.w; } }
         if(jump!==null){ x=snap(jump+g); continue; }
-        out.push({x:snap(x),y:snap(y),w:w,h:h}); x=snap(x+w+g);
+        out.push({x:snap(x),y:snap(y),w:w,h:h,ty:ty}); x=snap(x+w+g);
       }
       return out;
     }
     var STEP=0.5, memo={};
     function f(y){
       var key=Math.round(y*2); if(key in memo) return memo[key];
-      var res={count:0,rows:[]};
-      for(var k=0;k<ors.length;k++){ var w=ors[k][0],h=ors[k][1];
-        if(y+h<=W+1e-6){ var pls=rowPlace(y,w,h);
-          if(pls.length){ var sub=f(y+h+g); var c=pls.length+sub.count;
-            if(c>res.count) res={count:c,rows:[pls].concat(sub.rows)}; } } }
-      if(y+ch<=W+1e-6){ var s=f(y+STEP); if(s.count>res.count) res={count:s.count,rows:s.rows}; }
+      var res={v:0,rows:[]};
+      for(var k=0;k<types.length;k++){ var T=types[k];
+        if(y+T.h<=W+1e-6){ var pls=rowPlace(y,T.w,T.h,T.ty);
+          if(pls.length){ var sub=f(y+T.h+g); var vv=pls.length*val(T.ty,T.w,T.h)+sub.v;
+            if(vv>res.v) res={v:vv,rows:[pls].concat(sub.rows)}; } } }
+      if(y+minH<=W+1e-6){ var s=f(y+STEP); if(s.v>res.v) res={v:s.v,rows:s.rows}; }
       memo[key]=res; return res;
     }
-    var plan=f(0); var idx=1;
-    plan.rows.forEach(function(row){ row.forEach(function(p){ objs.push({id:uid++,type:'double',w:p.w,h:p.h,x:p.x,y:p.y,label:'Court '+(idx++)}); }); });
+    var plan=f(0); var di=1, si=1;
+    plan.rows.forEach(function(row){ row.forEach(function(p){ var lbl=(p.ty==='single')?('Single '+(si++)):('Court '+(di++)); objs.push({id:uid++,type:p.ty,w:p.w,h:p.h,x:p.x,y:p.y,label:lbl}); }); });
     select(null); draw();
   }
   $('plPng').addEventListener('click',function(){var url=cv.toDataURL('image/png');var a=document.createElement('a');a.href=url;a.download='padel-layout.png';a.click();});
