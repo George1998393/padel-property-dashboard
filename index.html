@@ -677,7 +677,7 @@ setTimeout(run,80);
              single:{w:21,h:7,color:'#2f7fd6',fill:'rgba(47,127,214,.14)',name:'Single'},
              obstacle:{w:4,h:4,color:'#b3261e',fill:'rgba(179,38,30,.16)',name:'Obstacle'},
              pillar:{w:0.6,h:0.6,color:'#6b7280',fill:'rgba(107,114,128,.4)',name:'Pillar'},
-             toilet:{w:4,h:3,color:'#7c3aed',fill:'rgba(124,58,237,.12)',name:'Toilets',icon:'\uD83D\uDEBB'},
+             toilet:{w:8,h:5,color:'#7c3aed',fill:'rgba(124,58,237,.12)',name:'Toilets',icon:'\uD83D\uDEBB'},
              shower:{w:4,h:3,color:'#0891b2',fill:'rgba(8,145,178,.12)',name:'Showers',icon:'\uD83D\uDEBF'},
              social:{w:8,h:6,color:'#a16207',fill:'rgba(161,98,7,.10)',name:'Social area'},
              office:{w:4,h:5,color:'#0369a1',fill:'rgba(3,105,161,.10)',name:'Office',icon:'\uD83D\uDCBC'},
@@ -716,9 +716,32 @@ setTimeout(run,80);
   function drawCubiclesRect(rx,ry,rw,rh,cw,cd,col){var Lc=cubCountRect(rw,rh,cw,cd);if(Lc.count>0&&scale>=5){var offA=(Lc.wall-Lc.cols*cw)/2;for(var r=0;r<Lc.rows;r++)for(var c=0;c<Lc.cols;c++){var perp=(r===0)?0:(Lc.depth-cd);var ax=Lc.horiz?(rx+offA+c*cw):(rx+perp);var ay=Lc.horiz?(ry+perp):(ry+offA+c*cw);var w=Lc.horiz?cw:cd,hh=Lc.horiz?cd:cw;ctx.fillStyle='#fff';ctx.strokeStyle=col;ctx.lineWidth=1;ctx.fillRect(mx(ax)+1.5,my(ay)+1.5,w*scale-3,hh*scale-3);ctx.strokeRect(mx(ax)+1.5,my(ay)+1.5,w*scale-3,hh*scale-3);}}return Lc.count;}
   function drawGendered(o,cw,cd,col){var horiz=o.w>=o.h;var secs=horiz?[{x:o.x,y:o.y,w:o.w/2,h:o.h,nm:'Men'},{x:o.x+o.w/2,y:o.y,w:o.w/2,h:o.h,nm:'Ladies'}]:[{x:o.x,y:o.y,w:o.w,h:o.h/2,nm:'Men'},{x:o.x,y:o.y+o.h/2,w:o.w,h:o.h/2,nm:'Ladies'}];var tot=0;secs.forEach(function(s){s.n=drawCubiclesRect(s.x,s.y,s.w,s.h,cw,cd,col);tot+=s.n;});ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.beginPath();if(horiz){var dx=mx(o.x+o.w/2);ctx.moveTo(dx,my(o.y));ctx.lineTo(dx,my(o.y+o.h));}else{var dy=my(o.y+o.h/2);ctx.moveTo(mx(o.x),dy);ctx.lineTo(mx(o.x+o.w),dy);}ctx.stroke();if(scale>=5){secs.forEach(function(s){var lb=s.nm+' '+s.n;var maxw=s.w*scale-4,fsz=Math.max(8,Math.min(12,scale*0.8));ctx.font='700 '+fsz+'px -apple-system,Arial';var tw=ctx.measureText(lb).width;if(tw>maxw){fsz=Math.max(6.5,fsz*maxw/tw);ctx.font='700 '+fsz+'px -apple-system,Arial';}ctx.fillStyle=col;ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(lb,mx(s.x+s.w/2),my(s.y+s.h)-2);});}o._n=tot;return tot;}
   function titleText(o){ var e='';
-    if(o.type==='toilet') e=' · '+cubCountRect(o.w,o.h,0.9,1.5).count+' loos';
+    if(o.type==='toilet') e=' · '+Math.max(1,Math.floor(o.w/1.0))+' loos + 2 showers';
     else if(o.type==='shower') e=' · '+cubCountRect(o.w,o.h,1.0,1.2).count+' showers';
     return (TYPES[o.type].name)+' — '+o.w+'×'+o.h+' m'+e; }
+  function gRR(x,y,w,h,r){var X=mx(x),Y=my(y),W=w*scale,H=h*scale,R=Math.min(r*scale,W/2,H/2);ctx.beginPath();ctx.moveTo(X+R,Y);ctx.arcTo(X+W,Y,X+W,Y+H,R);ctx.arcTo(X+W,Y+H,X,Y+H,R);ctx.arcTo(X,Y+H,X,Y,R);ctx.arcTo(X,Y,X+W,Y,R);ctx.closePath();}
+  function drawWC(cxm,topYm,col){ctx.fillStyle='#fff';ctx.strokeStyle=col;ctx.lineWidth=1;gRR(cxm-0.22,topYm,0.44,0.15,0.03);ctx.fill();ctx.stroke();ctx.beginPath();ctx.ellipse(mx(cxm),my(topYm+0.15+0.26),0.18*scale,0.26*scale,0,0,2*Math.PI);ctx.fill();ctx.stroke();}
+  function drawBasin(cxm,cym,col){ctx.fillStyle='#fff';ctx.strokeStyle=col;ctx.lineWidth=1;gRR(cxm-0.28,cym-0.2,0.56,0.4,0.08);ctx.fill();ctx.stroke();ctx.fillStyle=col;ctx.beginPath();ctx.arc(mx(cxm),my(cym-0.12),0.04*scale,0,2*Math.PI);ctx.fill();}
+  function drawShower(x0,y0,col,sz){sz=sz||0.9;ctx.fillStyle='#eaf3fb';ctx.strokeStyle=col;ctx.lineWidth=1.3;ctx.fillRect(mx(x0),my(y0),sz*scale,sz*scale);ctx.strokeRect(mx(x0),my(y0),sz*scale,sz*scale);ctx.lineWidth=1;ctx.beginPath();ctx.arc(mx(x0+sz/2),my(y0+sz/2),0.09*scale,0,2*Math.PI);ctx.stroke();ctx.strokeStyle='#7fb0d8';ctx.beginPath();ctx.arc(mx(x0),my(y0),sz*scale*0.92,0,Math.PI/2);ctx.stroke();}
+  function drawWashroom(o,col){
+    var cw=1.0, cd=1.5, n=Math.max(1,Math.floor(o.w/cw)), off=(o.w-n*cw)/2;
+    if(scale>=8 && o.h>2.6){
+      // cubicle partition walls
+      ctx.strokeStyle=col; ctx.lineWidth=1.4;
+      for(var i=0;i<=n;i++){ var xp=o.x+off+i*cw; ctx.beginPath();ctx.moveTo(mx(xp),my(o.y+0.05));ctx.lineTo(mx(xp),my(o.y+cd));ctx.stroke(); }
+      // WC pans + door swings
+      for(var j=0;j<n;j++){ var cx=o.x+off+j*cw+cw/2; drawWC(cx,o.y+0.22,col);
+        ctx.strokeStyle='#b7c2bb'; ctx.lineWidth=1; ctx.beginPath(); ctx.arc(mx(o.x+off+j*cw+0.08),my(o.y+cd),(cw-0.16)*scale,-Math.PI/2,0); ctx.stroke(); }
+      ctx.strokeStyle=col; ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(mx(o.x+off),my(o.y+cd));ctx.lineTo(mx(o.x+off+n*cw),my(o.y+cd));ctx.stroke();
+      // two showers in the centre
+      var ss=Math.min(1.3,(o.h-cd)*0.45), sy=o.y+cd+0.5;
+      if(sy+ss<o.y+o.h-0.9){ drawShower(o.x+o.w/2-ss-0.3,sy,col,ss); drawShower(o.x+o.w/2+0.3,sy,col,ss); }
+      // two basins in the bottom corners
+      if(o.h-cd>2.2){ drawBasin(o.x+0.55,o.y+o.h-0.55,col); drawBasin(o.x+o.w-0.55,o.y+o.h-0.55,col); }
+    } else { drawCubiclesRect(o.x,o.y,o.w,o.h,0.9,1.5,col); }
+    return n;
+  }
   function drawSocial(o){
     var pitch=2.4, cols=Math.floor(o.w/pitch), rows=Math.floor(o.h/pitch);
     if(cols<1||rows<1||scale<5) return;
@@ -782,7 +805,7 @@ setTimeout(run,80);
       }
       if(isCourt&&logoReady){var lw=Math.min(o.w,o.h)*scale*0.3;var lx=mx(o.x+o.w/2)-lw/2;var ly=my(o.y)+(o.h*scale)*0.09;ctx.drawImage(logoImg,lx,ly,lw,lw);}
       else if(o.type==='social'){ drawSocial(o); }
-      else if(o.type==='toilet'){ o._n=drawCubiclesRect(o.x,o.y,o.w,o.h,0.9,1.5,t.color); }
+      else if(o.type==='toilet'){ o._n=drawWashroom(o,t.color); }
       else if(o.type==='shower'){ o._n=drawCubiclesRect(o.x,o.y,o.w,o.h,1.0,1.2,t.color); }
       else if(t.icon && Math.min(o.w,o.h)*scale>22){ ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font=Math.max(12,Math.min(o.w,o.h)*scale*0.42)+'px -apple-system,Arial'; ctx.fillText(t.icon, mx(o.x+o.w/2), my(o.y+o.h/2)-(o.h*scale*0.14)); }
       // label — shrink to fit; count for loos/showers; rotates with the item
