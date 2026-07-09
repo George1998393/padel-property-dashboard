@@ -593,6 +593,7 @@ setTimeout(run,80);
 #tab-planner .pl-btn.so{border-left:5px solid #a16207}
 #tab-planner .pl-btn.of{border-left:5px solid #0369a1}
 #tab-planner .pl-btn.stg{border-left:5px solid #57534e}
+#tab-planner .pl-btn.pk{border-left:5px solid #c2410c}
 #tab-planner .pl-btn.tx{border-left:5px solid #0f1a14}
 #tab-planner .pl-wrap{display:flex;gap:18px;flex-wrap:wrap}
 #tab-planner .pl-stage{flex:1 1 640px;min-width:320px}
@@ -619,6 +620,7 @@ setTimeout(run,80);
       <div class="pl-field"><label>Width (m)</label><input id="plWid" type="number" min="5" max="200" step="0.5" value="34"></div>
       <button class="pl-btn dbl" data-add="double">＋ Double 21×11</button>
       <button class="pl-btn sgl" data-add="single">＋ Single 21×7</button>
+      <button class="pl-btn pk" data-add="pickleball">＋ Pickleball 14.6×7.3</button>
       <button class="pl-btn obs" data-add="obstacle">＋ Obstacle</button>
       <button class="pl-btn pil" data-add="pillar">＋ Pillar</button>
       <button class="pl-btn wc" data-add="toilet">＋ Toilets</button>
@@ -675,6 +677,7 @@ setTimeout(run,80);
   var logoImg=new Image();var logoReady=false;logoImg.onload=function(){logoReady=true;try{draw();}catch(e){}};logoImg.src=LOGO;
   var TYPES={double:{w:21,h:11,color:'#0a7d4b',fill:'rgba(10,125,75,.14)',name:'Double'},
              single:{w:21,h:7,color:'#2f7fd6',fill:'rgba(47,127,214,.14)',name:'Single'},
+             pickleball:{w:14.6,h:7.3,color:'#c2410c',fill:'rgba(194,65,12,.12)',name:'Pickleball'},
              obstacle:{w:4,h:4,color:'#b3261e',fill:'rgba(179,38,30,.16)',name:'Obstacle'},
              pillar:{w:0.6,h:0.6,color:'#6b7280',fill:'rgba(107,114,128,.4)',name:'Pillar'},
              toilet:{w:8,h:5,color:'#7c3aed',fill:'rgba(124,58,237,.12)',name:'Toilets',icon:'\uD83D\uDEBB'},
@@ -753,6 +756,32 @@ setTimeout(run,80);
       ctx.beginPath();ctx.arc(cxp,cyp,tr,0,2*Math.PI);ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle='#8a6d1f';ctx.lineWidth=1.2;ctx.stroke();
     }
   }
+  function drawPickle(o,t){
+    var ins=0.6, px0=o.x+ins, py0=o.y+ins, pw=o.w-2*ins, ph=o.h-2*ins;
+    if(pw<=0||ph<=0) return;
+    ctx.strokeStyle=t.color; ctx.lineWidth=1;
+    ctx.strokeRect(mx(px0),my(py0),pw*scale,ph*scale);
+    var kz=2.13;
+    if(pw>=ph){
+      var yA=my(py0), yB=my(py0+ph), cx=px0+pw/2;
+      ctx.lineWidth=2.5; ctx.beginPath(); var nx=mx(cx); ctx.moveTo(nx,yA); ctx.lineTo(nx,yB); ctx.stroke();
+      ctx.lineWidth=1; ctx.beginPath();
+      var k1=mx(cx-kz), k2=mx(cx+kz);
+      ctx.moveTo(k1,yA); ctx.lineTo(k1,yB); ctx.moveTo(k2,yA); ctx.lineTo(k2,yB);
+      var cyy=my(py0+ph/2), xL=mx(px0), xR=mx(px0+pw);
+      ctx.moveTo(xL,cyy); ctx.lineTo(k1,cyy); ctx.moveTo(k2,cyy); ctx.lineTo(xR,cyy);
+      ctx.stroke();
+    } else {
+      var xA=mx(px0), xB=mx(px0+pw), cy=py0+ph/2;
+      ctx.lineWidth=2.5; ctx.beginPath(); var ny=my(cy); ctx.moveTo(xA,ny); ctx.lineTo(xB,ny); ctx.stroke();
+      ctx.lineWidth=1; ctx.beginPath();
+      var k1v=my(cy-kz), k2v=my(cy+kz);
+      ctx.moveTo(xA,k1v); ctx.lineTo(xB,k1v); ctx.moveTo(xA,k2v); ctx.lineTo(xB,k2v);
+      var cxx=mx(px0+pw/2), yT=my(py0), yBt=my(py0+ph);
+      ctx.moveTo(cxx,yT); ctx.lineTo(cxx,k1v); ctx.moveTo(cxx,k2v); ctx.lineTo(cxx,yBt);
+      ctx.stroke();
+    }
+  }
   function draw(){
     ctx.clearRect(0,0,cv.width,cv.height);
     // area background
@@ -769,7 +798,7 @@ setTimeout(run,80);
     ctx.lineWidth=2; ctx.strokeStyle='#0f1a14'; ctx.strokeRect(mx(0),my(0),L*scale,W*scale);
     // objects
     objs.forEach(function(o){
-      var t=TYPES[o.type]; var isCourt=(o.type==='double'||o.type==='single');
+      var t=TYPES[o.type]; var isCourt=(o.type==='double'||o.type==='single'); var isPickle=(o.type==='pickleball');
       if(o.type==='text'){
         var fs=Math.max(0.6,Math.min(o.w,o.h)*0.8);
         ctx.save(); ctx.translate(mx(o.x+o.w/2),my(o.y+o.h/2)); if(o.rot) ctx.rotate(Math.PI/2);
@@ -803,7 +832,8 @@ setTimeout(run,80);
           ctx.lineWidth=2.5; ctx.beginPath(); var ny=my(py0+ph/2); ctx.moveTo(xA,ny);ctx.lineTo(xB,ny); ctx.stroke();
         }
       }
-      if(isCourt&&logoReady){var lw=Math.min(o.w,o.h)*scale*0.3;var lx=mx(o.x+o.w/2)-lw/2;var ly=my(o.y)+(o.h*scale)*0.09;ctx.drawImage(logoImg,lx,ly,lw,lw);}
+      if(isPickle){ drawPickle(o,t); }
+      if((isCourt||isPickle)&&logoReady){var lw=Math.min(o.w,o.h)*scale*0.3;var lx=mx(o.x+o.w/2)-lw/2;var ly=my(o.y)+(o.h*scale)*0.09;ctx.drawImage(logoImg,lx,ly,lw,lw);}
       else if(o.type==='social'){ drawSocial(o); }
       else if(o.type==='toilet'){ o._n=drawWashroom(o,t.color); }
       else if(o.type==='shower'){ o._n=drawCubiclesRect(o.x,o.y,o.w,o.h,1.0,1.2,t.color); }
@@ -812,12 +842,12 @@ setTimeout(run,80);
       var lbl=o.label||t.name;
       if(o.type==='toilet'||o.type==='shower'){ lbl=lbl+' \u00d7'+(o._n!=null?o._n:0); }
       if(o.type!=='pillar' && scale*Math.min(o.w,o.h)>14 && lbl){
-        var maxw=((o.rot&&!isCourt)?o.h:o.w)*scale-6, fsz=Math.max(8,Math.min(13,scale*1.0));
+        var maxw=((o.rot&&!isCourt&&!isPickle)?o.h:o.w)*scale-6, fsz=Math.max(8,Math.min(13,scale*1.0));
         ctx.font='700 '+fsz+'px -apple-system,Arial';
         var tw=ctx.measureText(lbl).width;
         if(tw>maxw){ fsz=Math.max(6.5,fsz*maxw/tw); ctx.font='700 '+fsz+'px -apple-system,Arial'; }
         ctx.fillStyle=bad?'#b3261e':t.color; ctx.textAlign='center';
-        if(o.rot&&!isCourt){ ctx.save(); ctx.translate(mx(o.x+o.w/2),my(o.y+o.h/2)); ctx.rotate(Math.PI/2); ctx.textBaseline='middle'; ctx.fillText(lbl,0,0); ctx.restore(); }
+        if(o.rot&&!isCourt&&!isPickle){ ctx.save(); ctx.translate(mx(o.x+o.w/2),my(o.y+o.h/2)); ctx.rotate(Math.PI/2); ctx.textBaseline='middle'; ctx.fillText(lbl,0,0); ctx.restore(); }
         else { ctx.textBaseline='bottom'; ctx.fillText(lbl,mx(o.x+o.w/2),my(o.y+o.h)-3); }
       }
     });
