@@ -759,11 +759,15 @@ setTimeout(run,80);
       // cubicle partition walls
       ctx.strokeStyle=col; ctx.lineWidth=1.4;
       for(var i=0;i<=n;i++){ var xp=o.x+off+i*cw; ctx.beginPath();ctx.moveTo(mx(xp),my(o.y+0.05));ctx.lineTo(mx(xp),my(o.y+cd));ctx.stroke(); }
-      // WC pans + door swings
-      for(var j=0;j<n;j++){ var cx=o.x+off+j*cw+cw/2; drawWC(cx,o.y+0.22,col);
-        ctx.strokeStyle='#b7c2bb'; ctx.lineWidth=1; ctx.beginPath(); ctx.arc(mx(o.x+off+j*cw+0.08),my(o.y+cd),(cw-0.16)*scale,-Math.PI/2,0); ctx.stroke(); }
-      ctx.strokeStyle=col; ctx.lineWidth=1;
-      ctx.beginPath();ctx.moveTo(mx(o.x+off),my(o.y+cd));ctx.lineTo(mx(o.x+off+n*cw),my(o.y+cd));ctx.stroke();
+      // WC pans + cubicle doors (doorway gap in the front wall + door leaf + right-sized swing)
+      ctx.lineWidth=1;
+      for(var j=0;j<n;j++){ var x0=o.x+off+j*cw, cx=x0+cw/2; drawWC(cx,o.y+0.22,col);
+        var dw2=Math.min(0.62,cw-0.3), hx=x0+(cw-dw2)/2, hy=o.y+cd;
+        // front wall: solid returns either side, leaving the doorway open
+        ctx.strokeStyle=col; ctx.beginPath(); ctx.moveTo(mx(x0),my(hy)); ctx.lineTo(mx(hx),my(hy)); ctx.moveTo(mx(hx+dw2),my(hy)); ctx.lineTo(mx(x0+cw),my(hy)); ctx.stroke();
+        // door leaf (hinged, open into cubicle) + swing arc
+        ctx.strokeStyle='#9aa8a0'; ctx.beginPath(); ctx.moveTo(mx(hx),my(hy)); ctx.lineTo(mx(hx),my(hy-dw2)); ctx.stroke();
+        ctx.beginPath(); ctx.arc(mx(hx),my(hy),dw2*scale,-Math.PI/2,0); ctx.stroke(); }
       // two showers in the centre
       var ss=Math.min(1.3,(o.h-cd)*0.45), sy=o.y+cd+0.5;
       if(sy+ss<o.y+o.h-0.9){ drawShower(o.x+o.w/2-ss-0.3,sy,col,ss); drawShower(o.x+o.w/2+0.3,sy,col,ss); }
