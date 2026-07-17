@@ -1065,7 +1065,7 @@ setTimeout(run,80);
     var sw=cv.width/DPR, sh=cv.height/DPR, pad=20;
     var order=['double','single','pickleball','obstacle','pillar','entrance','shutter','toilet','shower','social','office','storage','speaker','plug','cctv','text'];
     var present={}; objs.forEach(function(o){present[o.type]=true;});
-    var entries=order.slice(); // show the full key, every item type
+    var entries=order.filter(function(t){return present[t];}); // only item types actually in the layout
     var cols=sw<520?2:3, colW=(sw-2*pad)/cols, rowH=26, rows=Math.ceil(entries.length/cols);
     var legH=entries.length?(pad+24+rows*rowH+8):0;
     var out=document.createElement('canvas'); out.width=sw*DPR; out.height=(sh+legH)*DPR;
