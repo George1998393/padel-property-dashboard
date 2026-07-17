@@ -695,10 +695,23 @@ setTimeout(run,80);
           <input type="text" id="plTag" placeholder="Label / text…" style="display:none">
           <div class="pl-legend">Click a court to select it, then <b>Turn 90°</b> to flip it vertical ⇄ horizontal — or just <b>double-click</b> a court. Drag to move (snaps to ½ m).</div>
         </div>
-        <div class="row" style="display:flex;gap:6px">
+        <div class="row" style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="pl-btn" id="plPng">Export PNG</button>
-          <button class="pl-btn" id="plSave">Save</button>
-          <button class="pl-btn" id="plLoad">Load</button>
+          <button class="pl-btn" id="plExport">Export file</button>
+          <label class="pl-btn" style="cursor:pointer;position:relative;overflow:hidden">Import file<input id="plImport" type="file" accept="application/json,.json" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label>
+        </div>
+        <div style="margin-top:10px;border-top:1px solid var(--line);padding-top:10px">
+          <div style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.03em;margin-bottom:6px">SAVED PROJECTS</div>
+          <div class="row" style="display:flex;gap:6px;margin-bottom:6px">
+            <input type="text" id="plProjName" placeholder="Project name…" style="flex:1;min-width:110px;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 10px;font-size:13px">
+            <button class="pl-btn primary" id="plProjSave">Save</button>
+          </div>
+          <div class="row" style="display:flex;gap:6px">
+            <select id="plProjList" style="flex:1;min-width:110px;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px;font-size:13px;background:#fff"></select>
+            <button class="pl-btn" id="plProjOpen">Open</button>
+            <button class="pl-btn" id="plProjDel">Delete</button>
+          </div>
+          <div id="plProjMsg" style="font-size:11px;color:var(--muted);margin-top:6px;min-height:14px"></div>
         </div>
       </div>
     </div>
@@ -1066,8 +1079,20 @@ setTimeout(run,80);
     }
     var a=document.createElement('a'); a.href=out.toDataURL('image/png'); a.download='padel-layout.png'; a.click();
   });
-  $('plSave').addEventListener('click',function(){try{localStorage.setItem('pp_planner',JSON.stringify({L:L,W:W,objs:objs}));$('plSave').textContent='Saved ✓';setTimeout(function(){$('plSave').textContent='Save';},1200);}catch(e){}});
-  $('plLoad').addEventListener('click',function(){try{var d=JSON.parse(localStorage.getItem('pp_planner'));if(!d)return;$('plLen').value=d.L;$('plWid').value=d.W;objs=d.objs||[];objs.forEach(function(o){o.id=uid++;});area();fit();select(null);draw();}catch(e){}});
+  // ---- named-project store (localStorage) + file export/import ----
+  var PKEY='pp_projects';
+  function projGet(){ try{return JSON.parse(localStorage.getItem(PKEY))||{};}catch(e){return {};} }
+  function projSet(d){ try{localStorage.setItem(PKEY,JSON.stringify(d));}catch(e){} }
+  function projMsg(m){ var e=$('plProjMsg'); if(e){e.textContent=m; setTimeout(function(){if(e.textContent===m)e.textContent='';},2600);} }
+  function projRefresh(pick){ var d=projGet(); var names=Object.keys(d).sort(function(a,b){return (d[b].ts||0)-(d[a].ts||0);}); var el=$('plProjList'); if(!el)return; el.innerHTML=names.length?names.map(function(n){return '<option>'+n.replace(/</g,'&lt;')+'</option>';}).join(''):'<option value="">— no saved projects —</option>'; if(pick&&d[pick]) el.value=pick; }
+  function snapshot(){ return {L:L,W:W,objs:objs.map(function(o){var c=Object.assign({},o);delete c.id;delete c._n;return c;}),ts:Date.now()}; }
+  function loadSnapshot(d){ if(!d||!d.objs)return false; $('plLen').value=d.L; $('plWid').value=d.W; objs=(d.objs||[]).map(function(o){var c=Object.assign({},o);c.id=uid++;return c;}); area();fit();select(null);draw(); return true; }
+  $('plProjSave').addEventListener('click',function(){ var nm=($('plProjName').value||'').trim(); if(!nm){projMsg('Type a name first.');$('plProjName').focus();return;} var d=projGet(); var exists=!!d[nm]; d[nm]=snapshot(); projSet(d); projRefresh(nm); projMsg((exists?'Updated “':'Saved “')+nm+'”'); });
+  $('plProjOpen').addEventListener('click',function(){ var nm=$('plProjList').value; if(!nm)return; var d=projGet(); if(loadSnapshot(d[nm])){ $('plProjName').value=nm; projMsg('Opened “'+nm+'”'); } });
+  $('plProjDel').addEventListener('click',function(){ var nm=$('plProjList').value; if(!nm)return; var d=projGet(); if(d[nm]){ delete d[nm]; projSet(d); projRefresh(); projMsg('Deleted “'+nm+'”'); } });
+  $('plExport').addEventListener('click',function(){ var nm=(($('plProjName').value||'padel-project').trim()||'padel-project').replace(/[^a-z0-9_-]+/gi,'-'); var blob=new Blob([JSON.stringify(snapshot())],{type:'application/json'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=nm+'.json'; a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);},1000); });
+  $('plImport').addEventListener('change',function(e){ var f=e.target.files&&e.target.files[0]; if(!f)return; var rd=new FileReader(); rd.onload=function(){ try{ if(loadSnapshot(JSON.parse(rd.result))) projMsg('Imported '+f.name); else projMsg('That file has no layout.'); }catch(err){ projMsg('Could not read that file.'); } }; rd.readAsText(f); e.target.value=''; });
+  (function(){ try{ var old=localStorage.getItem('pp_planner'); var d=projGet(); if(old&&Object.keys(d).length===0){ var o=JSON.parse(old); if(o&&o.objs){ d['Recovered layout']={L:o.L,W:o.W,objs:o.objs,ts:Date.now()}; projSet(d); } } }catch(e){} projRefresh(); })();
   window.addEventListener('resize',function(){fit();draw();});
   // init
   area(); fit(); autofill();
