@@ -710,6 +710,7 @@ setTimeout(run,80);
             <select id="plProjList" style="flex:1;min-width:110px;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px;font-size:13px;background:#fff"></select>
             <button class="pl-btn" id="plProjOpen">Open</button>
             <button class="pl-btn" id="plProjDel">Delete</button>
+            <button class="pl-btn" id="plUndo" disabled>Undo</button>
           </div>
           <div id="plProjMsg" style="font-size:11px;color:var(--muted);margin-top:6px;min-height:14px"></div>
         </div>
@@ -933,6 +934,7 @@ setTimeout(run,80);
     });
     if(sel&&isResizable(sel)){ var _c=[[sel.x,sel.y],[sel.x+sel.w,sel.y],[sel.x,sel.y+sel.h],[sel.x+sel.w,sel.y+sel.h]]; ctx.fillStyle='#fff'; ctx.strokeStyle='#0f1a14'; ctx.lineWidth=1.5; _c.forEach(function(c){ var hx=mx(c[0]),hy=my(c[1]); ctx.fillRect(hx-4,hy-4,8,8); ctx.strokeRect(hx-4,hy-4,8,8); }); }
     stats();
+    if(typeof autosave==='function')autosave();
   }
   function stats(){
     var d=objs.filter(function(o){return o.type==='double';}).length;
@@ -993,10 +995,10 @@ setTimeout(run,80);
   $('plDel').addEventListener('click',function(){if(!sel)return;objs=objs.filter(function(o){return o!==sel;});select(null);draw();});
   $('plTag').addEventListener('input',function(){if(sel){sel.label=this.value;draw();}});
   ['plW','plH'].forEach(function(id){var e=$(id); if(e) e.addEventListener('input',function(){if(!sel)return;var v=parseFloat(this.value);if(isNaN(v)||v<0.5)return;if(id==='plW'){sel.w=v;sel.x=Math.max(0,Math.min(L-sel.w,sel.x));}else{sel.h=v;sel.y=Math.max(0,Math.min(W-sel.h,sel.y));}$('plSelTitle').textContent=titleText(sel);draw();});});
-  $('plClear').addEventListener('click',function(){objs=[];select(null);draw();});
+  $('plClear').addEventListener('click',function(){ if(objs.length && !confirm('Clear everything on the canvas?')) return; if(typeof markUndo==='function')markUndo('clear canvas'); objs=[];select(null);draw();});
   $('plLen').addEventListener('input',function(){area();fit();draw();});
   $('plWid').addEventListener('input',function(){area();fit();draw();});
-  $('plAuto').addEventListener('click',function(){autofill();});
+  $('plAuto').addEventListener('click',function(){ if(typeof markUndo==='function')markUndo('auto-fill'); autofill();});
   function autofill(){
     area(); var g=parseFloat($('plGap').value)||0;
     var keep=objs.filter(function(o){return o.type!=='double'&&o.type!=='single'&&o.type!=='pickleball';});
@@ -1081,20 +1083,25 @@ setTimeout(run,80);
     }
     var a=document.createElement('a'); a.href=out.toDataURL('image/png'); a.download='padel-layout.png'; a.click();
   });
-  // ---- named-project store (localStorage) + file export/import ----
-  var PKEY='pp_projects';
+  // ---- named-project store + safety net (confirm, one-level undo, autosave) ----
+  var PKEY='pp_projects', AKEY='pp_autosave';
   function projGet(){ try{return JSON.parse(localStorage.getItem(PKEY))||{};}catch(e){return {};} }
   function projSet(d){ try{localStorage.setItem(PKEY,JSON.stringify(d));}catch(e){} }
-  function projMsg(m){ var e=$('plProjMsg'); if(e){e.textContent=m; setTimeout(function(){if(e.textContent===m)e.textContent='';},2600);} }
+  function projMsg(m){ var e=$('plProjMsg'); if(e){e.textContent=m; setTimeout(function(){if(e.textContent===m)e.textContent='';},3500);} }
   function projRefresh(pick){ var d=projGet(); var names=Object.keys(d).sort(function(a,b){return (d[b].ts||0)-(d[a].ts||0);}); var el=$('plProjList'); if(!el)return; el.innerHTML=names.length?names.map(function(n){return '<option>'+n.replace(/</g,'&lt;')+'</option>';}).join(''):'<option value="">— no saved projects —</option>'; if(pick&&d[pick]) el.value=pick; }
   function snapshot(){ return {L:L,W:W,objs:objs.map(function(o){var c=Object.assign({},o);delete c.id;delete c._n;return c;}),ts:Date.now()}; }
   function loadSnapshot(d){ if(!d||!d.objs)return false; $('plLen').value=d.L; $('plWid').value=d.W; objs=(d.objs||[]).map(function(o){var c=Object.assign({},o);c.id=uid++;return c;}); area();fit();select(null);draw(); return true; }
-  $('plProjSave').addEventListener('click',function(){ var nm=($('plProjName').value||'').trim(); if(!nm){projMsg('Type a name first.');$('plProjName').focus();return;} var d=projGet(); var exists=!!d[nm]; d[nm]=snapshot(); projSet(d); projRefresh(nm); projMsg((exists?'Updated “':'Saved “')+nm+'”'); });
-  $('plProjOpen').addEventListener('click',function(){ var nm=$('plProjList').value; if(!nm)return; var d=projGet(); if(loadSnapshot(d[nm])){ $('plProjName').value=nm; projMsg('Opened “'+nm+'”'); } });
-  $('plProjDel').addEventListener('click',function(){ var nm=$('plProjList').value; if(!nm)return; var d=projGet(); if(d[nm]){ delete d[nm]; projSet(d); projRefresh(); projMsg('Deleted “'+nm+'”'); } });
+  var _undo=null;
+  function updateUndoBtn(){ var b=$('plUndo'); if(b){ b.disabled=!_undo; b.title=_undo?('Undo: '+_undo.desc):'Nothing to undo'; } }
+  function markUndo(desc){ _undo={snap:snapshot(), proj:JSON.stringify(projGet()), desc:desc||'last change'}; updateUndoBtn(); }
+  var _asT=0; function autosave(){ var n=Date.now(); if(n-_asT<700)return; _asT=n; try{localStorage.setItem(AKEY,JSON.stringify(snapshot()));}catch(e){} }
+  $('plProjSave').addEventListener('click',function(){ var nm=($('plProjName').value||'').trim(); if(!nm){projMsg('Type a name first.');$('plProjName').focus();return;} var d=projGet(); if(d[nm] && !confirm('A project called \u201C'+nm+'\u201D already exists.\n\nOverwrite it with what is on the canvas now?')){ projMsg('Save cancelled — \u201C'+nm+'\u201D left untouched.'); return; } markUndo(d[nm]?('overwrite \u201C'+nm+'\u201D'):('save \u201C'+nm+'\u201D')); d[nm]=snapshot(); projSet(d); projRefresh(nm); projMsg('Saved \u201C'+nm+'\u201D — Undo restores the previous version.'); });
+  $('plProjOpen').addEventListener('click',function(){ var nm=$('plProjList').value; if(!nm)return; var d=projGet(); markUndo('open \u201C'+nm+'\u201D'); if(loadSnapshot(d[nm])){ $('plProjName').value=nm; projMsg('Opened \u201C'+nm+'\u201D — Undo restores your previous canvas.'); } });
+  $('plProjDel').addEventListener('click',function(){ var nm=$('plProjList').value; if(!nm)return; if(!confirm('Delete the saved project \u201C'+nm+'\u201D?')) return; var d=projGet(); if(d[nm]){ markUndo('delete \u201C'+nm+'\u201D'); delete d[nm]; projSet(d); projRefresh(); projMsg('Deleted \u201C'+nm+'\u201D — Undo restores it.'); } });
+  $('plUndo').addEventListener('click',function(){ if(!_undo)return; var u=_undo; _undo=null; updateUndoBtn(); try{projSet(JSON.parse(u.proj));}catch(e){} projRefresh(); loadSnapshot(u.snap); projMsg('Undone: '+u.desc); });
   $('plExport').addEventListener('click',function(){ var nm=(($('plProjName').value||'padel-project').trim()||'padel-project').replace(/[^a-z0-9_-]+/gi,'-'); var blob=new Blob([JSON.stringify(snapshot())],{type:'application/json'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=nm+'.json'; a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);},1000); });
-  $('plImport').addEventListener('change',function(e){ var f=e.target.files&&e.target.files[0]; if(!f)return; var rd=new FileReader(); rd.onload=function(){ try{ if(loadSnapshot(JSON.parse(rd.result))) projMsg('Imported '+f.name); else projMsg('That file has no layout.'); }catch(err){ projMsg('Could not read that file.'); } }; rd.readAsText(f); e.target.value=''; });
-  (function(){ try{ var old=localStorage.getItem('pp_planner'); var d=projGet(); if(old&&Object.keys(d).length===0){ var o=JSON.parse(old); if(o&&o.objs){ d['Recovered layout']={L:o.L,W:o.W,objs:o.objs,ts:Date.now()}; projSet(d); } } }catch(e){} projRefresh(); })();
+  $('plImport').addEventListener('change',function(e){ var f=e.target.files&&e.target.files[0]; if(!f)return; var rd=new FileReader(); rd.onload=function(){ try{ var dd=JSON.parse(rd.result); markUndo('import '+f.name); if(loadSnapshot(dd)) projMsg('Imported '+f.name+' — Undo restores your previous canvas.'); else projMsg('That file has no layout.'); }catch(err){ projMsg('Could not read that file.'); } }; rd.readAsText(f); e.target.value=''; });
+  (function(){ try{ var old=localStorage.getItem('pp_planner'); var d=projGet(); if(old&&Object.keys(d).length===0){ var o=JSON.parse(old); if(o&&o.objs){ d['Recovered layout']={L:o.L,W:o.W,objs:o.objs,ts:Date.now()}; projSet(d); } } }catch(e){} projRefresh(); updateUndoBtn(); try{ var as=JSON.parse(localStorage.getItem(AKEY)); if(as&&as.objs&&as.objs.length){ loadSnapshot(as); } }catch(e){} })();
   window.addEventListener('resize',function(){fit();draw();});
   // init
   area(); fit(); autofill();
