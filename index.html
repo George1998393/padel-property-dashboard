@@ -967,7 +967,7 @@ setTimeout(run,80);
     $('plCount').textContent=d+s+pk; $('plDbl').textContent=d; $('plSgl').textContent=s; var pe=$('plPkl'); if(pe)pe.textContent=pk;
     var used=objs.filter(function(o){return o.type==='double'||o.type==='single'||o.type==='pickleball';}).reduce(function(a,o){return a+o.w*o.h;},0);
     var tot=L*W; $('plAreaM').textContent=Math.round(used); $('plAreaT').textContent=Math.round(tot);
-    $('plUtil').textContent=(tot?Math.round(used/tot*100):0)+'%';
+    var _pct=tot?Math.round(used/tot*100):0; var _ue=$('plUtil'); _ue.textContent=_pct+'%'; _ue.style.color=_pct>80?'#b3261e':'';
   }
   function add(type,x,y){
     var t=TYPES[type]; var o={id:uid++,type:type,w:t.w,h:t.h,
