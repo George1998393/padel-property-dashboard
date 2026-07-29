@@ -110,26 +110,40 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"></head>
 <body><!-- build canopy-1785185656.1038487 -->
 <div id="ppGate" style="position:fixed;inset:0;z-index:99999;background:#0a7d4b;display:flex;align-items:center;justify-content:center;padding:20px">
-  <form id="ppGateForm" style="background:#fff;border-radius:16px;padding:30px 26px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.28);text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif">
-    <div style="font-size:22px;font-weight:800;color:#13201a;letter-spacing:-.02em;margin-bottom:4px">Padel People <span style="color:#0a7d4b">Internal Website</span></div>
-    <div style="font-size:13px;color:#5d6b63;margin-bottom:18px">Enter the password to continue</div>
-    <input id="ppGatePw" type="password" autocomplete="current-password" placeholder="Password" style="width:100%;height:44px;border:1px solid #e3eae6;border-radius:10px;padding:0 14px;font-size:15px;margin-bottom:10px;outline:none">
-    <button type="submit" style="width:100%;height:44px;border:0;border-radius:10px;background:#0a7d4b;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Unlock</button>
-    <div id="ppGateErr" style="font-size:12.5px;color:#b3261e;margin-top:10px;min-height:16px"></div>
-  </form>
+  <div style="background:#fff;border-radius:16px;padding:30px 26px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.28);text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif">
+    <div style="font-size:22px;font-weight:800;color:#13201a;letter-spacing:-.02em;margin-bottom:14px">Padel People <span style="color:#0a7d4b">Internal Website</span></div>
+    <form id="ppGateForm">
+      <div style="font-size:13px;color:#5d6b63;margin:0 0 18px">Enter the password to continue</div>
+      <input id="ppGatePw" type="password" autocomplete="current-password" placeholder="Password" style="width:100%;height:44px;border:1px solid #e3eae6;border-radius:10px;padding:0 14px;font-size:15px;margin-bottom:10px;outline:none">
+      <button type="submit" style="width:100%;height:44px;border:0;border-radius:10px;background:#0a7d4b;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Unlock</button>
+      <div id="ppGateErr" style="font-size:12.5px;color:#b3261e;margin-top:10px;min-height:16px"></div>
+    </form>
+    <form id="ppNameForm" style="display:none">
+      <div style="font-size:13px;color:#5d6b63;margin:0 0 18px">Welcome — what's your name?</div>
+      <input id="ppGateName" type="text" autocomplete="name" placeholder="Your name" style="width:100%;height:44px;border:1px solid #e3eae6;border-radius:10px;padding:0 14px;font-size:15px;margin-bottom:10px;outline:none">
+      <button type="submit" style="width:100%;height:44px;border:0;border-radius:10px;background:#0a7d4b;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Enter</button>
+      <div id="ppNameErr" style="font-size:12.5px;color:#b3261e;margin-top:10px;min-height:16px"></div>
+    </form>
+  </div>
 </div>
 <script>
 (function(){
-  var HASH='5b0d649932d47b047795d588ea96429efacd475291a3e434886a580534609fe9', KEY='pp_dash_auth';
+  var HASH='5b0d649932d47b047795d588ea96429efacd475291a3e434886a580534609fe9', KEY='pp_dash_auth', NKEY='pp_dash_name', DKEY='pp_dash_lastlog';
+  var SB_URL='https://yllbjllmanykgwdrxljg.supabase.co', SB_KEY='sb_publishable_B3-tuCZJGw4jc_qSn8WgBQ_wEDwdm98';
   var gate=document.getElementById('ppGate');
-  function unlock(){ if(gate&&gate.parentNode) gate.parentNode.removeChild(gate); document.documentElement.style.overflow=''; document.body.style.overflow=''; }
-  try{ if(localStorage.getItem(KEY)===HASH){ unlock(); return; } }catch(e){}
+  function reveal(){ if(gate&&gate.parentNode) gate.parentNode.removeChild(gate); document.documentElement.style.overflow=''; document.body.style.overflow=''; }
+  function logSignin(name){ try{ fetch(SB_URL+'/rest/v1/dashboard_signins',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({name:name,user_agent:navigator.userAgent,path:location.pathname})}); }catch(e){} }
+  function markToday(){ try{localStorage.setItem(DKEY,new Date().toISOString().slice(0,10));}catch(e){} }
+  function logDaily(name){ var t=new Date().toISOString().slice(0,10),last=null; try{last=localStorage.getItem(DKEY);}catch(e){} if(last!==t){ markToday(); logSignin(name); } }
+  function showName(){ var pf=document.getElementById('ppGateForm'),nf=document.getElementById('ppNameForm'); if(pf)pf.style.display='none'; if(nf)nf.style.display='block'; var ni=document.getElementById('ppGateName'); if(ni)ni.focus(); }
+  function proceed(){ var nm=null; try{nm=localStorage.getItem(NKEY);}catch(e){} if(nm){ logDaily(nm); reveal(); } else { showName(); } }
+  try{ if(localStorage.getItem(KEY)===HASH){ proceed(); return; } }catch(e){}
   document.documentElement.style.overflow='hidden'; document.body.style.overflow='hidden';
   async function sha(s){ var b=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0');}).join(''); }
-  var f=document.getElementById('ppGateForm');
-  f.addEventListener('submit', async function(e){ e.preventDefault(); var pw=document.getElementById('ppGatePw').value, err=document.getElementById('ppGateErr');
-    try{ var h=await sha(pw); if(h===HASH){ try{localStorage.setItem(KEY,HASH);}catch(_){} unlock(); } else { err.textContent='Incorrect password.'; var i=document.getElementById('ppGatePw'); i.value=''; i.focus(); } }
+  document.getElementById('ppGateForm').addEventListener('submit', async function(e){ e.preventDefault(); var pw=document.getElementById('ppGatePw').value, err=document.getElementById('ppGateErr');
+    try{ var h=await sha(pw); if(h===HASH){ try{localStorage.setItem(KEY,HASH);}catch(_){} proceed(); } else { err.textContent='Incorrect password.'; var i=document.getElementById('ppGatePw'); i.value=''; i.focus(); } }
     catch(e2){ err.textContent='This browser can’t verify the password (needs a modern, secure browser).'; } });
+  document.getElementById('ppNameForm').addEventListener('submit', function(e){ e.preventDefault(); var nm=(document.getElementById('ppGateName').value||'').trim(), err=document.getElementById('ppNameErr'); if(nm.length<2){ err.textContent='Please enter your name.'; return; } try{localStorage.setItem(NKEY,nm);}catch(_){} markToday(); logSignin(nm); reveal(); });
   var pwi=document.getElementById('ppGatePw'); if(pwi) pwi.focus();
 })();
 </script>
@@ -137,7 +151,7 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 <header>
 <div>
 <h1>Padel <span>People</span> Internal Website</h1>
-<div class="sub">Potential indoor padel venue sites · UK (excl. Scotland) · Last updated 29 July 2026</div>
+<div class="sub">Potential indoor padel venue sites · UK (excl. Scotland) · Last updated 5 July 2026</div>
 </div>
 </header>
 <div class="cp-tabs" id="cpTabs">
@@ -373,19 +387,7 @@ badges:[["6m+ eaves","ok"],["Parking light","amber"]]},
 {id:"172972400", added:"2026-07-05", img:"https://media.rightmove.co.uk/property-photo/6b057f992/172972400/6b057f992bbe3d23da1fea84dbb29569.jpeg", name:"Swanton Road, Norwich", region:"Norwich, NR2 4LH · Norfolk (East of England)", wm:false,
 size:"29,287 sqft", rent:"4.95", pcm:"£12,083 pcm", eaves:"5.87–9.5m", eavesState:"flag", parking:"Yes — forecourt parking",
 notes:"Large open-plan warehouse with 9 roller shutters and internal loading area. 5.87m minimum eaves rising to 9.5m apex — flag the low end but big, cheap city-edge space.",
-badges:[["Eaves 5.87m low end","amber"],["Stated rent","ok"]]},
-{id:"151258016", added:"2026-07-28", img:"https://media.rightmove.co.uk/property-photo/d8ff49eb6/151258016/d8ff49eb6cd0d9c3ab567d5db8f350f2.jpeg", name:"Ashwood Business Park, North Seaton", region:"Ashington, NE63 0XD · Northumberland (North East)", wm:false,
-size:"11,795 sqft", rent:"6.95", pcm:"£6,831 pcm", eaves:"6.0–7.5m", eavesState:"ok", parking:"Yes — 20 spaces + 7,400 sqft rear secure compound",
-notes:"Detached modern warehouse with Grade A offices (1,715 sqft), EPC C, 24hr monitored security, 75kN/sqm floor loading, 5m rear roller door. 500m from A189 to Newcastle/A1. Office cuts usable warehouse to ~10k sqft.",
-badges:[["6m+ eaves","ok"],["Stated rent","ok"]]},
-{id:"763097271317793", added:"2026-07-28", img:"https://media.rightmove.co.uk/property-photo/73ecf8854/763097271317793/73ecf8854bf52a663af7c4df9b9b2449.png", name:"Unit 1, Orchard Industrial Estate, Toddington", region:"Toddington, GL54 5EB · Gloucestershire (South West)", wm:false,
-size:"19,990 sqft", rent:"5.70", pcm:"£9,495 pcm", eaves:"“good height” (unquantified)", eavesState:"flag", parking:"Yes — front car park + 10,385 sqft HGV yard",
-notes:"Single-span, no pillars, clear open rectangular space; 170kVA, 5 electric roller shutters, 24/7 access, secure gated concrete yards. Cheap at £5.70/sqft near Cheltenham. Agent says ‘good height, ideal for mezzanine’ but gives no figure — confirm 6m+ before viewing.",
-badges:[["Eaves “good”, unquantified","amber"],["Stated rent","ok"]]},
-{id:"163162514", added:"2026-07-29", img:"https://media.rightmove.co.uk/property-photo/1e79bf05f/163162514/1e79bf05f704b8e0668223d57076207a.jpeg", name:"2 Rosscliffe Road, Ellesmere Port", region:"Ellesmere Port, CH65 3AS · Cheshire (North West)", wm:false,
-size:"12,190 sqft", rent:"6.00", pcm:"£6,095 pcm", eaves:"6.6m", eavesState:"ok", parking:"Yes — separate dedicated car park + 0.7-acre secure yard",
-notes:"Detached steel portal-frame unit, drive-in roller shutter + second loading door, 6.6m eaves, first-floor offices. Within 1mi of M53 J8; neighbours Screwfix, Toolstation & Howdens.",
-badges:[["6m+ eaves","ok"],["Stated rent","ok"]]}
+badges:[["Eaves 5.87m low end","amber"],["Stated rent","ok"]]}
 ];
 
 const ARCHIVE_DAYS = 10;
