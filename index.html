@@ -115,14 +115,8 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 <div id="ppGate" style="position:fixed;inset:0;z-index:99999;background:#0a7d4b;display:flex;align-items:center;justify-content:center;padding:20px">
   <div style="background:#fff;border-radius:16px;padding:30px 26px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.28);text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif">
     <div style="font-size:22px;font-weight:800;color:#13201a;letter-spacing:-.02em;margin-bottom:14px">Padel People <span style="color:#0a7d4b">Internal Website</span></div>
-    <form id="ppGateForm">
-      <div style="font-size:13px;color:#5d6b63;margin:0 0 18px">Enter the password to continue</div>
-      <input id="ppGatePw" type="password" autocomplete="current-password" placeholder="Password" style="width:100%;height:44px;border:1px solid #e3eae6;border-radius:10px;padding:0 14px;font-size:15px;margin-bottom:10px;outline:none">
-      <button type="submit" style="width:100%;height:44px;border:0;border-radius:10px;background:#0a7d4b;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Unlock</button>
-      <div id="ppGateErr" style="font-size:12.5px;color:#b3261e;margin-top:10px;min-height:16px"></div>
-    </form>
-    <form id="ppNameForm" style="display:none">
-      <div style="font-size:13px;color:#5d6b63;margin:0 0 18px">Welcome — what's your name?</div>
+    <form id="ppNameForm">
+      <div style="font-size:13px;color:#5d6b63;margin:0 0 18px">Enter your name to continue</div>
       <input id="ppGateName" type="text" autocomplete="name" placeholder="Your name" style="width:100%;height:44px;border:1px solid #e3eae6;border-radius:10px;padding:0 14px;font-size:15px;margin-bottom:10px;outline:none">
       <button type="submit" style="width:100%;height:44px;border:0;border-radius:10px;background:#0a7d4b;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Enter</button>
       <div id="ppNameErr" style="font-size:12.5px;color:#b3261e;margin-top:10px;min-height:16px"></div>
@@ -131,23 +125,17 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 </div>
 <script>
 (function(){
-  var HASH='5b0d649932d47b047795d588ea96429efacd475291a3e434886a580534609fe9', KEY='pp_dash_auth', NKEY='pp_dash_name', DKEY='pp_dash_lastlog';
+  var NKEY='pp_dash_name', DKEY='pp_dash_lastlog';
   var SB_URL='https://yllbjllmanykgwdrxljg.supabase.co', SB_KEY='sb_publishable_B3-tuCZJGw4jc_qSn8WgBQ_wEDwdm98';
   var gate=document.getElementById('ppGate');
   function reveal(){ if(gate&&gate.parentNode) gate.parentNode.removeChild(gate); document.documentElement.style.overflow=''; document.body.style.overflow=''; }
   function logSignin(name){ try{ fetch(SB_URL+'/rest/v1/dashboard_signins',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({name:name,user_agent:navigator.userAgent,path:location.pathname})}); }catch(e){} }
   function markToday(){ try{localStorage.setItem(DKEY,new Date().toISOString().slice(0,10));}catch(e){} }
   function logDaily(name){ var t=new Date().toISOString().slice(0,10),last=null; try{last=localStorage.getItem(DKEY);}catch(e){} if(last!==t){ markToday(); logSignin(name); } }
-  function showName(){ var pf=document.getElementById('ppGateForm'),nf=document.getElementById('ppNameForm'); if(pf)pf.style.display='none'; if(nf)nf.style.display='block'; var ni=document.getElementById('ppGateName'); if(ni)ni.focus(); }
-  function proceed(){ var nm=null; try{nm=localStorage.getItem(NKEY);}catch(e){} if(nm){ logDaily(nm); reveal(); } else { showName(); } }
-  try{ if(localStorage.getItem(KEY)===HASH){ proceed(); return; } }catch(e){}
+  try{ var nm=localStorage.getItem(NKEY); if(nm){ logDaily(nm); reveal(); return; } }catch(e){}
   document.documentElement.style.overflow='hidden'; document.body.style.overflow='hidden';
-  async function sha(s){ var b=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0');}).join(''); }
-  document.getElementById('ppGateForm').addEventListener('submit', async function(e){ e.preventDefault(); var pw=document.getElementById('ppGatePw').value, err=document.getElementById('ppGateErr');
-    try{ var h=await sha(pw); if(h===HASH){ try{localStorage.setItem(KEY,HASH);}catch(_){} proceed(); } else { err.textContent='Incorrect password.'; var i=document.getElementById('ppGatePw'); i.value=''; i.focus(); } }
-    catch(e2){ err.textContent='This browser can’t verify the password (needs a modern, secure browser).'; } });
   document.getElementById('ppNameForm').addEventListener('submit', function(e){ e.preventDefault(); var nm=(document.getElementById('ppGateName').value||'').trim(), err=document.getElementById('ppNameErr'); if(nm.length<2){ err.textContent='Please enter your name.'; return; } try{localStorage.setItem(NKEY,nm);}catch(_){} markToday(); logSignin(nm); reveal(); });
-  var pwi=document.getElementById('ppGatePw'); if(pwi) pwi.focus();
+  var ni=document.getElementById('ppGateName'); if(ni) ni.focus();
 })();
 </script>
 <div class="wrap">
