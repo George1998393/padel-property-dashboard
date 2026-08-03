@@ -295,51 +295,47 @@ Source: Rightmove (West Midlands, East Midlands, South East, London, East of Eng
 <div id="tab-canopy" class="cp-panel" hidden=""><iframe id="cpCanopyFrame" data-src="canopy/" title="Padel Canopy Visualiser" style="width:100%;height:calc(100vh - 200px);min-height:640px;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe></div>
 <div id="tab-operators" class="cp-panel" hidden="">
 <div class="cp-card" style="max-width:1180px">
-<div class="cp-head"><div class="cp-ic">🏆</div><div><h2 class="cp-title">UK padel operators — league table</h2><p class="cp-sub">Dedicated (padel-first) operators. Score is out of 100, normalised to the leader on the selected metric.</p></div></div>
+<div class="cp-head"><div class="cp-ic">🏆</div><div><h2 class="cp-title">UK padel operators — league table</h2><p class="cp-sub">Dedicated (padel-first) operators · OPEN sites only, coming-soon excluded · score normalised to the leader on the selected metric</p></div></div>
 <div style="margin:4px 0 12px" id="opToggles">
 <button class="cp-pchip active" data-m="blend">Blended score</button>
-<button class="cp-pchip" data-m="sites">Sites</button>
-<button class="cp-pchip" data-m="courts">Total courts</button>
-<button class="cp-pchip" data-m="indoor">Indoor courts</button>
+<button class="cp-pchip" data-m="sites">Open sites</button>
+<button class="cp-pchip" data-m="courts">Courts</button>
 <button class="cp-pchip" data-m="density">Courts / site</button>
 </div>
-<div style="overflow:auto"><table style="border-collapse:collapse;width:100%;font-size:12.5px;min-width:640px;background:#fff" id="opTable">
+<div style="overflow:auto"><table style="border-collapse:collapse;width:100%;font-size:12.5px;min-width:560px;background:#fff" id="opTable">
 <thead><tr style="text-align:left">
 <th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted)">#</th>
 <th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted)">Operator</th>
-<th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Sites</th>
+<th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Open sites</th>
 <th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Courts</th>
-<th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Indoor</th>
 <th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Crts/site</th>
 <th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Score</th>
 </tr></thead><tbody id="opBody"></tbody></table></div>
 <div class="cp-secnote" style="margin-top:14px;font-size:11px;color:var(--muted);line-height:1.6">
-Source: TrustPadel index (the UK’s largest padel directory), pulled 4 Aug 2026 — one consistent methodology across all operators. Counts are TrustPadel-listed UK venues and courts; directories can lag openings by a few weeks in either direction. Padel People is shown at actual operating figures (6 sites · 22 courts — TrustPadel lists 5 · 16, a useful measure of directory undercount). Gym/leisure chains (David Lloyd, Virgin Active) excluded. Blended score = average of the operator’s normalised sites and total-courts scores.
+Open venues only, as of 4 Aug 2026 — announced / coming-soon sites are excluded for every operator (Padel People’s 4 pipeline sites are likewise excluded). “~” = best verified estimate where the operator’s exact open count could not be fully confirmed; directory listings (TrustPadel) include announced sites and so overstate open counts for some brands. Figures compiled from operator websites/booking platforms, 2026 trade press and the TrustPadel index, cross-checked. Blended score = average of normalised open-sites and courts scores. Gym/leisure chains excluded.
 </div>
 </div></div>
 <script>
 (function(){
+  // [name, openSites, courts, sitesApprox, courtsApprox]
   var OPS=[
-    ['Game4Padel',26,60,27],
-    ['PadelStars',18,56,43],
-    ['Padel United',17,42,8],
-    ['Pure Padel',15,92,83],
-    ['Slazenger Padel',12,116,116],
-    ['Ace Padel',11,18,12],
-    ['The Padel Club',9,59,43],
-    ['Vida Del Padel',9,19,14],
-    ['Smash Padel',8,33,28],
-    ['Padel Social Club',6,36,19],
-    ['Padel People',6,22,7],
-    ['Soul Padel',6,18,14],
-    ['Rocket Padel',5,35,33],
-    ['Padel4All',5,18,17],
-    ['Padium',2,17,15]
+    ['Game4Padel',20,45,1,1],
+    ['PadelStars',15,50,0,1],
+    ['Padel United',12,36,0,1],
+    ['The Padel Club',9,59,1,1],
+    ['Pure Padel',8,45,0,1],
+    ['Smash Padel',8,33,1,0],
+    ['Padel People',6,22,0,0],
+    ['Vida Del Padel',6,19,0,1],
+    ['Padel4All',5,18,0,0],
+    ['Slazenger Padel',4,33,1,1],
+    ['Soul Padel',4,18,1,1],
+    ['Rocket Padel',3,29,0,0],
+    ['Padel Social Club',3,14,0,1],
+    ['Ace Padel',3,10,1,1],
+    ['Padium',2,17,0,0]
   ];
   var mode='blend';
-  function metric(o,m){ var s=o[1],c=o[2],i=o[3],d=s?c/s:0;
-    if(m==='sites')return s; if(m==='courts')return c; if(m==='indoor')return i; if(m==='density')return d;
-    return null; }
   function render(){
     var vals;
     if(mode==='blend'){
@@ -347,7 +343,7 @@ Source: TrustPadel index (the UK’s largest padel directory), pulled 4 Aug 2026
       var maxC=Math.max.apply(null,OPS.map(function(o){return o[2];}));
       vals=OPS.map(function(o){ return (o[1]/maxS*50)+(o[2]/maxC*50); });
     } else {
-      var mv=OPS.map(function(o){return metric(o,mode);});
+      var mv=OPS.map(function(o){ return mode==='sites'?o[1]:mode==='courts'?o[2]:(o[1]?o[2]/o[1]:0); });
       var mx=Math.max.apply(null,mv);
       vals=mv.map(function(v){return mx?v/mx*100:0;});
     }
@@ -358,7 +354,7 @@ Source: TrustPadel index (the UK’s largest padel directory), pulled 4 Aug 2026
       var tr=us?' style="background:var(--ok-bg)"':'';
       var nm=us?'<b style="color:var(--green)">Padel People</b> <span style="font-size:10px;color:var(--green);font-weight:700">(us)</span>':'<b>'+o[0]+'</b>';
       function td(v,align){return '<td style="padding:8px 10px;border-top:1px solid var(--line);'+(align?'text-align:right;':'')+'">'+v+'</td>';}
-      return '<tr'+tr+'>'+td('<span style="color:var(--muted);font-weight:700">'+(i+1)+'</span>')+td(nm)+td(o[1],1)+td(o[2],1)+td(o[3],1)+td((o[1]?(o[2]/o[1]).toFixed(1):'0'),1)+td('<b>'+Math.round(r.sc)+'</b>',1)+'</tr>';
+      return '<tr'+tr+'>'+td('<span style="color:var(--muted);font-weight:700">'+(i+1)+'</span>')+td(nm)+td((o[3]?'~':'')+o[1],1)+td((o[4]?'~':'')+o[2],1)+td((o[1]?(o[2]/o[1]).toFixed(1):'0'),1)+td('<b>'+Math.round(r.sc)+'</b>',1)+'</tr>';
     }).join('');
   }
   document.addEventListener('click',function(e){ var b=e.target.closest?e.target.closest('#opToggles .cp-pchip'):null; if(!b)return; mode=b.dataset.m; document.querySelectorAll('#opToggles .cp-pchip').forEach(function(x){x.classList.toggle('active',x===b);}); render(); });
