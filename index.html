@@ -295,46 +295,30 @@ Source: Rightmove (West Midlands, East Midlands, South East, London, East of Eng
 <div id="tab-canopy" class="cp-panel" hidden=""><iframe id="cpCanopyFrame" data-src="canopy/" title="Padel Canopy Visualiser" style="width:100%;height:calc(100vh - 200px);min-height:640px;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe></div>
 <div id="tab-operators" class="cp-panel" hidden="">
 <div class="cp-card" style="max-width:1180px">
-<div class="cp-head"><div class="cp-ic">🏆</div><div><h2 class="cp-title">UK padel operators — league table</h2><p class="cp-sub">Dedicated (padel-first) operators · OPEN sites only, coming-soon excluded · score normalised to the leader on the selected metric</p></div></div>
-<div style="margin:4px 0 12px" id="opToggles">
+<div class="cp-head"><div class="cp-ic">🏆</div><div><h2 class="cp-title">UK padel operators — league table</h2><p class="cp-sub">Every dedicated padel operator with 2+ UK clubs (45 companies) · score normalised to the leader on the selected metric</p></div></div>
+<div style="margin:4px 0 10px" id="opToggles">
 <button class="cp-pchip active" data-m="blend">Blended score</button>
-<button class="cp-pchip" data-m="sites">Open sites</button>
+<button class="cp-pchip" data-m="sites">Sites</button>
 <button class="cp-pchip" data-m="courts">Courts</button>
 <button class="cp-pchip" data-m="density">Courts / site</button>
 </div>
-<div style="overflow:auto"><table style="border-collapse:collapse;width:100%;font-size:12.5px;min-width:560px;background:#fff" id="opTable">
+<div style="font-size:11.5px;color:var(--muted);margin-bottom:8px">✓ = open-site count verified against the operator’s own website. Unmarked rows are TrustPadel directory listings, which can include announced sites.</div>
+<div style="overflow:auto"><table style="border-collapse:collapse;width:100%;font-size:12.5px;min-width:520px;background:#fff" id="opTable">
 <thead><tr style="text-align:left">
 <th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted)">#</th>
 <th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted)">Operator</th>
-<th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Open sites</th>
+<th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Sites</th>
 <th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Courts</th>
 <th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Crts/site</th>
 <th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Score</th>
 </tr></thead><tbody id="opBody"></tbody></table></div>
 <div class="cp-secnote" style="margin-top:14px;font-size:11px;color:var(--muted);line-height:1.6">
-Open venues only, as of 4 Aug 2026 — announced / coming-soon sites are excluded for every operator (Padel People’s 4 pipeline sites are likewise excluded). “~” = best verified estimate where the operator’s exact open count could not be fully confirmed; directory listings (TrustPadel) include announced sites and so overstate open counts for some brands. Figures compiled from operator websites/booking platforms, 2026 trade press and the TrustPadel index, cross-checked. Blended score = average of normalised open-sites and courts scores. Gym/leisure chains excluded.
+As of 4 Aug 2026. Includes every padel-first operator with 2 or more UK clubs; gym and leisure chains (David Lloyd, Bannatyne, Virgin Active, Powerleague, council leisure trusts) are excluded even where they hold many courts. Base data: TrustPadel index (largest UK padel directory), one consistent methodology across all operators. Where an operator’s open-site count has been confirmed directly (✓) that figure is used instead of the directory listing, since directories include announced sites — PadelStars 15 open (own website), Padel United 12, Pure Padel 8, Padel People 6 (4 further sites in build are excluded, as they are for every operator). Court totals for ✓ rows are prorated and approximate. Blended score = average of normalised sites and courts scores.
 </div>
 </div></div>
 <script>
 (function(){
-  // [name, openSites, courts, sitesApprox, courtsApprox]
-  var OPS=[
-    ['Game4Padel',20,45,1,1],
-    ['PadelStars',15,50,0,1],
-    ['Padel United',12,36,0,1],
-    ['The Padel Club',9,59,1,1],
-    ['Pure Padel',8,45,0,1],
-    ['Smash Padel',8,33,1,0],
-    ['Padel People',6,22,0,0],
-    ['Vida Del Padel',6,19,0,1],
-    ['Padel4All',5,18,0,0],
-    ['Slazenger Padel',4,33,1,1],
-    ['Soul Padel',4,18,1,1],
-    ['Rocket Padel',3,29,0,0],
-    ['Padel Social Club',3,14,0,1],
-    ['Ace Padel',3,10,1,1],
-    ['Padium',2,17,0,0]
-  ];
+  var OPS=[["Game4Padel", 25, 58, 0], ["PadelStars", 15, 47, 1], ["Padel United", 12, 30, 1], ["Pulse Padel", 14, 48, 0], ["Slazenger Padel", 12, 116, 0], ["Lets Go Padel", 10, 35, 0], ["The Padel Club", 9, 59, 0], ["PadelHub", 9, 45, 0], ["Vida Del Padel", 9, 19, 0], ["Ace Padel", 9, 12, 0], ["Pure Padel", 8, 49, 1], ["Smash Padel", 8, 33, 0], ["Playtime Padel", 7, 8, 0], ["Padel Social Club", 6, 36, 0], ["Padel Tree", 6, 25, 0], ["Soul Padel", 6, 18, 0], ["Padel People", 6, 22, 1], ["Rocket Padel", 5, 35, 0], ["Padel Project UK", 5, 19, 0], ["Padel4All", 5, 18, 0], ["Padel X", 5, 11, 0], ["Pukka Padel", 5, 8, 0], ["Just Padel", 4, 27, 0], ["Square One Padel", 4, 26, 0], ["UK Padel", 4, 13, 0], ["The Padel Barn", 4, 11, 0], ["Padel Pod", 4, 11, 0], ["Performance Padel", 4, 4, 0], ["Uno Padel", 4, 4, 0], ["Zing Padel", 4, 2, 0], ["Ignite Padel", 3, 23, 0], ["Padel Pass", 3, 8, 0], ["Punk Padel", 3, 3, 0], ["Padium", 2, 17, 0], ["Apex Padel", 2, 10, 0], ["Club de Padel", 2, 9, 0], ["The Padel Yard", 2, 9, 0], ["Padel + Play", 2, 9, 0], ["That Padel Club", 2, 8, 0], ["World Padel Academy", 2, 8, 0], ["Destination Padel", 2, 8, 0], ["Padel Republic", 2, 8, 0], ["Padel Zone", 2, 7, 0], ["Padel Shift", 2, 5, 0], ["Padel Inn", 2, 4, 0]];
   var mode='blend';
   function render(){
     var vals;
@@ -352,9 +336,10 @@ Open venues only, as of 4 Aug 2026 — announced / coming-soon sites are exclude
     host.innerHTML=rows.map(function(r,i){
       var o=r.o, us=(o[0]==='Padel People');
       var tr=us?' style="background:var(--ok-bg)"':'';
-      var nm=us?'<b style="color:var(--green)">Padel People</b> <span style="font-size:10px;color:var(--green);font-weight:700">(us)</span>':'<b>'+o[0]+'</b>';
-      function td(v,align){return '<td style="padding:8px 10px;border-top:1px solid var(--line);'+(align?'text-align:right;':'')+'">'+v+'</td>';}
-      return '<tr'+tr+'>'+td('<span style="color:var(--muted);font-weight:700">'+(i+1)+'</span>')+td(nm)+td((o[3]?'~':'')+o[1],1)+td((o[4]?'~':'')+o[2],1)+td((o[1]?(o[2]/o[1]).toFixed(1):'0'),1)+td('<b>'+Math.round(r.sc)+'</b>',1)+'</tr>';
+      var tick=o[3]?' <span title="Open-site count verified on the operator\u2019s own website" style="color:var(--green);font-weight:700">\u2713</span>':'';
+      var nm=us?'<b style="color:var(--green)">Padel People</b> <span style="font-size:10px;color:var(--green);font-weight:700">(us)</span>'+tick:'<b>'+o[0]+'</b>'+tick;
+      function td(v,align){return '<td style="padding:7px 10px;border-top:1px solid var(--line);'+(align?'text-align:right;':'')+'">'+v+'</td>';}
+      return '<tr'+tr+'>'+td('<span style="color:var(--muted);font-weight:700">'+(i+1)+'</span>')+td(nm)+td(o[1],1)+td(o[2],1)+td((o[1]?(o[2]/o[1]).toFixed(1):'0'),1)+td('<b>'+Math.round(r.sc)+'</b>',1)+'</tr>';
     }).join('');
   }
   document.addEventListener('click',function(e){ var b=e.target.closest?e.target.closest('#opToggles .cp-pchip'):null; if(!b)return; mode=b.dataset.m; document.querySelectorAll('#opToggles .cp-pchip').forEach(function(x){x.classList.toggle('active',x===b);}); render(); });
