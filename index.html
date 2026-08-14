@@ -858,7 +858,7 @@ setTimeout(run,80);
       <button class="pl-btn stg" data-add="storage">＋ Storage</button>
       <button class="pl-btn tx" data-add="text">＋ Text</button>
       <div class="pl-field"><label>Gap between (m)</label><input id="plGap" type="number" min="0" max="10" step="0.5" value="1"></div>
-      <button class="pl-btn primary" id="plAuto">Auto-fill max courts</button>
+      <button class="pl-btn primary" id="plAuto">Auto-fill layout</button><div id="plAutoNote" style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4">Click repeatedly to cycle through alternative layouts.</div>
       <button class="pl-btn" id="plClear">Clear</button>
     </div>
     <div class="pl-wrap">
@@ -1190,6 +1190,15 @@ setTimeout(run,80);
   $('plLen').addEventListener('input',function(){area();fit();draw();});
   $('plWid').addEventListener('input',function(){area();fit();draw();});
   $('plAuto').addEventListener('click',function(){ if(typeof markUndo==='function')markUndo('auto-fill'); autofill();});
+  var afVariant=0;
+  var AF_MODES=[
+    {name:'Balanced \u2014 doubles first, singles fill gaps', bands:'all', val:'area', pickle:true},
+    {name:'Max doubles only', bands:'doubles', val:'area', pickle:true},
+    {name:'Landscape rows (courts across)', bands:'land', val:'area', pickle:true},
+    {name:'Portrait rows (courts down)', bands:'port', val:'area', pickle:true},
+    {name:'Max court count (singles favoured)', bands:'all', val:'count', pickle:true},
+    {name:'Padel only \u2014 no pickleball', bands:'all', val:'area', pickle:false}
+  ];
   function autofill(){
     area(); var g=parseFloat($('plGap').value)||0;
     var keep=objs.filter(function(o){return o.type!=='double'&&o.type!=='single'&&o.type!=='pickleball';});
@@ -1227,12 +1236,18 @@ setTimeout(run,80);
       return f(0);
     }
     // phase 1 — padel: doubles preferred, singles fill leftover width
-    var padelBands=[
+    var MODE=AF_MODES[afVariant % AF_MODES.length];
+    var ALL=[
       {h:DH, cands:[{w:DW,ty:'double'}]},
       {h:DW, cands:[{w:DH,ty:'double'},{w:SH,ty:'single'}]},
       {h:SH, cands:[{w:SW,ty:'single'}]}
     ];
-    function padelVal(ty){ return ty==='double'?DW*DH*1.2:SW*SH; }
+    var padelBands;
+    if(MODE.bands==='doubles') padelBands=[{h:DH,cands:[{w:DW,ty:'double'}]},{h:DW,cands:[{w:DH,ty:'double'}]}];
+    else if(MODE.bands==='land') padelBands=[{h:DH,cands:[{w:DW,ty:'double'}]},{h:SH,cands:[{w:SW,ty:'single'}]}];
+    else if(MODE.bands==='port') padelBands=[{h:DW,cands:[{w:DH,ty:'double'},{w:SH,ty:'single'}]}];
+    else padelBands=ALL;
+    function padelVal(ty){ if(MODE.val==='count') return 1; return ty==='double'?DW*DH*1.2:SW*SH; }
     var plan=pack(padelBands, padelVal, Math.min(DH,SH));
     var di=1, si=1, pi=1;
     plan.rows.forEach(function(row){ row.forEach(function(p){
@@ -1246,11 +1261,17 @@ setTimeout(run,80);
       {h:PW, cands:[{w:PH,ty:'pickleball'}]}     // portrait rows (14.6 m tall)
     ];
     function pickVal(){ return PW*PH; }
-    var pplan=pack(pickBands, pickVal, PH);
-    pplan.rows.forEach(function(row){ row.forEach(function(p){
-      objs.push({id:uid++,type:'pickleball',w:p.w,h:p.h,x:p.x,y:p.y,label:'Pickleball '+(pi++)});
-    }); });
+    if(MODE.pickle){ var pplan=pack(pickBands, pickVal, PH);
+      pplan.rows.forEach(function(row){ row.forEach(function(p){
+        objs.push({id:uid++,type:'pickleball',w:p.w,h:p.h,x:p.x,y:p.y,label:'Pickleball '+(pi++)});
+      }); }); }
     select(null); draw();
+    var _d=objs.filter(function(o){return o.type==='double';}).length,
+        _s=objs.filter(function(o){return o.type==='single';}).length,
+        _pk=objs.filter(function(o){return o.type==='pickleball';}).length;
+    var _n=document.getElementById('plAutoNote');
+    if(_n) _n.innerHTML='<b>Layout '+((afVariant % AF_MODES.length)+1)+' of '+AF_MODES.length+'</b> \u2014 '+MODE.name+'<br>'+_d+' double \u00b7 '+_s+' single \u00b7 '+_pk+' pickleball. Click Auto-fill again for the next layout.';
+    afVariant++;
   }
   $('plPng').addEventListener('click',function(){
     var sw=cv.width/DPR, sh=cv.height/DPR, pad=20;
