@@ -1250,7 +1250,9 @@ setTimeout(run,80);
     function padelVal(ty){ if(MODE.val==='count') return 1; return ty==='double'?DW*DH*1.2:SW*SH; }
     var plan=pack(padelBands, padelVal, Math.min(DH,SH));
     var di=1, si=1, pi=1;
+    var COVER_CAP=0.80, capBudget=COVER_CAP*L*W, usedArea=0, capHit=false;
     plan.rows.forEach(function(row){ row.forEach(function(p){
+      var a=p.w*p.h; if(usedArea+a>capBudget+1e-9){ capHit=true; return; } usedArea+=a;
       var lbl=(p.ty==='single')?('Single '+(si++)):('Court '+(di++));
       var co={id:uid++,type:p.ty,w:p.w,h:p.h,x:p.x,y:p.y,label:lbl};
       objs.push(co); obs.push(co); // padel court becomes an obstacle for the pickleball pass
@@ -1263,6 +1265,7 @@ setTimeout(run,80);
     function pickVal(){ return PW*PH; }
     if(MODE.pickle){ var pplan=pack(pickBands, pickVal, PH);
       pplan.rows.forEach(function(row){ row.forEach(function(p){
+        var a2=p.w*p.h; if(usedArea+a2>capBudget+1e-9){ capHit=true; return; } usedArea+=a2;
         objs.push({id:uid++,type:'pickleball',w:p.w,h:p.h,x:p.x,y:p.y,label:'Pickleball '+(pi++)});
       }); }); }
     select(null); draw();
@@ -1270,7 +1273,7 @@ setTimeout(run,80);
         _s=objs.filter(function(o){return o.type==='single';}).length,
         _pk=objs.filter(function(o){return o.type==='pickleball';}).length;
     var _n=document.getElementById('plAutoNote');
-    if(_n) _n.innerHTML='<b>Layout '+((afVariant % AF_MODES.length)+1)+' of '+AF_MODES.length+'</b> \u2014 '+MODE.name+'<br>'+_d+' double \u00b7 '+_s+' single \u00b7 '+_pk+' pickleball. Click Auto-fill again for the next layout.';
+    if(_n) _n.innerHTML='<b>Layout '+((afVariant % AF_MODES.length)+1)+' of '+AF_MODES.length+'</b> \u2014 '+MODE.name+'<br>'+_d+' double \u00b7 '+_s+' single \u00b7 '+_pk+' pickleball. Click Auto-fill again for the next layout.'+(capHit?'<br><span style="color:#b8860b;font-weight:700">Stopped at the 80% coverage cap</span> \u2014 more courts would fit but circulation space would be too tight.':'');
     afVariant++;
   }
   $('plPng').addEventListener('click',function(){
