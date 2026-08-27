@@ -148,7 +148,7 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 <div class="cp-tabs" id="cpTabs">
 <button class="cp-tab active" data-tab="sites">Property Sites</button><button class="cp-tab" data-tab="oursites">Our Sites</button>
 <button class="cp-tab" data-tab="projection">Club Projection</button>
-<button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="data">Data Dashboard</button><button class="cp-tab" data-tab="planning">Planning</button><button class="cp-tab" data-tab="planner">Court Planner</button><button class="cp-tab" data-tab="canopy">Canopy Visualiser</button><button class="cp-tab" data-tab="operators">UK Operators</button></div>
+<button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="data">Data Dashboard</button><button class="cp-tab" data-tab="planning">Planning<span id="cpPlanBadge" style="display:none;margin-left:6px;background:var(--green);color:#fff;border-radius:20px;padding:1px 7px;font-size:10.5px;font-weight:800"></span></button><button class="cp-tab" data-tab="planner">Court Planner</button><button class="cp-tab" data-tab="canopy">Canopy Visualiser</button><button class="cp-tab" data-tab="operators">UK Operators</button></div>
 <div id="tab-sites" class="cp-panel">
 
 <div class="spec">
@@ -279,7 +279,7 @@ Source: Rightmove (West Midlands, East Midlands, South East, London, East of Eng
 </div><div id="tab-planning" class="cp-panel" hidden="">
     <div class="cp-card" style="max-width:1120px">
       <div class="cp-head"><div class="cp-ic">🏗️</div><div><h2 class="cp-title">Planning applications</h2><p class="cp-sub">UK padel-court planning applications — who's building, where, and the status</p></div></div>
-      <div id="cpPlanChips" style="margin:6px 0 6px"></div>
+      <div id="cpPlanGranted"></div><div id="cpPlanChips" style="margin:6px 0 6px"></div>
       <div class="cp-flabel" style="font-size:11px;color:var(--muted);margin:2px 0 4px">Filter by applicant type</div>
       <div id="cpPlanTypeChips" style="margin:0 0 12px"></div>
       <input id="cpPlanSearch" type="text" autocomplete="off" placeholder="🔍  Search description, town or council…" style="width:100%;height:44px;border:1px solid var(--line);border-radius:11px;padding:0 14px;font-size:14px;margin-bottom:12px;background:#fff">
@@ -862,6 +862,14 @@ setTimeout(run,80);
     return ['Surface n/k','#8a938d']; }
   function surfacePill(a){ var t=surfaceType(a); return '<span title="Surface the courts are proposed on, inferred from the description" style="display:inline-block;padding:1px 7px;border-radius:20px;font-size:10.5px;font-weight:700;color:'+t[1]+';background:'+t[1]+'14;border:1px solid '+t[1]+'44">'+t[0]+'</span>'; }
   function fmtDate(s){ if(!s) return ''; var p=(''+s).split('-'); if(p.length!==3) return s; var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return (+p[2])+' '+m[+p[1]-1]+' '+p[0]; }
+  function renderGranted(){ var host=$('cpPlanGranted'); if(!host) return;
+    var cut=new Date(Date.now()-30*864e5).toISOString().slice(0,10);
+    var g=apps.filter(function(a){ return /permit|condition/i.test(a[3]||'') && (a[4]||'')>=cut; }).sort(function(a,b){ return (b[4]||'').localeCompare(a[4]||''); });
+    host._list=g;
+    var bEl=document.getElementById('cpPlanBadge'); if(bEl){ bEl.textContent=g.length||''; bEl.style.display=g.length?'inline-block':'none'; }
+    var rows=g.map(function(a,i){ return '<div class="cp-planrow" data-granted="1" data-i="'+i+'" data-lat="'+a[5]+'" data-lng="'+a[6]+'" style="padding:10px 12px;border-top:1px solid var(--line);cursor:pointer"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="font-weight:700;font-size:13px">'+esc(a[2])+'</div><div style="white-space:nowrap;display:flex;gap:6px;align-items:center"><span style="font-size:11.5px;color:var(--muted);font-weight:600">'+fmtDate(a[4])+'</span>'+badge(a[3])+'</div></div><div style="font-size:12.5px;margin:3px 0;color:var(--ink)">'+esc(a[0])+'</div><div style="font-size:12px;color:var(--muted)">'+surfacePill(a)+' '+esc(a[1]||'')+' \u00b7 <a href="'+a[7]+'" target="_blank" rel="noopener" style="color:var(--green);font-weight:600">view</a></div></div>'; }).join('');
+    host.innerHTML='<div style="border:2px solid var(--green);border-radius:12px;background:#fff;overflow:hidden;margin-bottom:16px"><div style="padding:12px 14px;background:var(--ok-bg);border-bottom:1px solid var(--line);font-weight:800;font-size:13.5px;color:var(--green-dark)">\u2705 Just granted planning \u2014 last 30 days <span style="color:var(--muted);font-weight:600">('+g.length+')</span></div>'+(g.length?('<div style="max-height:340px;overflow:auto">'+rows+'</div>'):'<div style="padding:14px;color:var(--muted);font-size:13px">No new approvals in the last 30 days.</div>')+'</div>';
+  }
   function renderRecent(){ var host=$('cpPlanRecent'); if(!host) return;
     var cut=new Date(Date.now()-30*864e5).toISOString().slice(0,10);
     var rec=apps.filter(function(a){ var sd=a[8]||''; return sd && sd>=cut; }).sort(function(a,b){ return (b[8]||'').localeCompare(a[8]||''); });
@@ -874,12 +882,12 @@ setTimeout(run,80);
     }).join('');
     host.innerHTML='<div style="border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden"><div style="padding:12px 14px;background:#f4f8f5;border-bottom:1px solid var(--line);font-weight:800;font-size:13.5px">\uD83C\uDD95 Submitted in the last 30 days <span style="color:var(--muted);font-weight:600">('+rec.length+')</span></div>'+(rec.length?('<div style="max-height:460px;overflow:auto">'+body+'</div>'):'<div style="padding:16px;color:var(--muted);font-size:13px">No new padel applications submitted in the last 30 days.</div>')+'</div>';
   }
-  function load(){ if(loaded)return; loaded=true; initMap(); fetch('planning.json?cb='+Date.now()).then(function(r){return r.json();}).then(function(d){ apps=d; chips(); typeChips(); render(); renderRecent(); renderAreas(); }).catch(function(e){ if($('cpPlanList'))$('cpPlanList').innerHTML='<div style="padding:16px;color:#b3261e">Could not load planning data ('+e+')</div>'; }); }
+  function load(){ if(loaded)return; loaded=true; initMap(); fetch('planning.json?cb='+Date.now()).then(function(r){return r.json();}).then(function(d){ apps=d; chips(); typeChips(); render(); renderGranted(); renderRecent(); renderAreas(); }).catch(function(e){ if($('cpPlanList'))$('cpPlanList').innerHTML='<div style="padding:16px;color:#b3261e">Could not load planning data ('+e+')</div>'; }); }
   document.addEventListener('input',function(e){ if(e.target&&e.target.id==='cpPlanSearch'){ fq=e.target.value; render(); } });
   document.addEventListener('click',function(e){
     if(e.target.tagName==='A') return;
     var row=e.target.closest?e.target.closest('.cp-planrow'):null;
-    if(row){ var la=+row.dataset.lat, ln=+row.dataset.lng, host=(row.dataset.recent?$('cpPlanRecent'):$('cpPlanList')), a=host&&host._list&&host._list[+row.dataset.i]; if(la&&ln&&pmap&&a){ pmap.setView([la,ln],13); L.popup({maxWidth:290}).setLatLng([la,ln]).setContent(popupHtml(a)).openOn(pmap); } return; }
+    if(row){ var la=+row.dataset.lat, ln=+row.dataset.lng, host=(row.dataset.granted?$('cpPlanGranted'):(row.dataset.recent?$('cpPlanRecent'):$('cpPlanList'))), a=host&&host._list&&host._list[+row.dataset.i]; if(la&&ln&&pmap&&a){ pmap.setView([la,ln],13); L.popup({maxWidth:290}).setLatLng([la,ln]).setContent(popupHtml(a)).openOn(pmap); } return; }
     var c=e.target.closest?e.target.closest('.cp-pchip'):null; if(c){ fstatus=c.dataset.s||null; document.querySelectorAll('.cp-pchip').forEach(function(x){x.classList.toggle('active',x===c);}); render(); return; }
     var tc=e.target.closest?e.target.closest('.cp-tchip'):null; if(tc){ ftype=tc.dataset.type||null; document.querySelectorAll('.cp-tchip').forEach(function(x){x.classList.toggle('active',x===tc);}); render(); return; }
     var ar=e.target.closest?e.target.closest('.cp-arearow'):null; if(ar){ fq=ar.dataset.area||''; var si=$('cpPlanSearch'); if(si) si.value=fq; render(); var pl=$('cpPlanList'); if(pl) pl.scrollIntoView({block:'center'}); return; }
