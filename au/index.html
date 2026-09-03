@@ -276,7 +276,7 @@ Source: Rightmove (West Midlands, East Midlands, South East, London, East of Eng
 </div>
 <div class="cp-note" id="cpMapMeta">Loading clubs…</div>
 </div>
-</div>function(){return arguments[0]+BAN;}
+</div><div id="tab-planning" class="cp-panel" hidden=""><div style="background:#FDF6E3;border:1px solid #E0C97F;border-radius:8px;padding:12px 14px;margin:0 0 14px;font-size:13px;line-height:1.5"><b>Coverage note.</b> Australia has no free national development-application feed equivalent to PlanIt in the UK. Live DA records below come from the ACT DA Finder and the PlanSA register, which covers ACT, SA and NT only, about 10 per cent of the population. The rest are announced clubs verified from operator websites and press, which is where the real Australian pipeline sits. Full national DA coverage would need a PlanningAlerts Premium licence.</div>
     <div class="cp-card" style="max-width:1120px">
       <div class="cp-head"><div class="cp-ic">🏗️</div><div><h2 class="cp-title">Planning applications</h2><p class="cp-sub">UK padel-court planning applications — who's building, where, and the status</p></div></div>
       <div id="cpPlanGranted"></div><div id="cpPlanChips" style="margin:6px 0 6px"></div>
@@ -328,7 +328,7 @@ function doSave(la,ln){var nm=$('osName').value.trim();var rec={id:editId||nextI
 if(e.target&&e.target.id==='osExport'){var b=new Blob([JSON.stringify(sites,null,1)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='padel-people-/au/au_sites.json';a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);return;}
 });
 document.addEventListener('change',function(e){if(e.target&&e.target.id==='osImport'){var f=e.target.files&&e.target.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){try{var d=JSON.parse(rd.result);if(Array.isArray(d)&&d.length){sites=d;save();render();msg('Imported '+d.length+' sites.');}else msg('That file has no sites.');}catch(err){msg('Could not read that file.');}};rd.readAsText(f);e.target.value='';}});
-})();</script><div id="tab-canopy" class="cp-panel" hidden=""><iframe id="cpCanopyFrame" data-src="canopy/" title="Padel Canopy Visualiser" style="width:100%;height:calc(100vh - 200px);min-height:640px;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe></div>
+})();</script><div id="tab-canopy" class="cp-panel" hidden=""><iframe id="cpCanopyFrame" data-src="/canopy/" title="Padel Canopy Visualiser" style="width:100%;height:calc(100vh - 200px);min-height:640px;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe></div>
 <div id="tab-operators" class="cp-panel" hidden="">
 <div class="cp-card" style="max-width:1180px">
 <div class="cp-head"><div class="cp-ic">🏆</div><div><h2 class="cp-title">UK padel operators — league table</h2><p class="cp-sub">Every GB operator with 2+ clubs OPEN AND TRADING (31) · coming-soon sites excluded · verified operator-by-operator</p></div></div>
