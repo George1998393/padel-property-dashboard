@@ -114,7 +114,7 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 <body><!-- build canopy-1785185656.1038487 -->
 <div id="ppGate" style="position:fixed;inset:0;z-index:99999;background:#0a7d4b;display:flex;align-items:center;justify-content:center;padding:20px">
   <div style="background:#fff;border-radius:16px;padding:30px 26px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.28);text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif">
-    <div style="font-size:22px;font-weight:800;color:#13201a;letter-spacing:-.02em;margin-bottom:14px">Padel People <span style="color:#0a7d4b">Australia</span></div>
+    <div style="font-size:22px;font-weight:800;color:#13201a;letter-spacing:-.02em;margin-bottom:14px">Padel People <span style="color:#0a7d4b">Internal Website</span></div>
     <form id="ppNameForm">
       <div style="font-size:13px;color:#5d6b63;margin:0 0 18px">Enter your name to continue</div>
       <input id="ppGateName" type="text" autocomplete="name" placeholder="Your name" style="width:100%;height:44px;border:1px solid #e3eae6;border-radius:10px;padding:0 14px;font-size:15px;margin-bottom:10px;outline:none">
@@ -141,12 +141,14 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 <div class="wrap">
 <header>
 <div>
-<h1>Padel <span>People</span> Australia</h1>
-<div class="sub">Potential indoor padel venue sites · Australia · Last updated 22 August 2026</div>
+<h1>Padel <span>People</span> Internal Website</h1>
+<div class="sub">Potential indoor padel venue sites · UK (excl. Scotland) · Last updated 2 September 2026</div>
 </div>
 </header>
 <div class="cp-tabs" id="cpTabs">
-<button class="cp-tab active" data-tab="sites">Property Sites</button><button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="planner">Court Planner</button></div>
+<button class="cp-tab active" data-tab="sites">Property Sites</button><button class="cp-tab" data-tab="oursites">Our Sites</button>
+<button class="cp-tab" data-tab="projection">Club Projection</button>
+<button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="data">Data Dashboard</button><button class="cp-tab" data-tab="planning">Planning<span id="cpPlanBadge" style="display:none;margin-left:6px;background:var(--green);color:#fff;border-radius:20px;padding:1px 7px;font-size:10.5px;font-weight:800"></span></button><button class="cp-tab" data-tab="planner">Court Planner</button><button class="cp-tab" data-tab="canopy">Canopy Visualiser</button><button class="cp-tab" data-tab="operators">AU Operators</button></div>
 <div id="tab-sites" class="cp-panel">
 
 <div class="spec">
@@ -184,12 +186,84 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 Source: Rightmove (West Midlands, East Midlands, South East, London, East of England), live at time of search 29 June 2026. LoopNet &amp; EG Propertylink returned no readable listings. Rents shown are stated asking figures (no POA included). Always confirm eaves height, parking and planning use directly with the agent before progressing.
 </footer>
 </div><!--/tab-sites-->
-<div id="tab-map" class="cp-panel" hidden="">
+<div id="tab-projection" class="cp-panel" hidden="">
+<div class="cp-wrap">
+<div class="cp-card">
+<div class="cp-head"><div class="cp-ic">📋</div>
+<div><h2 class="cp-title">Club Projection</h2><p class="cp-sub">Estimate monthly &amp; yearly revenue for a club layout</p></div></div>
+<div class="cp-seclabel">Inputs</div><div class="cp-secnote">Court mix, opening hours and peak / off-peak rates</div>
+<div class="cp-grid3">
+<div><div class="cp-flabel">Indoor courts</div><div class="cp-stepper" data-step="indoor"><button data-dir="-1">−</button><div class="cp-val"><span data-out="indoor">3</span></div><button data-dir="1">+</button></div></div>
+<div><div class="cp-flabel">Outdoor courts</div><div class="cp-stepper" data-step="outdoor"><button data-dir="-1">−</button><div class="cp-val"><span data-out="outdoor">0</span></div><button data-dir="1">+</button></div></div>
+<div><div class="cp-flabel">Covered courts</div><div class="cp-stepper" data-step="covered"><button data-dir="-1">−</button><div class="cp-val"><span data-out="covered">1</span></div><button data-dir="1">+</button></div></div>
+</div>
+<div class="cp-grid3" style="margin-top:14px">
+<div><div class="cp-flabel">Singles courts</div><div class="cp-stepper" data-step="singles"><button data-dir="-1">−</button><div class="cp-val"><span data-out="singles">0</span></div><button data-dir="1">+</button></div></div>
+<div><div class="cp-flabel">Operating hours / day</div><div class="cp-stepper" data-step="hours"><button data-dir="-1">−</button><div class="cp-val"><span data-out="hours">14</span><small>h</small></div><button data-dir="1">+</button></div></div>
+<div><div class="cp-flabel">Total</div><div class="cp-pill"><b id="cpTotal">4</b> total courts</div></div>
+</div>
+<div class="cp-grid2" style="margin-top:14px">
+<div><div class="cp-flabel">Opens at</div><input type="time" id="cpOpen" value="07:00" style="width:100%;height:50px;border:1px solid var(--line);border-radius:11px;padding:0 14px;font-size:16px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div style="display:flex;align-items:flex-end"><div class="cp-secnote" style="margin:0 0 4px">Used to split open hours into peak vs off-peak. Closes at <span id="cpClose">21:00</span>.</div></div>
+</div>
+<div style="margin-top:18px">
+<div class="cp-flabel">Hire rates (A$ per hour)</div>
+<div class="cp-secnote" style="margin-bottom:10px">Peak = weekdays from 5pm + all weekend · Off-peak = all other open hours</div>
+<div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px 14px;align-items:center;max-width:560px">
+<div></div>
+<div class="cp-flabel" style="margin:0;text-align:center">Peak</div>
+<div class="cp-flabel" style="margin:0;text-align:center">Off-peak</div>
+<div style="font-size:13.5px;font-weight:600">Standard courts</div>
+<input type="number" min="0" data-rate="stdPeak" value="44" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+<input type="number" min="0" data-rate="stdOff" value="33" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+<div style="font-size:13.5px;font-weight:600">Singles courts</div>
+<input type="number" min="0" data-rate="sinPeak" value="30" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+<input type="number" min="0" data-rate="sinOff" value="22" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+</div>
+</div>
+<div style="margin-top:18px"><div class="cp-flabel">Expected occupancy — how full you think the courts will be</div>
+<div style="display:flex;align-items:center;gap:14px;margin-top:8px"><input type="range" id="cpOccIn" min="0" max="100" step="0.5" value="58.5" style="flex:1;accent-color:var(--green)"><div style="min-width:92px;height:50px;border:1px solid var(--line);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;background:#fff"><span id="cpOccNum">58.5</span><small style="font-weight:600;color:var(--muted);margin-left:1px">%</small></div></div>
+</div>
+</div>
+<div class="cp-card">
+<div class="cp-seclabel">Results</div><div class="cp-secnote">Live projection — updates as you tweak inputs above</div>
+<div class="cp-grid3">
+<div class="cp-result cp-primary"><div class="cp-rl">Est. Monthly Revenue</div><div class="cp-rv" id="cpMonthly">A$38K</div><div class="cp-rf" id="cpMonthlyF">997 booked court-hrs/mo</div></div>
+<div class="cp-result"><div class="cp-rl">Est. Yearly Revenue</div><div class="cp-rv" id="cpYearly">A$459K</div><div class="cp-rf" id="cpYearlyF">4 courts</div></div>
+<div class="cp-result"><div class="cp-rl">Revenue per Court</div><div class="cp-rv" id="cpPer">A$10K</div><div class="cp-rf">per month</div></div>
+</div>
+<div class="cp-grid2" style="margin-top:14px">
+<div class="cp-result"><div class="cp-rl">Peak Revenue / mo</div><div class="cp-rv" id="cpPeakRev">A$21K</div><div class="cp-rf">weekdays 5pm+ &amp; weekends</div></div>
+<div class="cp-result"><div class="cp-rl">Off-Peak Revenue / mo</div><div class="cp-rv" id="cpOffRev">A$17K</div><div class="cp-rf">weekday daytime</div></div>
+</div>
+<div class="cp-note">Revenue = each court × open hours in each time band × occupancy × that band's rate. Occupancy is your own estimate; slide it for best / worst case. Estimates only.</div>
+</div>
+<div class="cp-card" id="cpCostsCard">
+<div class="cp-seclabel">Costs &amp; EBITDA</div>
+<div class="cp-secnote">Annual. Enter staff, rent &amp; rates and any other costs; utilities, maintenance and software are calculated (percentages editable).</div>
+<div class="cp-grid3">
+<div><div class="cp-flabel">Staff (A$ / yr)</div><input type="number" id="cpStaff" value="90000" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div><div class="cp-flabel">Rent &amp; rates (A$ / yr)</div><input type="number" id="cpRR" value="100000" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div><div class="cp-flabel">Other costs (A$ / yr)</div><input type="number" id="cpOther" value="0" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+</div>
+<div class="cp-grid3" style="margin-top:14px">
+<div><div class="cp-flabel">Utilities — % of rent &amp; rates</div><input type="number" step="0.1" id="cpUtil" value="1" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div><div class="cp-flabel">Maintenance — % of revenue</div><input type="number" step="0.1" id="cpMaint" value="1.2" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div><div class="cp-flabel">Software — % of revenue</div><input type="number" step="0.1" id="cpSoft" value="3.5" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+</div>
+<div class="cp-grid3" style="margin-top:16px">
+<div class="cp-result"><div class="cp-rl">Total annual costs</div><div class="cp-rv" id="cpTotalCosts">A$0</div><div class="cp-rf">per year</div></div>
+<div class="cp-result cp-primary"><div class="cp-rl">EBITDA</div><div class="cp-rv" id="cpEbitda">A$0</div><div class="cp-rf" id="cpEbitdaF">0% margin</div></div>
+<div class="cp-result"><div class="cp-rl">Revenue</div><div class="cp-rv" id="cpRevYr">A$0</div><div class="cp-rf">per year</div></div>
+</div>
+<div class="cp-note" id="cpCostBreak"></div>
+</div></div>
+</div><div id="tab-map" class="cp-panel" hidden="">
 <div class="cp-card" style="max-width:1120px">
-<div class="cp-head"><div class="cp-ic">🗺️</div><div><h2 class="cp-title">Opportunity Map</h2><p class="cp-sub">Click anywhere in Australia to score the catchment</p></div></div>
+<div class="cp-head"><div class="cp-ic">🗺️</div><div><h2 class="cp-title">Opportunity Map</h2><p class="cp-sub">Click anywhere in England &amp; Wales to score the catchment</p></div></div>
 <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start">
 <div style="flex:2;min-width:340px">
-<div id="cpSearchWrap" style="position:relative;margin-bottom:12px"><input id="cpSearch" type="text" autocomplete="off" placeholder="🔍  Search a town…" style="width:100%;height:46px;border:1px solid var(--line);border-radius:11px;padding:0 14px;font-size:15px;font-weight:600;color:var(--ink);background:#fff"><div id="cpSearchRes" style="display:none;position:absolute;left:0;right:0;top:50px;z-index:600;background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:0 10px 28px rgba(19,32,26,.12);max-height:300px;overflow:auto"></div></div><div id="cpMap" style="height:600px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#eef2f0"></div>
+<div id="cpSearchWrap" style="position:relative;margin-bottom:12px"><input id="cpSearch" type="text" autocomplete="off" placeholder="🔍  Search a town…" style="width:100%;height:46px;border:1px solid var(--line);border-radius:11px;padding:0 14px;font-size:15px;font-weight:600;color:var(--ink);background:#fff"><div id="cpSearchRes" style="display:none;position:absolute;left:0;right:0;top:50px;z-index:600;background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:0 10px 28px rgba(19,32,26,.12);max-height:300px;overflow:auto"></div></div><div id="cpMap" style="height:540px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#eef2f0"></div>
 <div style="margin-top:12px;display:flex;align-items:center;gap:12px">
 <span class="cp-flabel" style="margin:0">Drive time</span>
 <input type="range" id="cpRad" min="5" max="60" step="5" value="20" style="flex:1;accent-color:var(--green)">
@@ -202,11 +276,119 @@ Source: Rightmove (West Midlands, East Midlands, South East, London, East of Eng
 </div>
 <div class="cp-note" id="cpMapMeta">Loading clubs…</div>
 </div>
+</div>function(){return arguments[0]+BAN;}
+    <div class="cp-card" style="max-width:1120px">
+      <div class="cp-head"><div class="cp-ic">🏗️</div><div><h2 class="cp-title">Planning applications</h2><p class="cp-sub">UK padel-court planning applications — who's building, where, and the status</p></div></div>
+      <div id="cpPlanGranted"></div><div id="cpPlanChips" style="margin:6px 0 6px"></div>
+      <div class="cp-flabel" style="font-size:11px;color:var(--muted);margin:2px 0 4px">Filter by applicant type</div>
+      <div id="cpPlanTypeChips" style="margin:0 0 12px"></div>
+      <input id="cpPlanSearch" type="text" autocomplete="off" placeholder="🔍  Search description, town or council…" style="width:100%;height:44px;border:1px solid var(--line);border-radius:11px;padding:0 14px;font-size:14px;margin-bottom:12px;background:#fff">
+      <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start">
+        <div style="flex:1;min-width:320px"><div id="cpPlanMap" style="height:460px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#eef2f0"></div></div>
+        <div style="flex:1;min-width:320px"><div class="cp-flabel" id="cpPlanCount" style="margin-bottom:6px">Loading…</div><div id="cpPlanList" style="max-height:460px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff"></div></div>
+      </div>
+      <div id="cpPlanRecent" style="margin-top:20px"></div>
+      <div id="cpPlanAreas" style="margin-top:20px"></div>
+      <div class="cp-note">Source: PlanIt (planit.org.uk), aggregating UK council planning portals. Green = permitted/approved, amber = undecided, red = rejected/withdrawn. Refreshed weekly · not exhaustive — confirm on the council page.</div>
+    </div>
+  </div><div id="tab-data" class="cp-panel" hidden=""><div id="cpDataHost"><div style="color:var(--muted);font-size:13px;padding:20px">Loading…</div></div></div>
+<div id="tab-oursites" class="cp-panel" hidden=""><div class="cp-card"><div class="cp-head"><div class="cp-ic">📍</div><div><h2 class="cp-title">Our Sites</h2><p class="cp-sub">Live venues and the pipeline — click the map or use the form to add a site</p></div></div><div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:2px 0 12px;font-size:12.5px"><span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#111;border:2px solid #111;vertical-align:-2px;margin-right:6px"></span>Confirmed / open</span><span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#0a7d4b;border:2px solid #0a7d4b;vertical-align:-2px;margin-right:6px"></span>Going through the lease</span><span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#e0b400;border:2px solid #e0b400;vertical-align:-2px;margin-right:6px"></span>In discussions</span><span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#8a938d;border:2px solid #8a938d;vertical-align:-2px;margin-right:6px"></span>Potential</span><span id="osCounts" style="color:var(--muted);margin-left:auto"></span></div><div style="display:flex;gap:16px;flex-wrap:wrap"><div style="flex:2;min-width:340px"><div id="osMap" style="height:560px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#eef2f0"></div><div class="cp-secnote" style="margin-top:8px">Tip: click anywhere on the map to drop a new site at that spot, then fill in the details.</div></div><div style="flex:1;min-width:290px"><div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff"><div class="cp-flabel" style="margin:0 0 8px" id="osFormTitle">Add a site</div><input type="hidden" id="osId"><label style="font-size:11px;color:var(--muted);font-weight:600">Name</label><input id="osName" type="text" placeholder="e.g. Warehouse, Reading" style="width:100%;height:36px;border:1px solid var(--line);border-radius:8px;padding:0 10px;font-size:13px;margin:3px 0 8px"><label style="font-size:11px;color:var(--muted);font-weight:600">Town / address</label><div style="display:flex;gap:6px;margin:3px 0 8px"><input id="osAddr" type="text" placeholder="Reading, Berkshire" style="flex:1;height:36px;border:1px solid var(--line);border-radius:8px;padding:0 10px;font-size:13px"><button class="pl-btn" id="osFind" type="button" style="white-space:nowrap">Find</button></div><label style="font-size:11px;color:var(--muted);font-weight:600">Status</label><select id="osStatus" style="width:100%;height:36px;border:1px solid var(--line);border-radius:8px;padding:0 8px;font-size:13px;margin:3px 0 8px;background:#fff"><option value="confirmed">Confirmed / open</option><option value="lease">Going through the lease</option><option value="discussion" selected>In discussions</option><option value="potential">Potential</option></select><label style="font-size:11px;color:var(--muted);font-weight:600">Priority to us</label><select id="osPri" style="width:100%;height:36px;border:1px solid var(--line);border-radius:8px;padding:0 8px;font-size:13px;margin:3px 0 8px;background:#fff"><option value="5">5 ★★★★★ Top priority</option><option value="4">4 ★★★★ High</option><option value="3" selected>3 ★★★ Medium</option><option value="2">2 ★★ Low</option><option value="1">1 ★ Watch only</option></select><div style="display:flex;gap:6px;margin-bottom:8px"><div style="flex:1"><label style="font-size:11px;color:var(--muted);font-weight:600">Courts</label><input id="osCourts" type="number" min="0" step="1" placeholder="4" style="width:100%;height:36px;border:1px solid var(--line);border-radius:8px;padding:0 10px;font-size:13px;margin-top:3px"></div><div style="flex:1"><label style="font-size:11px;color:var(--muted);font-weight:600">Lat, Lng</label><input id="osLatLng" type="text" placeholder="51.45, -1.0" style="width:100%;height:36px;border:1px solid var(--line);border-radius:8px;padding:0 10px;font-size:12px;margin-top:3px"></div></div><label style="font-size:11px;color:var(--muted);font-weight:600">Notes</label><textarea id="osNotes" rows="6" placeholder="Agent, rent, size, next step, dates…" style="width:100%;min-height:130px;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13px;line-height:1.5;margin:3px 0 10px;resize:vertical"></textarea><div style="display:flex;gap:6px"><button class="pl-btn primary" id="osSave" type="button" style="flex:1">Save site</button><button class="pl-btn" id="osCancel" type="button" style="display:none">Cancel</button></div><div id="osMsg" style="font-size:11.5px;color:var(--muted);margin-top:8px;min-height:15px"></div></div><div style="display:flex;gap:6px;margin-top:8px"><button class="pl-btn" id="osExport" type="button" style="flex:1">Export</button><label class="pl-btn" style="flex:1;cursor:pointer;position:relative;overflow:hidden;text-align:center">Import<input id="osImport" type="file" accept="application/json,.json" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label></div></div></div><div class="cp-flabel" style="margin:18px 0 8px">All sites</div><div id="osList" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start"></div></div></div><script>/*ourSites*/(function(){
+var SB_URL='https://yllbjllmanykgwdrxljg.supabase.co',SB_KEY='sb_publishable_B3-tuCZJGw4jc_qSn8WgBQ_wEDwdm98',SB_SITES=SB_URL+'/rest/v1/pp_sites_au';function sbH(x){var h={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};if(x)h['Prefer']=x;return h;}function who(){try{return localStorage.getItem('pp_dash_name')||'someone';}catch(e){return 'someone';}}
+var KEY='pp_our_sites_au', map=null, layer=null, sites=[], editId=null, inited=false;
+var SEED=[{id:1,name:'Wimbledon',address:'Wimbledon, London',lat:51.4215,lng:-0.2064,status:'confirmed',courts:1,notes:''},{id:2,name:'Sedlescombe',address:'Sedlescombe, East Sussex',lat:50.9332,lng:0.5345,status:'confirmed',courts:2,notes:''},{id:3,name:'Basingstoke',address:'Basingstoke, Hampshire',lat:51.2628,lng:-1.0862,status:'confirmed',courts:3,notes:''},{id:4,name:'Shepton Mallet',address:'Shepton Mallet, Somerset',lat:51.1909,lng:-2.5461,status:'confirmed',courts:4,notes:''},{id:5,name:'Corsham',address:'Corsham, Wiltshire',lat:51.4269,lng:-2.1846,status:'confirmed',courts:6,notes:''},{id:6,name:'Boston',address:'Boston, Lincolnshire',lat:52.9777,lng:-0.0238,status:'confirmed',courts:5,notes:''}];
+var COL={confirmed:'#111111',lease:'#0a7d4b',discussion:'#e0b400',potential:'#8a938d'};
+var LBL={confirmed:'Confirmed / open',lease:'Going through the lease',discussion:'In discussions',potential:'Potential'};
+function $(id){return document.getElementById(id);}
+function esc(t){return (t==null?'':String(t)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function load(){try{var r=localStorage.getItem(KEY);if(!r){var b=localStorage.getItem(KEY+'_bak');if(b)r=b;}sites=r?JSON.parse(r):SEED.slice();}catch(e){sites=SEED.slice();}if(!sites.length)sites=SEED.slice();}
+function pull(){return fetch(SB_SITES+'?select=*&order=name',{headers:sbH()}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){sites=d.map(function(x){return {id:x.id,name:x.name,address:x.address||'',lat:x.lat,lng:x.lng,status:x.status,courts:x.courts,notes:x.notes||'',priority:x.priority||3};});try{localStorage.setItem(KEY,JSON.stringify(sites));}catch(e){}render();return true;}).catch(function(){msg('Offline \u2014 showing last saved copy.');return false;});}
+function save(){try{var prev=localStorage.getItem(KEY);if(prev)localStorage.setItem(KEY+'_bak',prev);localStorage.setItem(KEY,JSON.stringify(sites));}catch(e){}}
+function nextId(){return sites.reduce(function(m,s){return Math.max(m,s.id||0);},0)+1;}
+function msg(t){var e=$('osMsg');if(e){e.textContent=t;setTimeout(function(){if(e.textContent===t)e.textContent='';},3000);}}
+function counts(){var c={confirmed:0,lease:0,discussion:0,potential:0},crt=0;sites.forEach(function(s){c[s.status]=(c[s.status]||0)+1;crt+=(+s.courts||0);});var e=$('osCounts');if(e)e.textContent=sites.length+' sites \u00b7 '+c.confirmed+' confirmed \u00b7 '+c.lease+' lease \u00b7 '+c.discussion+' talks \u00b7 '+c.potential+' potential \u00b7 '+crt+' courts';}
+function plot(){if(!map)return;if(layer)layer.remove();layer=L.layerGroup();sites.forEach(function(s){if(s.lat==null||s.lng==null)return;var col=COL[s.status]||'#888';L.circleMarker([s.lat,s.lng],{radius:8,color:col,weight:2,fillColor:col,fillOpacity:.85}).bindPopup('<div style="font-size:13px;line-height:1.5"><b>'+esc(s.name)+'</b><br><span style="color:'+col+';font-weight:700">'+LBL[s.status]+'</span>'+(s.courts?' \u00b7 '+s.courts+' courts':'')+'<br><span style="color:#5d6b63">'+esc(s.address||'')+'</span>'+(s.notes?'<br><span style="color:#5d6b63">'+esc(s.notes)+'</span>':'')+'</div>').addTo(layer);});layer.addTo(map);}
+function list(){var h=$('osList');if(!h)return;var cols=[['confirmed','Confirmed / open'],['lease','Going through the lease'],['discussion','In discussions'],['potential','Potential']];h.innerHTML=cols.map(function(c){var col=COL[c[0]];var txt=(c[0]==='discussion')?'#13201a':'#fff';var items=sites.filter(function(x){return x.status===c[0];}).sort(function(a,b){return ((b.priority||3)-(a.priority||3))||a.name.localeCompare(b.name);});var crt=items.reduce(function(t,x){return t+(+x.courts||0);},0);var body=items.map(function(x){var p=x.priority||3;var st='';for(var i=0;i<5;i++)st+=(i<p?'★':'☆');return '<div class="os-row" draggable="true" data-id="'+x.id+'" style="padding:8px 9px;border-top:1px solid var(--line);cursor:grab;display:flex;gap:7px;align-items:flex-start"><span style="flex:0 0 8px;height:8px;border-radius:50%;background:'+col+';margin-top:4px"></span><span style="flex:1;min-width:0"><span style="font-weight:700;font-size:12px">'+esc(x.name)+'</span>'+(x.courts?' <span style="color:var(--muted);font-size:11px">'+x.courts+' crt</span>':'')+'<br><span title="Priority to us" style="color:#b8860b;font-size:10.5px;letter-spacing:1.5px">'+st+'</span><br><span style="color:var(--muted);font-size:11px">'+esc(x.address||'')+'</span></span><button class="os-del" data-id="'+x.id+'" title="Remove" style="border:0;background:none;color:var(--muted);font-size:14px;cursor:pointer;line-height:1">\u00d7</button></div>';}).join('')||'<div style="padding:16px 10px;color:var(--muted);font-size:11.5px;text-align:center">Drop a site here</div>';return '<div class="os-col" data-col="'+c[0]+'" style="flex:1 1 200px;min-width:190px;border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden"><div style="padding:9px 11px;background:'+col+';color:'+txt+';font-weight:800;font-size:11.5px;display:flex;justify-content:space-between;gap:6px"><span>'+c[1]+'</span><span>'+items.length+(crt?' \u00b7 '+crt+' crt':'')+'</span></div><div style="max-height:320px;overflow:auto;min-height:70px">'+body+'</div></div>';}).join('');}function render(){counts();plot();list();}
+function clearForm(){editId=null;['osName','osAddr','osCourts','osLatLng','osNotes'].forEach(function(i){if($(i))$(i).value='';});if($('osStatus'))$('osStatus').value='discussion';if($('osPri'))$('osPri').value='3';if($('osFormTitle'))$('osFormTitle').textContent='Add a site';if($('osSave'))$('osSave').textContent='Save site';if($('osCancel'))$('osCancel').style.display='none';}
+function edit(s){editId=s.id;$('osName').value=s.name||'';$('osAddr').value=s.address||'';$('osStatus').value=s.status||'discussion';if($('osPri'))$('osPri').value=String(s.priority||3);$('osCourts').value=s.courts||'';$('osLatLng').value=(s.lat!=null?s.lat+', '+s.lng:'');$('osNotes').value=s.notes||'';$('osFormTitle').textContent='Edit site';$('osSave').textContent='Update site';$('osCancel').style.display='block';if(map&&s.lat!=null){map.setView([s.lat,s.lng],11);}}
+function initMap(){if(map||typeof L==='undefined')return;map=L.map('osMap',{scrollWheelZoom:true}).setView([-25.6,134.4],4.4);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'\u00a9 OpenStreetMap'}).addTo(map);map.on('click',function(e){$('osLatLng').value=e.latlng.lat.toFixed(4)+', '+e.latlng.lng.toFixed(4);msg('Location set \u2014 add a name and save.');});setTimeout(function(){map.invalidateSize();},180);}
+function wireDrag(){document.addEventListener('dragstart',function(e){var r=e.target.closest?e.target.closest('.os-row'):null;if(r){e.dataTransfer.setData('text/plain',r.dataset.id);e.dataTransfer.effectAllowed='move';r.style.opacity='.45';}});document.addEventListener('dragend',function(e){var r=e.target.closest?e.target.closest('.os-row'):null;if(r)r.style.opacity='';});document.addEventListener('dragover',function(e){var c=e.target.closest?e.target.closest('.os-col'):null;if(c){e.preventDefault();e.dataTransfer.dropEffect='move';c.style.boxShadow='inset 0 0 0 2px '+(COL[c.dataset.col]||'#999');}});document.addEventListener('dragleave',function(e){var c=e.target.closest?e.target.closest('.os-col'):null;if(c)c.style.boxShadow='';});document.addEventListener('drop',function(e){var c=e.target.closest?e.target.closest('.os-col'):null;if(!c)return;e.preventDefault();c.style.boxShadow='';var id=+e.dataTransfer.getData('text/plain');var st=c.dataset.col;var t=sites.filter(function(x){return x.id===id;})[0];if(!t||t.status===st)return;t.status=st;render();fetch(SB_SITES+'?id=eq.'+id,{method:'PATCH',headers:sbH('return=minimal'),body:JSON.stringify({status:st,updated_by:who(),updated_at:new Date().toISOString()})}).then(function(r){if(!r.ok)throw 0;msg('Moved '+t.name+' to '+LBL[st]);pull();}).catch(function(){msg('Moved locally only.');});});}
+function boot(){if(inited)return;inited=true;load();initMap();render();pull();wireDrag();}
+document.addEventListener('click',function(e){
+var t=e.target.closest?e.target.closest('.cp-tab'):null;
+if(t&&t.dataset.tab==='oursites'){boot();setTimeout(function(){if(map)map.invalidateSize();},200);return;}
+var del=e.target.closest?e.target.closest('.os-del'):null;
+if(del){e.stopPropagation();var id=+del.dataset.id;var s=sites.filter(function(x){return x.id===id;})[0];if(s&&confirm('Remove "'+s.name+'" for everyone?')){fetch(SB_SITES+'?id=eq.'+id,{method:'DELETE',headers:sbH('return=minimal')}).then(function(r){if(!r.ok)throw 0;pull();}).catch(function(){sites=sites.filter(function(x){return x.id!==id;});save();render();});if(editId===id)clearForm();}return;}
+var row=e.target.closest?e.target.closest('.os-row'):null;
+if(row){var s2=sites.filter(function(x){return x.id===+row.dataset.id;})[0];if(s2)edit(s2);return;}
+if(e.target&&e.target.id==='osCancel'){clearForm();}
+if(e.target&&e.target.id==='osFind'){var q=$('osAddr').value.trim();if(!q){msg('Type a town or address first.');return;}msg('Looking up\u2026');fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=au&q='+encodeURIComponent(q)).then(function(r){return r.json();}).then(function(a){if(a&&a[0]){$('osLatLng').value=(+a[0].lat).toFixed(4)+', '+(+a[0].lon).toFixed(4);if(map)map.setView([+a[0].lat,+a[0].lon],11);msg('Found \u2014 ready to save.');}else msg('No match \u2014 click the map instead.');}).catch(function(){msg('Lookup failed \u2014 click the map instead.');});return;}
+if(e.target&&e.target.id==='osSave'){var nm=$('osName').value.trim();if(!nm){msg('Give the site a name.');$('osName').focus();return;}var ll=$('osLatLng').value.split(',');var la=parseFloat(ll[0]),ln=parseFloat(ll[1]);if(isNaN(la)||isNaN(ln)){var q=$('osAddr').value.trim();if(!q){msg('Add a town or address, or click the map to place it.');$('osAddr').focus();return;}msg('Finding \u201C'+q+'\u201D\u2026');fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=au&q='+encodeURIComponent(q)).then(function(r){return r.json();}).then(function(a){if(a&&a[0]){var la2=+(+a[0].lat).toFixed(4),ln2=+(+a[0].lon).toFixed(4);$('osLatLng').value=la2+', '+ln2;if(map)map.setView([la2,ln2],11);doSave(la2,ln2);}else{msg('Could not find \u201C'+q+'\u201D \u2014 click the map to place it instead.');}}).catch(function(){msg('Lookup failed \u2014 click the map to place it instead.');});return;}
+doSave(la,ln);return;}
+function doSave(la,ln){var nm=$('osName').value.trim();var rec={id:editId||nextId(),name:nm,address:$('osAddr').value.trim(),lat:+la.toFixed(4),lng:+ln.toFixed(4),status:$('osStatus').value,priority:parseInt($('osPri')?$('osPri').value:3)||3,courts:parseInt($('osCourts').value)||null,notes:$('osNotes').value.trim()};var body={name:rec.name,address:rec.address||null,lat:rec.lat,lng:rec.lng,status:rec.status,priority:rec.priority||3,courts:rec.courts,notes:rec.notes||null,updated_by:who(),updated_at:new Date().toISOString()};if(editId){fetch(SB_SITES+'?id=eq.'+editId,{method:'PATCH',headers:sbH('return=minimal'),body:JSON.stringify(body)}).then(function(r){if(!r.ok)throw 0;msg('Updated \u201C'+nm+'\u201D');pull();}).catch(function(){sites=sites.map(function(x){return x.id===editId?rec:x;});save();render();msg('Saved locally only.');});}else{fetch(SB_SITES,{method:'POST',headers:sbH('return=minimal'),body:JSON.stringify(body)}).then(function(r){if(!r.ok)throw 0;msg('Added \u201C'+nm+'\u201D');pull();}).catch(function(){sites.push(rec);save();render();msg('Saved locally only.');});}clearForm();return;}
+if(e.target&&e.target.id==='osExport'){var b=new Blob([JSON.stringify(sites,null,1)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='padel-people-/au/au_sites.json';a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);return;}
+});
+document.addEventListener('change',function(e){if(e.target&&e.target.id==='osImport'){var f=e.target.files&&e.target.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){try{var d=JSON.parse(rd.result);if(Array.isArray(d)&&d.length){sites=d;save();render();msg('Imported '+d.length+' sites.');}else msg('That file has no sites.');}catch(err){msg('Could not read that file.');}};rd.readAsText(f);e.target.value='';}});
+})();</script><div id="tab-canopy" class="cp-panel" hidden=""><iframe id="cpCanopyFrame" data-src="canopy/" title="Padel Canopy Visualiser" style="width:100%;height:calc(100vh - 200px);min-height:640px;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe></div>
+<div id="tab-operators" class="cp-panel" hidden="">
+<div class="cp-card" style="max-width:1180px">
+<div class="cp-head"><div class="cp-ic">🏆</div><div><h2 class="cp-title">UK padel operators — league table</h2><p class="cp-sub">Every GB operator with 2+ clubs OPEN AND TRADING (31) · coming-soon sites excluded · verified operator-by-operator</p></div></div>
+<div style="margin:4px 0 10px" id="opToggles">
+<button class="cp-pchip active" data-m="blend">Blended score</button>
+<button class="cp-pchip" data-m="sites">Open sites</button>
+<button class="cp-pchip" data-m="courts">Courts</button>
+<button class="cp-pchip" data-m="density">Courts / site</button>
 </div>
-
-
-
-
+<div style="overflow:auto"><table style="border-collapse:collapse;width:100%;font-size:12.5px;min-width:520px;background:#fff" id="opTable">
+<thead><tr style="text-align:left">
+<th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted)">#</th>
+<th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted)">Operator</th>
+<th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Open sites</th>
+<th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Courts</th>
+<th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Crts/site</th>
+<th style="padding:8px 10px;border-bottom:2px solid var(--line);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:right">Score</th>
+</tr></thead><tbody id="opBody"></tbody></table></div>
+<div class="cp-seclabel" style="margin:18px 0 6px">Excluded after verification</div>
+<div style="font-size:12px;color:var(--ink);line-height:1.7">
+<b>No trading site yet:</b> Zing Padel (0 open, 2 announced) · Apex Padel (0 open, 2 announced) · Padel Pod (0–1, disputed).<br>
+<b>Single site only, despite marketed pipelines:</b> Padel Zone (Hitchin) · Uno Padel (Sheffield) · Performance Padel (Preston) · Padel Pass (Luton) · Club de Padel (Sheffield) · World Padel Academy UK (Mansfield) · Pukka Padel (1 confirmed).<br>
+<b>Outside the market:</b> Let’s Go Padel (10 clubs, all Northern Ireland).<br>
+<b>Not a club-format operator:</b> Playtime Padel (7 park/school pop-up concessions, 8 courts total) · The Padel Yard (Game4Padel sub-brand) · Pulse Padel (not a genuine operator).
+</div>
+<div class="cp-secnote" style="margin-top:14px;font-size:11px;color:var(--muted);line-height:1.6">
+As of 4 Aug 2026. Every operator here was checked against its OWN website locations page and cross-checked on its booking platform (Playtomic / Matchi / Padel Mates / Nettla); only venues open and bookable today are counted. Announced, under-construction and “opening soon” sites are excluded for everyone — including Padel People’s 4 in build. This matters: directory listings and trade press count pipeline as live (e.g. Slazenger shows 12 listings but has 3 trading clubs against 12 announced; PadelStars 15 open not 18). “~” marks a court total the operator does not publish per venue, estimated from booking-platform inventory. Gym and leisure chains (David Lloyd, Bannatyne, Virgin Active, Powerleague) excluded throughout. Game4Padel operates a partner/installed-court model at host clubs rather than owned dedicated venues, so its site count is not strictly like-for-like. Blended score = average of normalised open-sites and courts scores.
+</div>
+</div></div>
+<script>
+(function(){
+  var OPS=[["Racquet Club",3,16,0],["Indoor Padel Australia",2,14,0],["Game4Padel Australia",2,13,1],["Tribe Padel & Wellness",2,12,3],["Colosso",2,9,0],["Padel Brisbane",1,4,1],["PadlX",0,0,2]];
+  var mode='blend';
+  function render(){
+    var vals;
+    if(mode==='blend'){
+      var maxS=Math.max.apply(null,OPS.map(function(o){return o[1];}));
+      var maxC=Math.max.apply(null,OPS.map(function(o){return o[2];}));
+      vals=OPS.map(function(o){ return (o[1]/maxS*50)+(o[2]/maxC*50); });
+    } else {
+      var mv=OPS.map(function(o){ return mode==='sites'?o[1]:mode==='courts'?o[2]:(o[1]?o[2]/o[1]:0); });
+      var mx=Math.max.apply(null,mv);
+      vals=mv.map(function(v){return mx?v/mx*100:0;});
+    }
+    var rows=OPS.map(function(o,ix){ return {o:o, sc:vals[ix]}; }).sort(function(a,b){return b.sc-a.sc;});
+    var host=document.getElementById('opBody'); if(!host)return;
+    host.innerHTML=rows.map(function(r,i){
+      var o=r.o, us=(o[0]==='Padel People');
+      var tr=us?' style="background:var(--ok-bg)"':'';
+      var nm=us?'<b style="color:var(--green)">Padel People</b> <span style="font-size:10px;color:var(--green);font-weight:700">(us)</span>':'<b>'+o[0]+'</b>';
+      function td(v,align){return '<td style="padding:7px 10px;border-top:1px solid var(--line);'+(align?'text-align:right;':'')+'">'+v+'</td>';}
+      return '<tr'+tr+'>'+td('<span style="color:var(--muted);font-weight:700">'+(i+1)+'</span>')+td(nm)+td(o[1],1)+td((o[3]?'~':'')+o[2],1)+td((o[1]?(o[2]/o[1]).toFixed(1):'0'),1)+td('<b>'+Math.round(r.sc)+'</b>',1)+'</tr>';
+    }).join('');
+  }
+  document.addEventListener('click',function(e){ var b=e.target.closest?e.target.closest('#opToggles .cp-pchip'):null; if(!b)return; mode=b.dataset.m; document.querySelectorAll('#opToggles .cp-pchip').forEach(function(x){x.classList.toggle('active',x===b);}); render(); });
+  document.addEventListener('click',function(e){ var t=e.target.closest?e.target.closest('.cp-tab'):null; if(t&&t.dataset.tab==='operators') setTimeout(render,50); });
+  render();
+})();
+</script>
+<script>(function(){var done=false;document.addEventListener('click',function(e){var b=e.target.closest?e.target.closest('.cp-tab'):null;if(b&&b.dataset.tab==='canopy'&&!done){var f=document.getElementById('cpCanopyFrame');if(f&&f.dataset.src){f.src=f.dataset.src;done=true;}}});})();</script>
 </div>
 
 <script>
@@ -320,10 +502,49 @@ setStats();
 render('all');
 </script>
 
-
+<script>(function(){
+var D={indoor:3,outdoor:0,covered:1,singles:0,hours:14,open:7,occ:58.5,dpm:30.44,stdPeak:44,stdOff:33,sinPeak:30,sinOff:22};
+var S=Object.assign({},D); var PEAK_START=17;
+var LIM={indoor:[0,40],outdoor:[0,40],covered:[0,40],singles:[0,40],hours:[1,24]};
+var root=document.getElementById('tab-projection'); if(!root)return;
+function q(s){return root.querySelector(s);}
+function IN(id){return root.querySelector('#'+id);}
+function num(id,d){var e=IN(id);var v=e?parseFloat(e.value):NaN;return isNaN(v)?d:v;}
+function out(k){return root.querySelector('[data-out="'+k+'"]');}
+function money(n){var neg=n<0;n=Math.abs(n);var s;if(n>=1e6)s='A$'+(n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M';else if(n>=1000)s='A$'+Math.round(n/1000)+'K';else s='A$'+Math.round(n);return neg?'-'+s:s;}
+function ci(n){return Math.round(n).toLocaleString('en-GB');}
+function compute(){var std=S.indoor+S.outdoor+S.covered, total=std+S.singles; var dayEnd=S.open+S.hours; var offWk=Math.max(0,Math.min(dayEnd,PEAK_START)-S.open); var pkWk=Math.max(0,dayEnd-Math.max(S.open,PEAK_START)); var peakWeek=5*pkWk+2*S.hours, offWeek=5*offWk, f=S.dpm/7; var peakHpc=peakWeek*f, offHpc=offWeek*f, occ=S.occ/100; var peakRev=occ*(std*peakHpc*S.stdPeak+S.singles*peakHpc*S.sinPeak); var offRev=occ*(std*offHpc*S.stdOff+S.singles*offHpc*S.sinOff); var monthly=peakRev+offRev; var avail=total*S.hours*S.dpm, oh=occ*avail; return {std:std,total:total,avail:avail,oh:oh,peakRev:peakRev,offRev:offRev,monthly:monthly,yearly:monthly*12,per:total?monthly/total:0};}
+function render(){
+['indoor','outdoor','covered','singles','hours'].forEach(function(k){var e=out(k);if(e)e.textContent=S[k];});
+q('#cpTotal').textContent=S.indoor+S.outdoor+S.covered+S.singles; q('#cpOccNum').textContent=S.occ;
+var r=compute();
+q('#cpMonthly').textContent=money(r.monthly); q('#cpMonthlyF').textContent=ci(r.oh)+' booked court-hrs/mo';
+q('#cpYearly').textContent=money(r.yearly); q('#cpYearlyF').textContent=r.total+(r.total===1?' court':' courts');
+q('#cpPer').textContent=money(r.per); q('#cpPeakRev').textContent=money(r.peakRev); q('#cpOffRev').textContent=money(r.offRev);
+var annual=r.yearly;
+var staff=num('cpStaff',0), rr=num('cpRR',0), other=num('cpOther',0), utilP=num('cpUtil',1), maintP=num('cpMaint',1.2), softP=num('cpSoft',3.5);
+var utilities=rr*utilP/100, maintenance=annual*maintP/100, software=annual*softP/100;
+var totalCosts=staff+rr+utilities+maintenance+software+other;
+var ebitda=annual-totalCosts, margin=annual?ebitda/annual*100:0;
+if(IN('cpRevYr'))IN('cpRevYr').textContent=money(annual);
+if(IN('cpTotalCosts'))IN('cpTotalCosts').textContent=money(totalCosts);
+if(IN('cpEbitda')){IN('cpEbitda').textContent=money(ebitda); IN('cpEbitda').style.color=ebitda<0?'#ffd7d3':'#fff';}
+if(IN('cpEbitdaF'))IN('cpEbitdaF').textContent=margin.toFixed(1)+'% margin';
+if(IN('cpCostBreak'))IN('cpCostBreak').innerHTML='Staff '+money(staff)+' · Rent & rates '+money(rr)+' · Utilities '+money(utilities)+' ('+utilP+'% of R&R) · Maintenance '+money(maintenance)+' ('+maintP+'% of rev) · Software '+money(software)+' ('+softP+'% of rev) · Other '+money(other);
+root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;if(!LIM[k])return;st.querySelector('[data-dir="-1"]').disabled=S[k]<=LIM[k][0];st.querySelector('[data-dir="1"]').disabled=S[k]>=LIM[k][1];});
+}
+root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;st.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){var dir=+b.dataset.dir,lo=LIM[k][0],hi=LIM[k][1];S[k]=Math.max(lo,Math.min(hi,S[k]+dir));render();});});});
+var occ=q('#cpOccIn'); if(occ)occ.addEventListener('input',function(){var v=parseFloat(occ.value);if(isNaN(v))return;S.occ=v;render();});
+var op=q('#cpOpen'); if(op)op.addEventListener('input',function(){var p=op.value.split(':');var h=parseInt(p[0],10)+(parseInt(p[1],10)||0)/60;if(!isNaN(h))S.open=h;render();});
+root.querySelectorAll('input[data-rate]').forEach(function(inp){inp.addEventListener('input',function(){var v=parseFloat(inp.value);if(isNaN(v))return;S[inp.dataset.rate]=v;render();});});
+['cpStaff','cpRR','cpOther','cpUtil','cpMaint','cpSoft'].forEach(function(id){var e=IN(id); if(e) e.addEventListener('input',render);});
+var tabs=document.getElementById('cpTabs');
+if(tabs){tabs.querySelectorAll('.cp-tab').forEach(function(t){t.addEventListener('click',function(){tabs.querySelectorAll('.cp-tab').forEach(function(x){x.classList.remove('active');});t.classList.add('active');var name=t.dataset.tab;document.querySelectorAll('.cp-panel').forEach(function(p){p.hidden=(p.id!=='tab-'+name);});});});}
+render();
+})();</script>
 
 <script>(function(){
-var KEY='pp_hidden_sites';
+var KEY='pp_hidden_sites_au';
 var grid=document.getElementById('grid'); if(!grid) return;
 function getHidden(){try{return new Set((JSON.parse(localStorage.getItem(KEY)||'[]')).map(String));}catch(e){return new Set();}}
 function saveHidden(s){try{localStorage.setItem(KEY,JSON.stringify(Array.from(s)));}catch(e){}}
@@ -383,21 +604,23 @@ mo=new MutationObserver(run);
 setTimeout(run,80);
 })();</script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>(function(){
   var inited=false, dataLoaded=false, map, clubs=[], pop=[], marker, circle, circle2, clubLayer, last=null, rankRows=[], mapNear=[];
-  var TARGET_PER10K=10000/6000, DEMAND_FULL=120000, KMH=40, MIN_POP=12000, OUTDOOR_W=0.5;
+  var TARGET_PER10K=10000/6000, DEMAND_FULL=120000, KMH=40, MIN_POP=30000, OUTDOOR_W=0.5;
+  var plans=[], blendOn=false, PIPE_COURTS=4, PIPE_W_APPROVED=1.0, PIPE_W_UNDECIDED=0.5, PIPE_MAX_AGE_DAYS=730;
   function $(id){return document.getElementById(id);}
   function radiusKm(){ var el=$('cpRadN'); var m=el?+el.value:(+$('cpRad').value); if(!m||m<1)m=20; if(m>90)m=90; return m/60*KMH; }
   function km(aLat,aLng,bLat,bLng){var R=6371,dLat=(bLat-aLat)*Math.PI/180,dLng=(bLng-aLng)*Math.PI/180;var s=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(aLat*Math.PI/180)*Math.cos(bLat*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);return 2*R*Math.asin(Math.sqrt(s));}
   function scoreOf(P,eff){ if(P<=0) return 0; var per10=eff/(P/10000); var sat=Math.max(0,Math.min(1,1-per10/TARGET_PER10K)); var dem=Math.max(0,Math.min(1,P/DEMAND_FULL)); return Math.round(sat*dem*100); }
   function color(s){return s>=66?'#0a7d4b':s>=33?'#b8860b':'#b3261e';}
   function ind(c){return c[3]||0;} function outd(c){return c[4]||0;}
-  function catchment(lat,lng,radKm){var maxR=radKm*1.6;var indoor=0,outdoor=0,clubCount=0,near=[],effI=0,effO=0;for(var i=0;i<clubs.length;i++){var c=clubs[i];var d=km(lat,lng,c[1],c[2]);if(d<=maxR){var w=d<=radKm?1:Math.max(0,(maxR-d)/(maxR-radKm));effI+=ind(c)*w;effO+=outd(c)*w;indoor+=ind(c);outdoor+=outd(c);clubCount++;near.push([c[0],ind(c)+outd(c),d,ind(c),outd(c),c[1],c[2]]);}}var eff=effI+effO*OUTDOOR_W;var people=0;for(var j=0;j<pop.length;j++){var t=pop[j];if(km(lat,lng,t[1],t[2])<=radKm)people+=t[3];}var per10=people?eff/(people/10000):0;var roomT=people/6000-eff;return {people:people,indoor:indoor,outdoor:outdoor,eff:eff,clubCount:clubCount,near:near,per10:per10,roomT:roomT,score:scoreOf(people,eff)};}
-  function plotClubs(){ if(!map||!clubs.length) return; if(clubLayer) clubLayer.remove(); clubLayer=L.layerGroup(); clubs.forEach(function(c){ var tot=ind(c)+outd(c); L.circleMarker([c[1],c[2]],{radius:5,color:'#0a7d4b',weight:1.5,fillColor:'#0a7d4b',fillOpacity:.75}).bindTooltip(c[0]+' · '+tot+' courts'+(outd(c)?' ('+outd(c)+' outdoor)':'')).addTo(clubLayer); }); clubLayer.addTo(map); }
-  function loadData(){ if(dataLoaded) return; dataLoaded=true; Promise.all([fetch('/au/au_clubs.json').then(function(r){return r.json();}),fetch('/au/au_population.json').then(function(r){return r.json();})]).then(function(res){ clubs=res[0]; pop=res[1]; var tot=clubs.reduce(function(a,x){return a+ind(x)+outd(x);},0); $('cpMapMeta').textContent=clubs.length+' clubs · '+tot+' courts (TrustPadel + Padel Directory + Playtomic) · outdoor counted at 50% · Australia. Updated weekly.'; plotClubs(); buildRanking(); }).catch(function(e){ $('cpMapMeta').textContent='Could not load map data ('+e+')'; }); }
+  function catchment(lat,lng,radKm){var maxR=radKm*1.6;var indoor=0,outdoor=0,clubCount=0,near=[],effI=0,effO=0;for(var i=0;i<clubs.length;i++){var c=clubs[i];var d=km(lat,lng,c[1],c[2]);if(d<=maxR){var w=d<=radKm?1:Math.max(0,(maxR-d)/(maxR-radKm));effI+=ind(c)*w;effO+=outd(c)*w;indoor+=ind(c);outdoor+=outd(c);clubCount++;near.push([c[0],ind(c)+outd(c),d,ind(c),outd(c),c[1],c[2]]);}}var eff=effI+effO*OUTDOOR_W;var people=0;for(var j=0;j<pop.length;j++){var t=pop[j];if(km(lat,lng,t[1],t[2])<=radKm)people+=t[3];}var pApp=0,pUnd=0,pipeC=0,pNear=[];if(plans.length){var cut=new Date(Date.now()-PIPE_MAX_AGE_DAYS*864e5).toISOString().slice(0,10);for(var q=0;q<plans.length;q++){var a=plans[q];if(!a[5]||!a[6])continue;var dd=km(lat,lng,a[5],a[6]);if(dd>maxR)continue;var when=a[8]||a[4]||"";if(when&&when<cut)continue;var st=a[3]||"";if(/reject|withdraw/i.test(st))continue;var w=dd<=radKm?1:Math.max(0,(maxR-dd)/(maxR-radKm));if(/permit|condition/i.test(st)){pApp++;pipeC+=PIPE_COURTS*PIPE_W_APPROVED*w;}else if(/undecid|referr|unresolv/i.test(st)){pUnd++;pipeC+=PIPE_COURTS*PIPE_W_UNDECIDED*w;}else continue;pNear.push([a[2]||"",a[0]||"",st,dd,a[7]||"",when]);}}var effB=eff+pipeC;var per10=people?eff/(people/10000):0;var roomT=people/6000-eff;return {people:people,indoor:indoor,outdoor:outdoor,eff:eff,effB:effB,clubCount:clubCount,near:near,per10:per10,roomT:roomT,score:scoreOf(people,eff),scoreB:scoreOf(people,effB),pApp:pApp,pUnd:pUnd,pipeC:pipeC,pNear:pNear};}
+  function plotClubs(){ if(!map||!clubs.length) return; if(clubLayer) clubLayer.remove(); clubLayer=L.layerGroup(); clubs.forEach(function(c){ var tot=ind(c)+outd(c); L.circleMarker([c[1],c[2]],{radius:3,color:'#0a7d4b',weight:1,fillColor:'#0a7d4b',fillOpacity:.55}).bindTooltip(c[0]+' · '+tot+' courts'+(outd(c)?' ('+outd(c)+' outdoor)':'')).addTo(clubLayer); }); clubLayer.addTo(map); }
+  function loadData(){ if(dataLoaded) return; dataLoaded=true; Promise.all([fetch('/au/au_clubs.json').then(function(r){return r.json();}),fetch('/au/au_population.json').then(function(r){return r.json();}),fetch('/au/au_planning.json').then(function(r){return r.json();}).catch(function(){return [];})]).then(function(res){ clubs=res[0]; pop=res[1]; plans=res[2]||[]; var tot=clubs.reduce(function(a,x){return a+ind(x)+outd(x);},0); $('cpMapMeta').textContent=clubs.length+' clubs · '+tot+' courts (TrustPadel + Padel Directory + Playtomic) · outdoor counted at 50% · England & Wales. Updated weekly.'; plotClubs(); buildRanking(); }).catch(function(e){ $('cpMapMeta').textContent='Could not load map data ('+e+')'; }); }
+  function esc2(t){ return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function stat(l,v){ return '<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">'+l+'</div><div style="font-size:17px;font-weight:700">'+v+'</div></div>'; }
-  function renderPanel(lat,lng){ var mins=Math.min(90,($('cpRadN')?+$('cpRadN').value:+$('cpRad').value)||20), r=catchment(lat,lng,radiusKm()); r.near.sort(function(a,b){return a[2]-b[2];}); mapNear=r.near; var nb=r.near.slice(0,6).map(function(n,i){var ci=n[3]||0,co=n[4]||0,typ,col;if(ci&&co){typ=ci+' indoor · '+co+' outdoor';col='#8a6d1f';}else if(ci){typ=ci+' indoor';col='#0a7d4b';}else{typ=(co||n[1])+' outdoor';col='#2f7fd6';}return '<div class="cp-nearrow" data-i="'+i+'" title="Show on map" style="display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:4px 0;border-top:1px solid var(--line);cursor:pointer"><span>'+n[0]+'</span><span style="color:var(--muted);white-space:nowrap;text-align:right"><span style="color:'+col+';font-weight:600">'+typ+'</span> · '+n[2].toFixed(1)+'km</span></div>';}).join('')||'<div style="font-size:12.5px;color:var(--muted)">No clubs within '+mins+' min drive</div>'; $('cpMapPanel').innerHTML='<div style="border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff"><div class="cp-flabel" style="margin:0">Opportunity score</div><div style="font-size:42px;font-weight:800;color:'+color(r.score)+';line-height:1.05">'+r.score+'<small style="font-size:18px;color:var(--muted);font-weight:700"> /100</small></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">'+stat('Catchment population',r.people.toLocaleString('en-GB'))+stat('Existing courts',(r.indoor+r.outdoor)+' ('+r.indoor+' indoor / '+r.outdoor+' outdoor)')+stat('Effective supply',r.eff.toFixed(1)+' courts')+stat('Room at 1/6,000',Math.max(0,Math.round(r.roomT))+'')+'</div><div class="cp-secnote" style="margin:12px 0 4px">Outdoor courts count at 50%. Competitors out to ~1.6\u00d7 the drive radius (dashed ring) are included, weighted down by distance \u2014 a club just outside your catchment still competes. Population is the headcount inside the '+mins+'-min drive circle.</div><div class="cp-flabel" style="margin:14px 0 2px">Nearest clubs</div>'+nb+'</div>'; }
+  function renderPanel(lat,lng){ var mins=Math.min(90,($('cpRadN')?+$('cpRadN').value:+$('cpRad').value)||20), r=catchment(lat,lng,radiusKm()); r.near.sort(function(a,b){return a[2]-b[2];}); mapNear=r.near; var nb=r.near.slice(0,6).map(function(n,i){var ci=n[3]||0,co=n[4]||0,typ,col;if(ci&&co){typ=ci+' indoor · '+co+' outdoor';col='#8a6d1f';}else if(ci){typ=ci+' indoor';col='#0a7d4b';}else{typ=(co||n[1])+' outdoor';col='#2f7fd6';}return '<div class="cp-nearrow" data-i="'+i+'" title="Show on map" style="display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:4px 0;border-top:1px solid var(--line);cursor:pointer"><span>'+n[0]+'</span><span style="color:var(--muted);white-space:nowrap;text-align:right"><span style="color:'+col+';font-weight:600">'+typ+'</span> · '+n[2].toFixed(1)+'km</span></div>';}).join('')||'<div style="font-size:12.5px;color:var(--muted)">No clubs within '+mins+' min drive</div>'; var useB=blendOn; var shown=useB?r.scoreB:r.score;var pipeRows=r.pNear.sort(function(a,b){return a[3]-b[3];}).slice(0,5).map(function(p){var col=/permit|condition/i.test(p[2])?'#0a7d4b':'#b8860b';return '<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:4px 0;border-top:1px solid var(--line)"><span>'+esc2(p[0])+'</span><span style="white-space:nowrap;text-align:right;color:var(--muted)"><span style="color:'+col+';font-weight:600">'+esc2(p[2])+'</span> \u00b7 '+p[3].toFixed(1)+'km</span></div>';}).join('')||'<div style="font-size:12px;color:var(--muted)">No live applications in this catchment</div>';$('cpMapPanel').innerHTML='<div style="border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff"><div style="display:flex;gap:6px;margin-bottom:10px"><button class="cp-sbtn" data-blend="0" style="flex:1;padding:6px 8px;font-size:11.5px;font-weight:700;border-radius:7px;cursor:pointer;border:1px solid '+(useB?'var(--line)':'var(--green)')+';background:'+(useB?'#fff':'var(--green)')+';color:'+(useB?'var(--muted)':'#fff')+'">Current supply</button><button class="cp-sbtn" data-blend="1" style="flex:1;padding:6px 8px;font-size:11.5px;font-weight:700;border-radius:7px;cursor:pointer;border:1px solid '+(useB?'var(--green)':'var(--line)')+';background:'+(useB?'var(--green)':'#fff')+';color:'+(useB?'#fff':'var(--muted)')+'">Blended (incl. pipeline)</button></div><div class="cp-flabel" style="margin:0">'+(useB?'Blended opportunity score':'Opportunity score')+'</div><div style="font-size:42px;font-weight:800;color:'+color(shown)+';line-height:1.05">'+shown+'<small style="font-size:18px;color:var(--muted);font-weight:700"> /100</small>'+(useB&&r.score!==r.scoreB?'<span style="font-size:13px;font-weight:700;color:var(--muted)"> (was '+r.score+')</span>':'')+'</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">'+stat('Catchment population',r.people.toLocaleString('en-GB'))+stat('Existing courts',(r.indoor+r.outdoor)+' ('+r.indoor+' indoor / '+r.outdoor+' outdoor)')+stat('Effective supply',r.eff.toFixed(1)+' courts')+stat('Room at 1/6,000',Math.max(0,Math.round(r.roomT))+'')+stat('Planning pipeline',(r.pApp+r.pUnd)+' apps ('+r.pApp+' approved / '+r.pUnd+' undecided)')+stat(useB?'Supply incl. pipeline':'Pipeline courts (est.)',(useB?r.effB.toFixed(1)+' courts':'+'+r.pipeC.toFixed(1)+' courts'))+'</div><div class="cp-secnote" style="margin:12px 0 4px">Outdoor courts count at 50%. Competitors out to ~1.6\u00d7 the drive radius (dashed ring) are included, weighted down by distance \u2014 a club just outside your catchment still competes. Population is the headcount inside the '+mins+'-min drive circle.'+(useB?' <b>Blended</b> adds the planning pipeline as incoming supply: each live application counts as ~'+PIPE_COURTS+' courts, approved at full weight and undecided at 50%, distance-weighted, ignoring anything older than 2 years or already rejected/withdrawn.':' Switch to <b>Blended</b> to fold in padel applications already in planning nearby.')+'</div><div class="cp-flabel" style="margin:14px 0 2px">Planning pipeline nearby</div>'+pipeRows+'<div class="cp-flabel" style="margin:14px 0 2px">Nearest clubs</div>'+nb+'</div>'; }
   function drawCircle(latlng){ if(circle) circle.remove(); if(circle2) circle2.remove(); circle2=L.circle(latlng,{radius:radiusKm()*1.6*1000,color:'#0a7d4b',weight:1,dashArray:'4 5',fill:false,opacity:.35}).addTo(map); circle=L.circle(latlng,{radius:radiusKm()*1000,color:'#0a7d4b',weight:1,fillColor:'#0a7d4b',fillOpacity:.06}).addTo(map); }
   function pick(lat,lng){ if(marker) marker.remove(); marker=L.marker([lat,lng]).addTo(map); drawCircle(L.latLng(lat,lng)); last=L.latLng(lat,lng); renderPanel(lat,lng); }
-  function buildRanking(){ if(!clubs.length||!pop.length) return; var radKm=radiusKm(); var all=[]; for(var i=0;i<pop.length;i++){ var t=pop[i]; if(t[3]<MIN_POP) continue; var r=catchment(t[1],t[2],radKm); all.push({name:t[0],lat:t[1],lng:t[2],score:r.score,per10:r.per10,room:r.roomT,people:r.people,tot:r.indoor+r.outdoor}); } all.sort(function(a,b){return b.score-a.score || b.room-a.room;}); var picked=[], sep=radKm*1.5; for(var k=0;k<all.length;k++){var a=all[k];var ok=true;for(var m=0;m<picked.length;m++){if(km(a.lat,a.lng,picked[m].lat,picked[m].lng)<sep){ok=false;break;}}if(ok)picked.push(a);if(picked.length>=120)break;} rankRows=picked; renderRanking(); }
+  function buildRanking(){ if(!clubs.length||!pop.length) return; var radKm=radiusKm(); var all=[]; for(var i=0;i<pop.length;i++){ var t=pop[i]; if(t[3]<MIN_POP) continue; var r=catchment(t[1],t[2],radKm); all.push({name:t[0],lat:t[1],lng:t[2],score:(blendOn?r.scoreB:r.score),per10:r.per10,room:r.roomT,people:r.people,tot:r.indoor+r.outdoor}); } all.sort(function(a,b){return b.score-a.score || b.room-a.room;}); var picked=[], sep=radKm*1.5; for(var k=0;k<all.length;k++){var a=all[k];var ok=true;for(var m=0;m<picked.length;m++){if(km(a.lat,a.lng,picked[m].lat,picked[m].lng)<sep){ok=false;break;}}if(ok)picked.push(a);if(picked.length>=120)break;} rankRows=picked; renderRanking(); }
   function renderRanking(){ var host=$('cpRankList'); if(!host) return; var html=rankRows.map(function(r,i){ return '<div class="cp-rankrow" data-lat="'+r.lat+'" data-lng="'+r.lng+'" style="display:grid;grid-template-columns:32px 1fr 52px 66px 88px 54px;gap:8px;align-items:center;padding:7px 8px;border-top:1px solid var(--line);cursor:pointer;font-size:12.5px"><span style="color:var(--muted)">'+(i+1)+'</span><span style="font-weight:600">'+r.name+'</span><span style="font-weight:800;color:'+color(r.score)+'">'+r.score+'</span><span style="color:var(--muted)">'+r.per10.toFixed(2)+'/10k</span><span style="color:var(--muted)">'+r.people.toLocaleString('en-GB')+'</span><span style="color:var(--muted)">'+r.tot+' crt</span></div>'; }).join(''); host.innerHTML='<div style="display:grid;grid-template-columns:32px 1fr 52px 66px 88px 54px;gap:8px;padding:0 8px 6px;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)"><span>#</span><span>Area</span><span>Score</span><span>Crt/10k</span><span>Population</span><span>Courts</span></div>'+html; }
   function ensureRankUI(){ if($('cpRankWrap')||!$('cpMapMeta')) return; var card=$('cpMapMeta').parentElement; var w=document.createElement('div'); w.id='cpRankWrap'; w.style.marginTop='18px'; w.innerHTML='<div class="cp-seclabel">Opportunity ranking — highest to lowest</div><div class="cp-secnote">Distinct areas (nearby towns de-duplicated), scored by under-supply per head (vs 1 court / 6,000, outdoor at 50%) within the drive-time catchment. Click a row to jump the map.</div><div id="cpRankList" style="max-height:440px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff"></div>'; card.appendChild(w); $('cpRankList').addEventListener('click',function(e){ var row=e.target.closest('.cp-rankrow'); if(row){ var la=+row.dataset.lat, ln=+row.dataset.lng; map.setView([la,ln],11); pick(la,ln); } }); }
   function setupSearch(){ var inp=$('cpSearch'), res=$('cpSearchRes'); if(!inp||inp.dataset.wired) return; inp.dataset.wired='1';
@@ -407,12 +630,72 @@ setTimeout(run,80);
     inp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); var first=res.querySelector('.cp-sres'); if(first){ inp.value=first.textContent.split(' · ')[0]; go(+first.dataset.lat,+first.dataset.lng); return; } fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=au&q='+encodeURIComponent(inp.value)).then(function(r){return r.json();}).then(function(a){ if(a&&a[0]) go(+a[0].lat,+a[0].lon); else {res.innerHTML='<div style="padding:9px 12px;font-size:12.5px;color:var(--muted)">No match</div>';res.style.display='block';} }).catch(function(){}); } });
     document.addEventListener('click',function(e){ if(!e.target.closest('#cpSearchWrap')) res.style.display='none'; });
   }
-  function initMap(){ if(inited) return; if(typeof L==='undefined'){ setTimeout(initMap,200); return; } inited=true; map=L.map('cpMap',{scrollWheelZoom:true}).setView([-27.5,134.0],4); map.fitBounds([[-43.8,112.5],[-10.2,154.2]],{padding:[8,8]}); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(map); plotClubs(); map.on('click',function(e){ pick(e.latlng.lat,e.latlng.lng); }); ensureRankUI(); setupSearch(); setTimeout(function(){map.invalidateSize();},150); }
+  function initMap(){ if(inited) return; if(typeof L==='undefined'){ setTimeout(initMap,200); return; } inited=true; map=L.map('cpMap',{scrollWheelZoom:true}).setView([-27.5,134.0],4); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(map); plotClubs(); map.on('click',function(e){ pick(e.latlng.lat,e.latlng.lng); }); ensureRankUI(); setupSearch(); setTimeout(function(){map.invalidateSize();},150); }
   document.addEventListener('click',function(e){ var row=e.target.closest?e.target.closest('.cp-nearrow'):null; if(!row||!map) return; var n=mapNear[+row.dataset.i]; if(!n||n[5]==null) return; map.setView([n[5],n[6]],13); var ci=n[3]||0,co=n[4]||0; var courts=(ci||co)?((ci?ci+' indoor':'')+(ci&&co?' · ':'')+(co?co+' outdoor':'')):((n[1]||0)+' courts'); L.popup({maxWidth:240}).setLatLng([n[5],n[6]]).setContent('<div style="font-size:13px;line-height:1.45"><div style="font-weight:800;margin-bottom:3px">'+n[0]+'</div><div style="color:#5d6b63">'+courts+'</div><div style="color:#5d6b63">'+(n[2]||0).toFixed(1)+' km from your clicked point</div></div>').openOn(map); });
   var rt;
+  document.addEventListener('click',function(e){ var sb=e.target.closest?e.target.closest('.cp-sbtn'):null; if(sb&&last){ blendOn=(sb.dataset.blend==='1'); renderPanel(last.lat,last.lng); clearTimeout(rt); rt=setTimeout(buildRanking,250); } });
   document.addEventListener('input',function(e){ if(e.target&&(e.target.id==='cpRad'||e.target.id==='cpRadN')){ if(e.target.id==='cpRad'){ var n=$('cpRadN'); if(n) n.value=e.target.value; } else { var sl=$('cpRad'), v=+e.target.value; if(sl&&v>=5&&v<=60) sl.value=Math.round(v/5)*5; } if(last){ drawCircle(last); renderPanel(last.lat,last.lng);} clearTimeout(rt); rt=setTimeout(buildRanking,350); } });
   function showTab(name){ document.querySelectorAll('.cp-tab').forEach(function(b){b.classList.toggle('active',b.dataset.tab===name);}); document.querySelectorAll('.cp-panel').forEach(function(p){p.hidden=(p.id!=='tab-'+name);}); if(name==='map'){ initMap(); loadData(); ensureRankUI(); setupSearch(); setTimeout(function(){ if(map) map.invalidateSize(); },180); } }
   document.addEventListener('click',function(e){ var b=e.target.closest?e.target.closest('.cp-tab'):null; if(b&&b.dataset.tab){ showTab(b.dataset.tab); } });
+})();</script><script>(function(){var loaded=false;function load(){if(loaded)return;loaded=true;var host=document.getElementById('cpDataHost');if(!host)return;fetch('/au/au_dashboard.html?cb='+Date.now()).then(function(r){return r.text();}).then(function(h){host.innerHTML=h;}).catch(function(e){host.innerHTML='<div style="color:#b3261e;padding:20px">Could not load dashboard ('+e+')</div>';});}/*cpDataHost load*/document.addEventListener('click',function(e){var b=e.target.closest?e.target.closest('.cp-tab'):null;if(b&&b.dataset.tab==='data'){load();}});})();</script><script>/*cpPlanMap init*/(function(){
+  var loaded=false, pmap, apps=[], markers, fstatus=null, ftype=null, fq='';
+  function $(id){return document.getElementById(id);}
+  function scolor(s){ if(/permit|condition/i.test(s))return '#0a7d4b'; if(/undecid|referr|unresolv/i.test(s))return '#b8860b'; if(/reject|withdraw/i.test(s))return '#b3261e'; return '#8a938d'; }
+  function badge(s){ return '<span style="display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;color:#fff;background:'+scolor(s)+'">'+(s||'Unknown')+'</span>'; }
+  function esc(t){ return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function popupHtml(a){ return '<div style="font-size:13px;max-width:250px;line-height:1.45"><div style="font-weight:800;margin-bottom:4px">'+esc(a[2])+'</div>'+badge(a[3])+' '+typePill(a)+' '+surfacePill(a)+'<div style="font-size:12.5px;margin:6px 0 4px">'+esc(a[0])+'</div><div style="font-size:12px;color:#5d6b63">'+esc(a[1]||'')+'</div><div style="font-size:12px;color:#5d6b63;margin-top:3px">'+(a[4]||'')+'</div><a href="'+a[7]+'" target="_blank" rel="noopener" style="display:inline-block;margin-top:7px;font-size:12.5px;font-weight:700;color:#0a7d4b">View application →</a></div>'; }
+  function initMap(){ if(pmap||typeof L==='undefined') return; pmap=L.map('cpPlanMap',{scrollWheelZoom:true}).setView([-27.5,134.0],4); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(pmap); setTimeout(function(){pmap.invalidateSize();},150); }
+  function plot(list){ if(!pmap) return; if(markers)markers.remove(); markers=L.layerGroup(); list.forEach(function(a){ if(a[5]&&a[6]) L.circleMarker([a[5],a[6]],{radius:5,color:scolor(a[3]),weight:1,fillColor:scolor(a[3]),fillOpacity:.7}).bindPopup(popupHtml(a),{maxWidth:290}).addTo(markers); }); markers.addTo(pmap); }
+  function filtered(){ return apps.filter(function(a){ if(fstatus && a[3]!==fstatus) return false; if(ftype && applicantType(a)[0]!==ftype) return false; if(fq){ var q=fq.toLowerCase(); if((a[0]+' '+a[1]+' '+a[2]).toLowerCase().indexOf(q)<0) return false; } return true; }); }
+  function render(){ var list=filtered(); plot(list); var host=$('cpPlanList'); host.innerHTML=list.slice(0,300).map(function(a,i){ return '<div class="cp-planrow" data-i="'+i+'" data-lat="'+a[5]+'" data-lng="'+a[6]+'" style="padding:11px 12px;border-top:1px solid var(--line);cursor:pointer"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="font-weight:600;font-size:13px">'+esc(a[2])+'</div><div style="white-space:nowrap;display:flex;gap:6px;align-items:center">'+typePill(a)+badge(a[3])+'</div></div><div style="font-size:12.5px;margin:3px 0;color:var(--ink)">'+esc(a[0])+'</div><div style="font-size:12px;color:var(--muted)">'+surfacePill(a)+' '+esc(a[1]||'')+' · '+(a[4]||'')+' · <a href="'+a[7]+'" target="_blank" rel="noopener" style="color:var(--green);font-weight:600">view</a></div></div>'; }).join('')+(list.length>300?'<div style="padding:12px;color:var(--muted);font-size:12px">Showing first 300 of '+list.length+'. Filter to narrow.</div>':''); host._list=list; if($('cpPlanCount'))$('cpPlanCount').textContent=list.length+' applications'; }
+  function chips(){ var counts={}; apps.forEach(function(a){var s=a[3]||'Unknown';counts[s]=(counts[s]||0)+1;}); var order=['Permitted','Conditions','Undecided','Rejected','Withdrawn','Unknown']; var html='<button class="cp-pchip active" data-s="">All ('+apps.length+')</button>'; order.forEach(function(s){ if(counts[s]) html+='<button class="cp-pchip" data-s="'+s+'">'+s+' ('+counts[s]+')</button>'; }); $('cpPlanChips').innerHTML=html; }
+  function typeChips(){ var defs=[['Council / parish / community','Council / public'],['Sports club','Sports club'],['School / college','School / college'],['Private / commercial','Private / commercial'],['Unknown','Unknown']]; var counts={}; apps.forEach(function(a){var t=applicantType(a)[0];counts[t]=(counts[t]||0)+1;}); var html='<button class="cp-tchip active" data-type="">All applicants ('+apps.length+')</button>'; defs.forEach(function(d){ var n=counts[d[1]]||0; if(n) html+='<button class="cp-tchip" data-type="'+d[1]+'">'+d[0]+' ('+n+')</button>'; }); var el=$('cpPlanTypeChips'); if(el) el.innerHTML=html; }
+  function renderAreas(){ var host=$('cpPlanAreas'); if(!host) return; var counts={}; apps.forEach(function(a){var k=a[2]||'Unknown';counts[k]=(counts[k]||0)+1;}); var arr=Object.keys(counts).map(function(k){return [k,counts[k]];}).sort(function(x,y){return y[1]-x[1]||x[0].localeCompare(y[0]);}); var max=arr.length?arr[0][1]:1; var rows=arr.map(function(r,i){ var w=Math.round(r[1]/max*100); return '<div class="cp-arearow" data-area="'+esc(r[0])+'" style="display:flex;align-items:center;gap:8px;padding:6px 12px;border-top:1px solid var(--line);font-size:12.5px;cursor:pointer"><span style="width:22px;color:var(--muted);text-align:right">'+(i+1)+'</span><span style="flex:1;font-weight:600">'+esc(r[0])+'</span><span style="flex:0 0 110px;background:#eef4f0;border-radius:6px;height:13px;position:relative;overflow:hidden"><span style="position:absolute;left:0;top:0;bottom:0;width:'+w+'%;background:#0a7d4b"></span></span><span style="width:30px;text-align:right;font-weight:700">'+r[1]+'</span></div>'; }).join(''); host.innerHTML='<div style="border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden"><div style="padding:12px 14px;background:#f4f8f5;border-bottom:1px solid var(--line);font-weight:800;font-size:13.5px">\uD83D\uDCCD Applications by area <span style="color:var(--muted);font-weight:600">('+arr.length+' councils \u00b7 most \u2192 least)</span></div><div style="max-height:460px;overflow:auto">'+rows+'</div></div>'; }
+  function applicantType(a){ var s=((a[0]||'')+' '+(a[1]||'')).toLowerCase();
+    if(/parish council|town council|community council|borough council|county council|district council|city council|\bcouncil\b|recreation ground|memorial (playing|field|ground|park)|playing fields?|miners? welfare|welfare (ground|field)|village hall|community centre/.test(s)) return ['Council / public','#0a7d4b'];
+    if(/\bschool\b|\bcollege\b|academy|university/.test(s)) return ['School / college','#7c3aed'];
+    if(/\brugby\b|\btennis\b|\bcricket\b|\bfootball\b|\bfc\b|\brfc\b|\bgolf\b|leisure centre|sports centre|sports club|sports (and|&) social|athletic|hockey|\bbowls\b|country club|racquets?|rackets?|social club/.test(s)) return ['Sports club','#0369a1'];
+    if(/\bltd\b|\bllp\b|limited|\bplc\b|hotel|\bgym\b|fitness|health club|holdings|developments?|\bestates?\b|enterprises?|\binn\b|resort/.test(s)) return ['Private / commercial','#b8860b'];
+    return ['Unknown','#8a938d']; }
+  function typePill(a){ var t=applicantType(a); return '<span title="Likely applicant/site type, inferred from the venue — PlanIt does not publish the named applicant" style="display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;color:'+t[1]+';background:'+t[1]+'1f;border:1px solid '+t[1]+'55">'+t[0]+'</span>'; }
+  function surfaceType(a){ var s=(a[0]||'').toLowerCase();
+    if(/existing tennis|tennis court|disused tennis|former tennis|redundant tennis/.test(s)) return ['On tennis courts','#0369a1'];
+    if(/hard[\s-]?standing|hard[\s-]?surfac|car park|\btarmac\b|existing hard|\bmuga\b|multi[- ]use games|astro|astroturf|\b3g\b|all[- ]weather|existing (court|playing surface|pitch)|redundant|concrete/.test(s)) return ['Hard standing','#8a6d1f'];
+    if(/\bgrass|playing field|grassland|amenity (land|grass)|green space|meadow|sports field|recreation ground/.test(s)) return ['Grass / field','#0a7d4b'];
+    return ['Surface n/k','#8a938d']; }
+  function surfacePill(a){ var t=surfaceType(a); return '<span title="Surface the courts are proposed on, inferred from the description" style="display:inline-block;padding:1px 7px;border-radius:20px;font-size:10.5px;font-weight:700;color:'+t[1]+';background:'+t[1]+'14;border:1px solid '+t[1]+'44">'+t[0]+'</span>'; }
+  function fmtDate(s){ if(!s) return ''; var p=(''+s).split('-'); if(p.length!==3) return s; var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return (+p[2])+' '+m[+p[1]-1]+' '+p[0]; }
+  function renderGranted(){ var host=$('cpPlanGranted'); if(!host) return;
+    var cut=new Date(Date.now()-30*864e5).toISOString().slice(0,10);
+    var g=apps.filter(function(a){ return /permit|condition/i.test(a[3]||'') && (a[4]||'')>=cut; }).sort(function(a,b){ return (b[4]||'').localeCompare(a[4]||''); });
+    host._list=g;
+    var bEl=document.getElementById('cpPlanBadge'); if(bEl){ bEl.textContent=g.length||''; bEl.style.display=g.length?'inline-block':'none'; }
+    var rows=g.map(function(a,i){ return '<div class="cp-planrow" data-granted="1" data-i="'+i+'" data-lat="'+a[5]+'" data-lng="'+a[6]+'" style="padding:10px 12px;border-top:1px solid var(--line);cursor:pointer"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="font-weight:700;font-size:13px">'+esc(a[2])+'</div><div style="white-space:nowrap;display:flex;gap:6px;align-items:center"><span style="font-size:11.5px;color:var(--muted);font-weight:600">'+fmtDate(a[4])+'</span>'+badge(a[3])+'</div></div><div style="font-size:12.5px;margin:3px 0;color:var(--ink)">'+esc(a[0])+'</div><div style="font-size:12px;color:var(--muted)">'+surfacePill(a)+' '+esc(a[1]||'')+' \u00b7 <a href="'+a[7]+'" target="_blank" rel="noopener" style="color:var(--green);font-weight:600">view</a></div></div>'; }).join('');
+    host.innerHTML='<div style="border:2px solid var(--green);border-radius:12px;background:#fff;overflow:hidden;margin-bottom:16px"><div style="padding:12px 14px;background:var(--ok-bg);border-bottom:1px solid var(--line);font-weight:800;font-size:13.5px;color:var(--green-dark)">\u2705 Just granted planning \u2014 last 30 days <span style="color:var(--muted);font-weight:600">('+g.length+')</span></div>'+(g.length?('<div style="max-height:340px;overflow:auto">'+rows+'</div>'):'<div style="padding:14px;color:var(--muted);font-size:13px">No new approvals in the last 30 days.</div>')+'</div>';
+  }
+  function renderRecent(){ var host=$('cpPlanRecent'); if(!host) return;
+    var cut=new Date(Date.now()-30*864e5).toISOString().slice(0,10);
+    var rec=apps.filter(function(a){ var sd=a[8]||''; return sd && sd>=cut; }).sort(function(a,b){ return (b[8]||'').localeCompare(a[8]||''); });
+    host._list=rec;
+    var groups=[], gi={};
+    rec.forEach(function(a,idx){ var d=a[8]; if(!(d in gi)){ gi[d]=groups.length; groups.push({d:d,items:[]}); } groups[gi[d]].items.push({a:a,i:idx}); });
+    var body=groups.map(function(g){
+      var rows=g.items.map(function(o){ var a=o.a; return '<div class="cp-planrow" data-recent="1" data-i="'+o.i+'" data-lat="'+a[5]+'" data-lng="'+a[6]+'" style="padding:10px 12px;border-top:1px solid var(--line);cursor:pointer"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="font-weight:700;font-size:13px">'+esc(a[2])+'</div><div style="white-space:nowrap;display:flex;gap:6px;align-items:center">'+typePill(a)+badge(a[3])+'</div></div><div style="font-size:12.5px;margin:3px 0;color:var(--ink)">'+esc(a[0])+'</div><div style="font-size:12px;color:var(--muted)">'+surfacePill(a)+' '+esc(a[1]||'')+' · <a href="'+a[7]+'" target="_blank" rel="noopener" style="color:var(--green);font-weight:600">view</a></div></div>'; }).join('');
+      return '<div style="padding:7px 14px;background:#eef4f0;border-top:1px solid var(--line);font-weight:800;font-size:12px;color:#33443b">'+fmtDate(g.d)+' <span style="color:var(--muted);font-weight:600">· '+g.items.length+' submitted</span></div>'+rows;
+    }).join('');
+    host.innerHTML='<div style="border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden"><div style="padding:12px 14px;background:#f4f8f5;border-bottom:1px solid var(--line);font-weight:800;font-size:13.5px">\uD83C\uDD95 Submitted in the last 30 days <span style="color:var(--muted);font-weight:600">('+rec.length+')</span></div>'+(rec.length?('<div style="max-height:460px;overflow:auto">'+body+'</div>'):'<div style="padding:16px;color:var(--muted);font-size:13px">No new padel applications submitted in the last 30 days.</div>')+'</div>';
+  }
+  function load(){ if(loaded)return; loaded=true; initMap(); fetch('planning.json?cb='+Date.now()).then(function(r){return r.json();}).then(function(d){ apps=d; chips(); typeChips(); render(); renderGranted(); renderRecent(); renderAreas(); }).catch(function(e){ if($('cpPlanList'))$('cpPlanList').innerHTML='<div style="padding:16px;color:#b3261e">Could not load planning data ('+e+')</div>'; }); }
+  document.addEventListener('input',function(e){ if(e.target&&e.target.id==='cpPlanSearch'){ fq=e.target.value; render(); } });
+  document.addEventListener('click',function(e){
+    if(e.target.tagName==='A') return;
+    var row=e.target.closest?e.target.closest('.cp-planrow'):null;
+    if(row){ var la=+row.dataset.lat, ln=+row.dataset.lng, host=(row.dataset.granted?$('cpPlanGranted'):(row.dataset.recent?$('cpPlanRecent'):$('cpPlanList'))), a=host&&host._list&&host._list[+row.dataset.i]; if(la&&ln&&pmap&&a){ pmap.setView([la,ln],13); L.popup({maxWidth:290}).setLatLng([la,ln]).setContent(popupHtml(a)).openOn(pmap); } return; }
+    var c=e.target.closest?e.target.closest('.cp-pchip'):null; if(c){ fstatus=c.dataset.s||null; document.querySelectorAll('.cp-pchip').forEach(function(x){x.classList.toggle('active',x===c);}); render(); return; }
+    var tc=e.target.closest?e.target.closest('.cp-tchip'):null; if(tc){ ftype=tc.dataset.type||null; document.querySelectorAll('.cp-tchip').forEach(function(x){x.classList.toggle('active',x===tc);}); render(); return; }
+    var ar=e.target.closest?e.target.closest('.cp-arearow'):null; if(ar){ fq=ar.dataset.area||''; var si=$('cpPlanSearch'); if(si) si.value=fq; render(); var pl=$('cpPlanList'); if(pl) pl.scrollIntoView({block:'center'}); return; }
+    var tb=e.target.closest?e.target.closest('.cp-tab'):null; if(tb&&tb.dataset.tab==='planning'){ load(); setTimeout(function(){if(pmap)pmap.invalidateSize();},200); }
+  });
 })();</script>
 <style>
 #tab-planner .pl-toolbar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end;margin-bottom:14px}
@@ -480,7 +763,7 @@ setTimeout(run,80);
       <button class="pl-btn stg" data-add="storage">＋ Storage</button>
       <button class="pl-btn tx" data-add="text">＋ Text</button>
       <div class="pl-field"><label>Gap between (m)</label><input id="plGap" type="number" min="0" max="10" step="0.5" value="1"></div>
-      <button class="pl-btn primary" id="plAuto">Auto-fill max courts</button>
+      <button class="pl-btn primary" id="plAuto">Auto-fill layout</button><div id="plAutoNote" style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4">Click repeatedly to cycle through alternative layouts.</div>
       <button class="pl-btn" id="plClear">Clear</button>
     </div>
     <div class="pl-wrap">
@@ -812,6 +1095,15 @@ setTimeout(run,80);
   $('plLen').addEventListener('input',function(){area();fit();draw();});
   $('plWid').addEventListener('input',function(){area();fit();draw();});
   $('plAuto').addEventListener('click',function(){ if(typeof markUndo==='function')markUndo('auto-fill'); autofill();});
+  var afVariant=0;
+  var AF_MODES=[
+    {name:'Balanced \u2014 doubles first, singles fill gaps', bands:'all', val:'area', pickle:true},
+    {name:'Max doubles only', bands:'doubles', val:'area', pickle:true},
+    {name:'Landscape rows (courts across)', bands:'land', val:'area', pickle:true},
+    {name:'Portrait rows (courts down)', bands:'port', val:'area', pickle:true},
+    {name:'Max court count (singles favoured)', bands:'all', val:'count', pickle:true},
+    {name:'Padel only \u2014 no pickleball', bands:'all', val:'area', pickle:false}
+  ];
   function autofill(){
     area(); var g=parseFloat($('plGap').value)||0;
     var keep=objs.filter(function(o){return o.type!=='double'&&o.type!=='single'&&o.type!=='pickleball';});
@@ -849,15 +1141,23 @@ setTimeout(run,80);
       return f(0);
     }
     // phase 1 — padel: doubles preferred, singles fill leftover width
-    var padelBands=[
+    var MODE=AF_MODES[afVariant % AF_MODES.length];
+    var ALL=[
       {h:DH, cands:[{w:DW,ty:'double'}]},
       {h:DW, cands:[{w:DH,ty:'double'},{w:SH,ty:'single'}]},
       {h:SH, cands:[{w:SW,ty:'single'}]}
     ];
-    function padelVal(ty){ return ty==='double'?DW*DH*1.2:SW*SH; }
+    var padelBands;
+    if(MODE.bands==='doubles') padelBands=[{h:DH,cands:[{w:DW,ty:'double'}]},{h:DW,cands:[{w:DH,ty:'double'}]}];
+    else if(MODE.bands==='land') padelBands=[{h:DH,cands:[{w:DW,ty:'double'}]},{h:SH,cands:[{w:SW,ty:'single'}]}];
+    else if(MODE.bands==='port') padelBands=[{h:DW,cands:[{w:DH,ty:'double'},{w:SH,ty:'single'}]}];
+    else padelBands=ALL;
+    function padelVal(ty){ if(MODE.val==='count') return 1; return ty==='double'?DW*DH*1.2:SW*SH; }
     var plan=pack(padelBands, padelVal, Math.min(DH,SH));
     var di=1, si=1, pi=1;
+    var COVER_CAP=0.80, capBudget=COVER_CAP*L*W, usedArea=0, capHit=false;
     plan.rows.forEach(function(row){ row.forEach(function(p){
+      var a=p.w*p.h; if(usedArea+a>capBudget+1e-9){ capHit=true; return; } usedArea+=a;
       var lbl=(p.ty==='single')?('Single '+(si++)):('Court '+(di++));
       var co={id:uid++,type:p.ty,w:p.w,h:p.h,x:p.x,y:p.y,label:lbl};
       objs.push(co); obs.push(co); // padel court becomes an obstacle for the pickleball pass
@@ -868,11 +1168,18 @@ setTimeout(run,80);
       {h:PW, cands:[{w:PH,ty:'pickleball'}]}     // portrait rows (14.6 m tall)
     ];
     function pickVal(){ return PW*PH; }
-    var pplan=pack(pickBands, pickVal, PH);
-    pplan.rows.forEach(function(row){ row.forEach(function(p){
-      objs.push({id:uid++,type:'pickleball',w:p.w,h:p.h,x:p.x,y:p.y,label:'Pickleball '+(pi++)});
-    }); });
+    if(MODE.pickle){ var pplan=pack(pickBands, pickVal, PH);
+      pplan.rows.forEach(function(row){ row.forEach(function(p){
+        var a2=p.w*p.h; if(usedArea+a2>capBudget+1e-9){ capHit=true; return; } usedArea+=a2;
+        objs.push({id:uid++,type:'pickleball',w:p.w,h:p.h,x:p.x,y:p.y,label:'Pickleball '+(pi++)});
+      }); }); }
     select(null); draw();
+    var _d=objs.filter(function(o){return o.type==='double';}).length,
+        _s=objs.filter(function(o){return o.type==='single';}).length,
+        _pk=objs.filter(function(o){return o.type==='pickleball';}).length;
+    var _n=document.getElementById('plAutoNote');
+    if(_n) _n.innerHTML='<b>Layout '+((afVariant % AF_MODES.length)+1)+' of '+AF_MODES.length+'</b> \u2014 '+MODE.name+'<br>'+_d+' double \u00b7 '+_s+' single \u00b7 '+_pk+' pickleball. Click Auto-fill again for the next layout.'+(capHit?'<br><span style="color:#b8860b;font-weight:700">Stopped at the 80% coverage cap</span> \u2014 more courts would fit but circulation space would be too tight.':'');
+    afVariant++;
   }
   $('plPng').addEventListener('click',function(){
     var sw=cv.width/DPR, sh=cv.height/DPR, pad=20;
@@ -898,7 +1205,7 @@ setTimeout(run,80);
   });
   // ---- named-project store + safety net (confirm, one-level undo, autosave) ----
   var PKEY='pp_projects', AKEY='pp_autosave';
-  function projGet(){ try{return JSON.parse(localStorage.getItem(PKEY))||{};}catch(e){return {};} }
+  var LAY_URL='https://yllbjllmanykgwdrxljg.supabase.co/rest/v1/pp_layouts';function layH(x){var h={'apikey':'sb_publishable_B3-tuCZJGw4jc_qSn8WgBQ_wEDwdm98','Authorization':'Bearer sb_publishable_B3-tuCZJGw4jc_qSn8WgBQ_wEDwdm98','Content-Type':'application/json'};if(x)h['Prefer']=x;return h;}function layWho(){try{return localStorage.getItem('pp_dash_name')||'someone';}catch(e){return 'someone';}}function layPull(pick){var localD={};try{localD=JSON.parse(localStorage.getItem(PKEY))||{};}catch(e){}return fetch(LAY_URL+'?select=name,data,saved_by&order=name',{headers:layH()}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(rows){var server={};rows.forEach(function(x){var v=x.data||{};v._by=x.saved_by||'';server[x.name]=v;});var merged={};Object.keys(localD).forEach(function(k){merged[k]=localD[k];});Object.keys(server).forEach(function(k){merged[k]=server[k];});var onlyLocal=Object.keys(localD).filter(function(k){return !(k in server);});if(onlyLocal.length){var up=onlyLocal.map(function(k){var v=localD[k];return {name:k,data:{L:v.L,W:v.W,objs:v.objs,ts:v.ts||Date.now()},saved_by:layWho()+' (migrated)',updated_at:new Date().toISOString()};});fetch(LAY_URL,{method:'POST',headers:layH('resolution=merge-duplicates,return=minimal'),body:JSON.stringify(up)}).catch(function(){});}try{localStorage.setItem(PKEY,JSON.stringify(merged));}catch(e){}projRefresh(pick);return merged;}).catch(function(){projRefresh(pick);return null;});}function projGet(){ try{return JSON.parse(localStorage.getItem(PKEY))||{};}catch(e){return {};} }
   function projSet(d){ try{localStorage.setItem(PKEY,JSON.stringify(d));}catch(e){} }
   function projMsg(m){ var e=$('plProjMsg'); if(e){e.textContent=m; setTimeout(function(){if(e.textContent===m)e.textContent='';},3500);} }
   function projRefresh(pick){ var d=projGet(); var names=Object.keys(d).sort(function(a,b){return (d[b].ts||0)-(d[a].ts||0);}); var el=$('plProjList'); if(!el)return; el.innerHTML=names.length?names.map(function(n){return '<option>'+n.replace(/</g,'&lt;')+'</option>';}).join(''):'<option value="">— no saved projects —</option>'; if(pick&&d[pick]) el.value=pick; }
@@ -908,13 +1215,13 @@ setTimeout(run,80);
   function updateUndoBtn(){ var b=$('plUndo'); if(b){ b.disabled=!_undo; b.title=_undo?('Undo: '+_undo.desc):'Nothing to undo'; } }
   function markUndo(desc){ _undo={snap:snapshot(), proj:JSON.stringify(projGet()), desc:desc||'last change'}; updateUndoBtn(); }
   var _asT=0; function autosave(){ var n=Date.now(); if(n-_asT<700)return; _asT=n; try{localStorage.setItem(AKEY,JSON.stringify(snapshot()));}catch(e){} }
-  $('plProjSave').addEventListener('click',function(){ var nm=($('plProjName').value||'').trim(); if(!nm){projMsg('Type a name first.');$('plProjName').focus();return;} var d=projGet(); if(d[nm] && !confirm('A project called \u201C'+nm+'\u201D already exists.\n\nOverwrite it with what is on the canvas now?')){ projMsg('Save cancelled — \u201C'+nm+'\u201D left untouched.'); return; } markUndo(d[nm]?('overwrite \u201C'+nm+'\u201D'):('save \u201C'+nm+'\u201D')); d[nm]=snapshot(); projSet(d); projRefresh(nm); projMsg('Saved \u201C'+nm+'\u201D — Undo restores the previous version.'); });
+  $('plProjSave').addEventListener('click',function(){ var nm=($('plProjName').value||'').trim(); if(!nm){projMsg('Type a name first.');$('plProjName').focus();return;} var d=projGet(); if(d[nm] && !confirm('A project called \u201C'+nm+'\u201D already exists.\n\nOverwrite it with what is on the canvas now?')){ projMsg('Save cancelled — \u201C'+nm+'\u201D left untouched.'); return; } markUndo(d[nm]?('overwrite \u201C'+nm+'\u201D'):('save \u201C'+nm+'\u201D')); var snap=snapshot(); d[nm]=snap; projSet(d); projRefresh(nm);fetch(LAY_URL,{method:'POST',headers:layH('resolution=merge-duplicates,return=minimal'),body:JSON.stringify({name:nm,data:snap,saved_by:layWho(),updated_at:new Date().toISOString()})}).then(function(r){ projMsg(r.ok?('Saved \u201C'+nm+'\u201D — shared with the team'):('Saved locally — database unreachable.')); }).catch(function(){ projMsg('Saved locally — database unreachable.'); }); });
   $('plProjOpen').addEventListener('click',function(){ var nm=$('plProjList').value; if(!nm)return; var d=projGet(); markUndo('open \u201C'+nm+'\u201D'); if(loadSnapshot(d[nm])){ $('plProjName').value=nm; projMsg('Opened \u201C'+nm+'\u201D — Undo restores your previous canvas.'); } });
-  $('plProjDel').addEventListener('click',function(){ var nm=$('plProjList').value; if(!nm)return; if(!confirm('Delete the saved project \u201C'+nm+'\u201D?')) return; var d=projGet(); if(d[nm]){ markUndo('delete \u201C'+nm+'\u201D'); delete d[nm]; projSet(d); projRefresh(); projMsg('Deleted \u201C'+nm+'\u201D — Undo restores it.'); } });
+  $('plProjDel').addEventListener('click',function(){ var nm=$('plProjList').value; if(!nm)return; if(!confirm('Delete the saved project \u201C'+nm+'\u201D?')) return; var d=projGet(); if(d[nm]){ markUndo('delete \u201C'+nm+'\u201D'); delete d[nm]; projSet(d); projRefresh(); fetch(LAY_URL+'?name=eq.'+encodeURIComponent(nm),{method:'DELETE',headers:layH('return=minimal')}); projMsg('Deleted \u201C'+nm+'\u201D for everyone — Undo restores it locally.'); } });
   $('plUndo').addEventListener('click',function(){ if(!_undo)return; var u=_undo; _undo=null; updateUndoBtn(); try{projSet(JSON.parse(u.proj));}catch(e){} projRefresh(); loadSnapshot(u.snap); projMsg('Undone: '+u.desc); });
   $('plExport').addEventListener('click',function(){ var nm=(($('plProjName').value||'padel-project').trim()||'padel-project').replace(/[^a-z0-9_-]+/gi,'-'); var blob=new Blob([JSON.stringify(snapshot())],{type:'application/json'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=nm+'.json'; a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);},1000); });
   $('plImport').addEventListener('change',function(e){ var f=e.target.files&&e.target.files[0]; if(!f)return; var rd=new FileReader(); rd.onload=function(){ try{ var dd=JSON.parse(rd.result); markUndo('import '+f.name); if(loadSnapshot(dd)) projMsg('Imported '+f.name+' — Undo restores your previous canvas.'); else projMsg('That file has no layout.'); }catch(err){ projMsg('Could not read that file.'); } }; rd.readAsText(f); e.target.value=''; });
-  (function(){ try{ var old=localStorage.getItem('pp_planner'); var d=projGet(); if(old&&Object.keys(d).length===0){ var o=JSON.parse(old); if(o&&o.objs){ d['Recovered layout']={L:o.L,W:o.W,objs:o.objs,ts:Date.now()}; projSet(d); } } }catch(e){} projRefresh(); updateUndoBtn(); try{ var as=JSON.parse(localStorage.getItem(AKEY)); if(as&&as.objs&&as.objs.length){ loadSnapshot(as); } }catch(e){} })();
+  (function(){ try{ var old=localStorage.getItem('pp_planner'); var d=projGet(); if(old&&Object.keys(d).length===0){ var o=JSON.parse(old); if(o&&o.objs){ d['Recovered layout']={L:o.L,W:o.W,objs:o.objs,ts:Date.now()}; projSet(d); } } }catch(e){} projRefresh(); updateUndoBtn(); try{layPull();}catch(e){} try{ var as=JSON.parse(localStorage.getItem(AKEY)); if(as&&as.objs&&as.objs.length){ loadSnapshot(as); } }catch(e){} })();
   window.addEventListener('resize',function(){fit();draw();});
   // init
   area(); fit(); autofill();
