@@ -153,10 +153,10 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 
 <div class="spec">
 <span><b>Spec:</b></span>
-<span>10,000–30,000 sqm</span>
-<span>Min 6m eaves</span>
+<span>929–2,787 sqm</span>
+<span>Min 6m clearance</span>
 <span>Good parking</span>
-<span>Max A$8.50/sqm</span>
+<span>Max A$151/sqm</span>
 <span>Australia</span>
 </div>
 
@@ -526,7 +526,7 @@ if(rentEl){var rm=rentEl.textContent.match(/([\d.]+)/); if(rm)rent=parseFloat(rm
 snap[id]={wm:/Priority region/i.test(region), eaves6:/6m\+\s*eaves/i.test(c.textContent), rent:rent, archived:c.classList.contains('archived')};
 });
 }
-function applyCounts(){
+function applyCounts(){ return; 
 if(!snap) return;
 var hidden=getHidden(), live=0, wm=0, eaves=0, rents=[];
 Object.keys(snap).forEach(function(id){
