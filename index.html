@@ -465,10 +465,8 @@ async function scoreView(){
 }
 function csv(){
   var h=['name','postcode','council','use','ground_sqm','total_sqm','eaves_m','ridge_m','rateable_value','catchment_score','lat','lng','uarn'];
-  var lines=[h.join(',')].concat(viewRows.map(function(o){ return [o.name,o.pc,o.laName,useName(o.use),o.ground,o.total,o.eaves==null?'':o.eaves,o.maxh==null?'':o.maxh,o.rv,scores[o.uarn]==null?'':scores[o.uarn],o.lat,o.lng,o.uarn].map(function(v){v=String(v==null?'':v);return /[",
-]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(','); }));
-  var blob=new Blob([lines.join('
-')],{type:'text/csv'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='buildings_in_view.csv'; a.click();
+  var lines=[h.join(',')].concat(viewRows.map(function(o){ return [o.name,o.pc,o.laName,useName(o.use),o.ground,o.total,o.eaves==null?'':o.eaves,o.maxh==null?'':o.maxh,o.rv,scores[o.uarn]==null?'':scores[o.uarn],o.lat,o.lng,o.uarn].map(function(v){v=String(v==null?'':v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(','); }));
+  var blob=new Blob([lines.join('\n')],{type:'text/csv'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='buildings_in_view.csv'; a.click();
 }
 async function init(){
   if(inited) return; inited=true;
