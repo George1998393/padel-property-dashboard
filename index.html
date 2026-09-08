@@ -148,7 +148,7 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 <div class="cp-tabs" id="cpTabs">
 <button class="cp-tab active" data-tab="sites">Property Sites</button><button class="cp-tab" data-tab="oursites">Our Sites</button>
 <button class="cp-tab" data-tab="projection">Club Projection</button>
-<button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="data">Data Dashboard</button><button class="cp-tab" data-tab="planning">Planning<span id="cpPlanBadge" style="display:none;margin-left:6px;background:var(--green);color:#fff;border-radius:20px;padding:1px 7px;font-size:10.5px;font-weight:800"></span></button><button class="cp-tab" data-tab="planner">Court Planner</button><button class="cp-tab" data-tab="canopy">Canopy Visualiser</button><button class="cp-tab" data-tab="operators">UK Operators</button></div>
+<button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="data">Data Dashboard</button><button class="cp-tab" data-tab="planning">Planning<span id="cpPlanBadge" style="display:none;margin-left:6px;background:var(--green);color:#fff;border-radius:20px;padding:1px 7px;font-size:10.5px;font-weight:800"></span></button><button class="cp-tab" data-tab="planner">Court Planner</button><button class="cp-tab" data-tab="canopy">Canopy Visualiser</button><button class="cp-tab" data-tab="operators">UK Operators</button><button class="cp-tab" data-tab="buildings">Building Finder</button></div>
 <div id="tab-sites" class="cp-panel">
 
 <div class="spec">
@@ -329,6 +329,170 @@ if(e.target&&e.target.id==='osExport'){var b=new Blob([JSON.stringify(sites,null
 });
 document.addEventListener('change',function(e){if(e.target&&e.target.id==='osImport'){var f=e.target.files&&e.target.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){try{var d=JSON.parse(rd.result);if(Array.isArray(d)&&d.length){sites=d;save();render();msg('Imported '+d.length+' sites.');}else msg('That file has no sites.');}catch(err){msg('Could not read that file.');}};rd.readAsText(f);e.target.value='';}});
 })();</script><div id="tab-canopy" class="cp-panel" hidden=""><iframe id="cpCanopyFrame" data-src="canopy/" title="Padel Canopy Visualiser" style="width:100%;height:calc(100vh - 200px);min-height:640px;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe></div>
+<div id="tab-buildings" class="cp-panel" hidden>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css">
+<style>
+#bfWrap{display:grid;grid-template-columns:1fr 380px;gap:16px}
+@media(max-width:1000px){#bfWrap{grid-template-columns:1fr}}
+#bfMap{height:640px;border-radius:12px;border:1px solid #D8E2DC}
+.bf-card{background:#fff;border:1px solid #D8E2DC;border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.bf-card h3{margin:0 0 8px;font-size:15px}
+.bf-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:6px 0;font-size:13px}
+.bf-row label{color:#5D6B63}
+.bf-row input[type=number],.bf-row input[type=text],.bf-row select{width:150px;padding:6px 8px;border:1px solid #D8E2DC;border-radius:8px;font-size:13px}
+.bf-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.bf-chip{border:1px solid #D8E2DC;background:#fff;border-radius:999px;padding:5px 11px;font-size:12px;cursor:pointer}
+.bf-chip.on{background:#0A7D4B;color:#fff;border-color:#0A7D4B}
+#bfStats{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+#bfStats div{background:#fff;border:1px solid #D8E2DC;border-radius:10px;padding:10px 14px;min-width:120px}
+#bfStats b{display:block;font-size:20px;color:#0A7D4B}
+#bfStats span{font-size:11px;color:#5D6B63;text-transform:uppercase;letter-spacing:.04em}
+#bfList{max-height:420px;overflow:auto;border-top:1px solid #EEF2F0;margin-top:8px}
+.bf-item{padding:9px 4px;border-bottom:1px solid #EEF2F0;cursor:pointer;font-size:12.5px;line-height:1.45}
+.bf-item:hover{background:#F4F8F5}
+.bf-item b{display:block;font-size:13px}
+.bf-item .m{color:#5D6B63}
+.bf-sc{float:right;background:#EAF2ED;color:#0A7D4B;border-radius:6px;padding:2px 7px;font-weight:600;font-size:12px}
+.bf-sc.hi{background:#0A7D4B;color:#fff}
+.bf-pop{font-size:13px;line-height:1.5;min-width:240px}
+.bf-pop b{font-size:14px}
+.bf-pop a{color:#0A7D4B}
+.bf-note{background:#FDF6E3;border:1px solid #E0C97F;border-radius:8px;padding:10px 12px;font-size:12.5px;line-height:1.5;margin-bottom:12px}
+.bf-btn{background:#0A7D4B;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;width:100%;margin-top:8px}
+.bf-btn.sec{background:#fff;color:#0A7D4B;border:1px solid #0A7D4B}
+.bf-btn:disabled{opacity:.5;cursor:default}
+</style>
+<div class="cp-head"><h2 style="margin:0 0 4px">🏭 Building Finder</h2>
+<div style="color:#5D6B63;font-size:13px;margin-bottom:12px">Every rated warehouse, factory, workshop, retail warehouse, showroom and leisure building in England and Wales with 929 sqm or more of ground floor space, from the 2026 VOA rating list. Filter it down, then score what is left against the same catchment model as the Opportunity Map.</div></div>
+<div id="bfNote" class="bf-note">Eaves heights are being attached from Ordnance Survey building data. Until that lands the eaves filter is inactive and every building here passes on floor area only.</div>
+<div id="bfStats">
+ <div><b id="bfN">…</b><span>Buildings matching</span></div>
+ <div><b id="bfNv">…</b><span>In view</span></div>
+ <div><b id="bfNh">…</b><span>With eaves data</span></div>
+ <div><b id="bfN6">…</b><span>Eaves 6m+</span></div>
+</div>
+<div id="bfWrap">
+ <div id="bfMap"></div>
+ <div>
+  <div class="bf-card"><h3>Filters</h3>
+   <div class="bf-row"><label>Town or council</label><input type="text" id="bfTown" placeholder="e.g. Swindon"></div>
+   <div class="bf-row"><label>Min ground floor (sqm)</label><input type="number" id="bfMin" value="929" step="50"></div>
+   <div class="bf-row"><label>Max ground floor (sqm)</label><input type="number" id="bfMax" value="2800" step="50"></div>
+   <div class="bf-row"><label>Min eaves (m)</label><input type="number" id="bfEaves" value="6" step="0.5"></div>
+   <div class="bf-row"><label>Include unknown eaves</label><input type="checkbox" id="bfUnk" checked></div>
+   <div class="bf-row"><label>Use class</label></div>
+   <div class="bf-chips" id="bfUse">
+    <span class="bf-chip on" data-u="WH">Warehouse</span><span class="bf-chip on" data-u="FA">Factory</span><span class="bf-chip on" data-u="WS">Workshop</span><span class="bf-chip on" data-u="RW">Retail warehouse</span><span class="bf-chip on" data-u="SH">Showroom</span><span class="bf-chip on" data-u="LE">Leisure</span><span class="bf-chip" data-u="OT">Other</span>
+   </div>
+   <div class="bf-row" style="margin-top:10px"><label>Drive time for scoring (min)</label><input type="number" id="bfDrive" value="15" step="1"></div>
+   <button class="bf-btn" id="bfScore">Score buildings in view</button>
+   <button class="bf-btn sec" id="bfCsv">Download visible as CSV</button>
+  </div>
+  <div class="bf-card"><h3>In view <span id="bfSortLbl" style="font-weight:400;color:#5D6B63;font-size:12px">(largest first)</span></h3><div id="bfList"></div></div>
+ </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
+<script>
+(function(){
+var DATA=null,POP=null,CLUBS=null,map=null,cluster=null,markers={},scores={},inited=false,viewRows=[];
+var F={};
+function $(id){return document.getElementById(id);}
+function km(a,b,c,d){var R=6371,x=(c-a)*Math.PI/180,y=(d-b)*Math.PI/180;var s=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(s));}
+function useName(u){return {WH:'Warehouse',FA:'Factory',WS:'Workshop',RW:'Retail warehouse',SH:'Showroom',LE:'Leisure',OT:'Other'}[u]||u;}
+function fmt(n){return (n==null)?'':Number(n).toLocaleString('en-GB');}
+function row(r){ var f=DATA.fields; var o={}; for(var i=0;i<f.length;i++)o[f[i]]=r[i]; o.laName=o.la||''; return o; }
+function passes(o){
+  if(F.uses.indexOf(o.use)<0) return false;
+  if(o.ground<F.min||o.ground>F.max) return false;
+  if(o.eaves==null){ if(!F.unk) return false; } else if(o.eaves<F.eaves) return false;
+  if(F.town){ var t=F.town; if((o.laName||'').toLowerCase().indexOf(t)<0 && (o.name||'').toLowerCase().indexOf(t)<0 && (o.pc||'').toLowerCase().indexOf(t)<0) return false; }
+  return true;
+}
+function readF(){
+  F.uses=[].map.call(document.querySelectorAll('#bfUse .bf-chip.on'),function(c){return c.getAttribute('data-u');});
+  F.min=+$('bfMin').value||0; F.max=+$('bfMax').value||1e9; F.eaves=+$('bfEaves').value||0; F.unk=$('bfUnk').checked;
+  F.town=($('bfTown').value||'').trim().toLowerCase(); F.drive=+$('bfDrive').value||15;
+}
+function popup(o){
+  var sc=scores[o.uarn];
+  var g='https://www.google.com/maps/search/?api=1&query='+o.lat+','+o.lng;
+  var sv='https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+o.lat+','+o.lng;
+  var rm='https://www.rightmove.co.uk/commercial-property-to-let/find.html?searchLocation='+encodeURIComponent(o.pc);
+  return '<div class="bf-pop"><b>'+o.name+'</b><br>'+o.pc+' · '+o.laName+'<br>'+useName(o.use)+'<br>Ground floor <b>'+fmt(o.ground)+' sqm</b> (rated total '+fmt(o.total)+' sqm)<br>Eaves: '+(o.eaves==null?'<span style="color:#B8860B">not yet known</span>':'<b>'+o.eaves+'m</b>'+(o.maxh?' (ridge '+o.maxh+'m)':''))+'<br>Rateable value £'+fmt(o.rv)+(sc!=null?'<br>Catchment score <b>'+sc+'/100</b>':'')+'<br><a href="'+g+'" target="_blank">Map</a> · <a href="'+sv+'" target="_blank">Street View</a> · <a href="'+rm+'" target="_blank">Rightmove nearby</a></div>';
+}
+function build(){
+  readF(); if(cluster){cluster.clearLayers();} markers={};
+  var n=0,nh=0,n6=0;
+  var rows=DATA.rows;
+  for(var i=0;i<rows.length;i++){ var o=row(rows[i]); if(!passes(o)) continue; n++; if(o.eaves!=null){nh++; if(o.eaves>=6)n6++;}
+    var m=L.circleMarker([o.lat,o.lng],{radius:6,color:o.eaves==null?'#5D6B63':(o.eaves>=6?'#0A7D4B':'#B3261E'),fillOpacity:.85,weight:1});
+    m.bindPopup(function(){return popup(o);}); m._o=o; cluster.addLayer(m); markers[o.uarn]=m; }
+  $('bfN').textContent=fmt(n); $('bfNh').textContent=fmt(nh); $('bfN6').textContent=fmt(n6);
+  list();
+}
+function list(){
+  if(!map) return; var b=map.getBounds(); viewRows=[];
+  cluster.eachLayer(function(m){ if(b.contains(m.getLatLng())) viewRows.push(m._o); });
+  var scored=viewRows.some(function(o){return scores[o.uarn]!=null;});
+  viewRows.sort(function(a,b){ if(scored){ return (scores[b.uarn]||-1)-(scores[a.uarn]||-1); } return b.ground-a.ground; });
+  $('bfSortLbl').textContent=scored?'(best catchment first)':'(largest first)';
+  $('bfNv').textContent=fmt(viewRows.length);
+  var L2=$('bfList'); L2.innerHTML='';
+  viewRows.slice(0,150).forEach(function(o){ var d=document.createElement('div'); d.className='bf-item';
+    var sc=scores[o.uarn]; d.innerHTML=(sc!=null?'<span class="bf-sc'+(sc>=70?' hi':'')+'">'+sc+'</span>':'')+'<b>'+o.name+'</b><span class="m">'+o.pc+' · '+o.laName+' · '+useName(o.use)+'</span><br>'+fmt(o.ground)+' sqm ground · eaves '+(o.eaves==null?'n/k':o.eaves+'m');
+    d.onclick=function(){ map.setView([o.lat,o.lng],15); var m=markers[o.uarn]; if(m){ cluster.zoomToShowLayer(m,function(){m.openPopup();}); } };
+    L2.appendChild(d); });
+  if(viewRows.length>150){ var more=document.createElement('div'); more.className='bf-item m'; more.textContent='Showing 150 of '+viewRows.length+'. Zoom in or filter to see the rest.'; L2.appendChild(more); }
+}
+function score(o){
+  var R=F.drive*0.75, R2=R*1.6, pop=0, supply=0;
+  for(var i=0;i<POP.length;i++){ var p=POP[i]; var d=km(o.lat,o.lng,p[1],p[2]); if(d<=R) pop+=p[3]; }
+  for(var j=0;j<CLUBS.length;j++){ var c=CLUBS[j]; var d2=km(o.lat,o.lng,c[1],c[2]); if(d2>R2) continue; var w=d2<=R?1:(R2-d2)/(R2-R); supply+=w*((c[3]||0)+0.5*(c[4]||0)); }
+  var cap=pop/6000; if(cap<=0) return 0;
+  var room=Math.max(0,cap-supply);
+  var s=100*(room/cap)*Math.min(1,pop/150000);
+  return Math.round(s);
+}
+async function scoreView(){
+  var btn=$('bfScore'); btn.disabled=true; btn.textContent='Scoring…';
+  if(!POP) POP=await fetch('population.json').then(function(r){return r.json();});
+  if(!CLUBS) CLUBS=await fetch('clubs.json').then(function(r){return r.json();});
+  readF(); var todo=viewRows.slice(0,400), i=0;
+  function step(){ var t=Date.now(); while(i<todo.length&&Date.now()-t<40){ scores[todo[i].uarn]=score(todo[i]); i++; }
+    btn.textContent='Scoring… '+i+'/'+todo.length;
+    if(i<todo.length) setTimeout(step,0); else { btn.disabled=false; btn.textContent='Score buildings in view'; list(); } }
+  step();
+}
+function csv(){
+  var h=['name','postcode','council','use','ground_sqm','total_sqm','eaves_m','ridge_m','rateable_value','catchment_score','lat','lng','uarn'];
+  var lines=[h.join(',')].concat(viewRows.map(function(o){ return [o.name,o.pc,o.laName,useName(o.use),o.ground,o.total,o.eaves==null?'':o.eaves,o.maxh==null?'':o.maxh,o.rv,scores[o.uarn]==null?'':scores[o.uarn],o.lat,o.lng,o.uarn].map(function(v){v=String(v==null?'':v);return /[",
+]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(','); }));
+  var blob=new Blob([lines.join('
+')],{type:'text/csv'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='buildings_in_view.csv'; a.click();
+}
+async function init(){
+  if(inited) return; inited=true;
+  map=L.map('bfMap').setView([52.7,-1.7],6);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19}).addTo(map);
+  cluster=L.markerClusterGroup({chunkedLoading:true,maxClusterRadius:45,disableClusteringAtZoom:14}); map.addLayer(cluster);
+  $('bfList').innerHTML='<div class="bf-item m">Loading 50,000 buildings…</div>';
+  var SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlsbGJqbGxtYW55a2d3ZHJ4bGpnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyODM2MTQsImV4cCI6MjA5MTg1OTYxNH0.klAYglmbk7he-U-PF25zlLYacu4MH31XCLwPNmvvsOM';
+  DATA=await fetch('https://yllbjllmanykgwdrxljg.supabase.co/rest/v1/rpc/pp_buildings_all',{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+SBK,'Content-Type':'application/json'},body:'{}'}).then(function(r){return r.json();});
+  var anyH=DATA.rows.some(function(r){return r[10]!=null;});
+  if(anyH){ $('bfNote').style.display='none'; } else { $('bfEaves').disabled=true; }
+  build(); map.on('moveend',list);
+  var deb; function re(){ clearTimeout(deb); deb=setTimeout(build,250); }
+  ['bfMin','bfMax','bfEaves','bfUnk','bfTown','bfDrive'].forEach(function(id){ $(id).addEventListener('input',re); $(id).addEventListener('change',re); });
+  [].forEach.call(document.querySelectorAll('#bfUse .bf-chip'),function(c){ c.onclick=function(){ c.classList.toggle('on'); build(); }; });
+  $('bfScore').onclick=scoreView; $('bfCsv').onclick=csv;
+  $('bfTown').addEventListener('change',function(){ readF(); if(!F.town) return; var hit=null; for(var i=0;i<DATA.rows.length;i++){ var o=row(DATA.rows[i]); if(passes(o)){hit=o;break;} } if(hit) map.setView([hit.lat,hit.lng],11); });
+}
+document.addEventListener('click',function(e){ var t=e.target.closest&&e.target.closest('[data-tab="buildings"]'); if(t){ setTimeout(function(){ init(); if(map) setTimeout(function(){map.invalidateSize();},100); },50); } },true);
+if(location.hash==='#buildings'){ setTimeout(init,300); }
+})();
+</script>
+</div>
 <div id="tab-operators" class="cp-panel" hidden="">
 <div class="cp-card" style="max-width:1180px">
 <div class="cp-head"><div class="cp-ic">🏆</div><div><h2 class="cp-title">UK padel operators — league table</h2><p class="cp-sub">Every GB operator with 2+ clubs OPEN AND TRADING (31) · coming-soon sites excluded · verified operator-by-operator</p></div></div>
