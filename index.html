@@ -363,8 +363,8 @@ document.addEventListener('change',function(e){if(e.target&&e.target.id==='osImp
 .bf-btn.sec{background:#fff;color:#0A7D4B;border:1px solid #0A7D4B}
 .bf-btn:disabled{opacity:.5;cursor:default}
 </style>
-<div class="cp-head"><h2 style="margin:0 0 4px">🏭 Building Finder</h2>
-<div style="color:#5D6B63;font-size:13px;margin-bottom:12px">Every rated warehouse, factory, workshop, retail warehouse, showroom and leisure building in England and Wales with 929 sqm or more of ground floor space, from the 2026 VOA rating list. Filter it down, then score what is left against the same catchment model as the Opportunity Map.</div></div>
+<h2 style="margin:0 0 4px;font-size:20px">🏭 Building Finder</h2>
+<div style="color:#5D6B63;font-size:13px;margin-bottom:12px">Every rated warehouse, factory, workshop, retail warehouse, showroom and leisure building in England and Wales with 929 sqm or more of ground floor space, from the 2026 VOA rating list. Filter it down, then score what is left against the same catchment model as the Opportunity Map.</div>
 <div id="bfNote" class="bf-note">Eaves heights are being attached from Ordnance Survey building data. Until that lands the eaves filter is inactive and every building here passes on floor area only.</div>
 <div id="bfStats">
  <div><b id="bfN">…</b><span>Buildings matching</span></div>
@@ -392,7 +392,6 @@ document.addEventListener('change',function(e){if(e.target&&e.target.id==='osImp
   <div class="bf-card"><h3>In view <span id="bfSortLbl" style="font-weight:400;color:#5D6B63;font-size:12px">(largest first)</span></h3><div id="bfList"></div></div>
  </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
 <script>
 (function(){
 var DATA=null,POP=null,CLUBS=null,map=null,cluster=null,markers={},scores={},inited=false,viewRows=[];
@@ -473,6 +472,9 @@ function csv(){
 }
 async function init(){
   if(inited) return; inited=true;
+  try{
+  if(!window.L){ $('bfList').innerHTML='<div class="bf-item m">Map library not loaded.</div>'; return; }
+  if(!L.markerClusterGroup){ await new Promise(function(res,rej){ var sc=document.createElement('script'); sc.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js'; sc.onload=res; sc.onerror=rej; document.head.appendChild(sc); }); }
   map=L.map('bfMap').setView([52.7,-1.7],6);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19}).addTo(map);
   cluster=L.markerClusterGroup({chunkedLoading:true,maxClusterRadius:45,disableClusteringAtZoom:14}); map.addLayer(cluster);
@@ -487,6 +489,7 @@ async function init(){
   [].forEach.call(document.querySelectorAll('#bfUse .bf-chip'),function(c){ c.onclick=function(){ c.classList.toggle('on'); build(); }; });
   $('bfScore').onclick=scoreView; $('bfCsv').onclick=csv;
   $('bfTown').addEventListener('change',function(){ readF(); if(!F.town) return; var hit=null; for(var i=0;i<DATA.rows.length;i++){ var o=row(DATA.rows[i]); if(passes(o)){hit=o;break;} } if(hit) map.setView([hit.lat,hit.lng],11); });
+  }catch(e){ $('bfList').innerHTML='<div class="bf-item m">Failed to load: '+String(e).slice(0,120)+'</div>'; }
 }
 document.addEventListener('click',function(e){ var t=e.target.closest&&e.target.closest('[data-tab="buildings"]'); if(t){ setTimeout(function(){ init(); if(map) setTimeout(function(){map.invalidateSize();},100); },50); } },true);
 if(location.hash==='#buildings'){ setTimeout(init,300); }
