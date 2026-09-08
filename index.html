@@ -474,7 +474,7 @@ async function init(){
   if(!window.L){ $('bfList').innerHTML='<div class="bf-item m">Map library not loaded.</div>'; return; }
   if(!L.markerClusterGroup){ await new Promise(function(res,rej){ var sc=document.createElement('script'); sc.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js'; sc.onload=res; sc.onerror=rej; document.head.appendChild(sc); }); }
   map=L.map('bfMap').setView([52.7,-1.7],6);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19}).addTo(map);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(map);
   cluster=L.markerClusterGroup({chunkedLoading:true,maxClusterRadius:45,disableClusteringAtZoom:14}); map.addLayer(cluster);
   $('bfList').innerHTML='<div class="bf-item m">Loading 50,000 buildings…</div>';
   var SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlsbGJqbGxtYW55a2d3ZHJ4bGpnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyODM2MTQsImV4cCI6MjA5MTg1OTYxNH0.klAYglmbk7he-U-PF25zlLYacu4MH31XCLwPNmvvsOM';
