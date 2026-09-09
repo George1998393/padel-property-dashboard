@@ -371,6 +371,7 @@ document.addEventListener('change',function(e){if(e.target&&e.target.id==='osImp
  <div><b id="bfNv">…</b><span>In view</span></div>
  <div><b id="bfNh">…</b><span>With eaves data</span></div>
  <div><b id="bfN6">…</b><span>Eaves 6m+</span></div>
+ <div><b id="bfNm" style="color:#E07B00">…</b><span>On the market</span></div>
 </div>
 <div id="bfWrap">
  <div id="bfMap"></div>
@@ -381,6 +382,7 @@ document.addEventListener('change',function(e){if(e.target&&e.target.id==='osImp
    <div class="bf-row"><label>Max ground floor (sqm)</label><input type="number" id="bfMax" value="2800" step="50"></div>
    <div class="bf-row"><label>Min eaves (m)</label><input type="number" id="bfEaves" value="6" step="0.5"></div>
    <div class="bf-row"><label>Include unknown eaves</label><input type="checkbox" id="bfUnk" checked></div>
+   <div class="bf-row"><label>On the market only</label><input type="checkbox" id="bfMkt"></div>
    <div class="bf-row"><label>Use class</label></div>
    <div class="bf-chips" id="bfUse">
     <span class="bf-chip on" data-u="WH">Warehouse</span><span class="bf-chip on" data-u="FA">Factory</span><span class="bf-chip on" data-u="WS">Workshop</span><span class="bf-chip on" data-u="RW">Retail warehouse</span><span class="bf-chip on" data-u="SH">Showroom</span><span class="bf-chip on" data-u="LE">Leisure</span><span class="bf-chip" data-u="OT">Other</span>
@@ -394,15 +396,18 @@ document.addEventListener('change',function(e){if(e.target&&e.target.id==='osImp
 </div>
 <script>
 (function(){
-var DATA=null,POP=null,CLUBS=null,map=null,cluster=null,markers={},scores={},inited=false,viewRows=[];
+var DATA=null,POP=null,CLUBS=null,map=null,cluster=null,markers={},scores={},inited=false,viewRows=[],MKT={},MKTN=0;
+function pcKey(p){return String(p||'').toUpperCase().replace(/\s+/g,'');}
+function matchMkt(o){var arr=MKT[pcKey(o.pc)]; if(!arr) return null; var best=null,bd=1e9; for(var i=0;i<arr.length;i++){var l=arr[i]; if(!l.sqm) continue; var lo=o.ground*0.6, hi=Math.max(o.total||o.ground,o.ground)*1.8; if(l.sqm<lo||l.sqm>hi) continue; var d=Math.abs(l.sqm-o.ground); if(d<bd){bd=d;best=l;}} return best;}
 var F={};
 function $(id){return document.getElementById(id);}
 function km(a,b,c,d){var R=6371,x=(c-a)*Math.PI/180,y=(d-b)*Math.PI/180;var s=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(s));}
 function useName(u){return {WH:'Warehouse',FA:'Factory',WS:'Workshop',RW:'Retail warehouse',SH:'Showroom',LE:'Leisure',OT:'Other'}[u]||u;}
 function fmt(n){return (n==null)?'':Number(n).toLocaleString('en-GB');}
-function row(r){ var f=DATA.fields; var o={}; for(var i=0;i<f.length;i++)o[f[i]]=r[i]; o.laName=o.la||''; return o; }
+function row(r){ var f=DATA.fields; var o={}; for(var i=0;i<f.length;i++)o[f[i]]=r[i]; o.laName=o.la||''; o.mkt=matchMkt(o); return o; }
 function passes(o){
   if(F.uses.indexOf(o.use)<0) return false;
+  if(F.mkt&&!o.mkt) return false;
   if(o.ground<F.min||o.ground>F.max) return false;
   if(o.eaves==null){ if(!F.unk) return false; } else if(o.eaves<F.eaves) return false;
   if(F.town){ var t=F.town; if((o.laName||'').toLowerCase().indexOf(t)<0 && (o.name||'').toLowerCase().indexOf(t)<0 && (o.pc||'').toLowerCase().indexOf(t)<0) return false; }
@@ -411,23 +416,23 @@ function passes(o){
 function readF(){
   F.uses=[].map.call(document.querySelectorAll('#bfUse .bf-chip.on'),function(c){return c.getAttribute('data-u');});
   F.min=+$('bfMin').value||0; F.max=+$('bfMax').value||1e9; F.eaves=+$('bfEaves').value||0; F.unk=$('bfUnk').checked;
-  F.town=($('bfTown').value||'').trim().toLowerCase(); F.drive=+$('bfDrive').value||15;
+  F.town=($('bfTown').value||'').trim().toLowerCase(); F.drive=+$('bfDrive').value||15; F.mkt=$('bfMkt').checked;
 }
 function popup(o){
   var sc=scores[o.uarn];
   var g='https://www.google.com/maps/search/?api=1&query='+o.lat+','+o.lng;
   var sv='https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+o.lat+','+o.lng;
   var rm='https://www.rightmove.co.uk/commercial-property-to-let/'+encodeURIComponent(String(o.pc||'').trim().split(' ')[0])+'.html';
-  return '<div class="bf-pop"><b>'+o.name+'</b><br>'+o.pc+' · '+o.laName+'<br>'+useName(o.use)+'<br>Ground floor <b>'+fmt(o.ground)+' sqm</b> (rated total '+fmt(o.total)+' sqm)<br>Eaves: '+(o.eaves==null?'<span style="color:#B8860B">not yet known</span>':'<b>'+o.eaves+'m</b>'+(o.maxh?' (ridge '+o.maxh+'m)':''))+'<br>Rateable value £'+fmt(o.rv)+(sc!=null?'<br>Catchment score <b>'+sc+'/100</b>':'')+'<br><a href="'+g+'" target="_blank">Map</a> · <a href="'+sv+'" target="_blank">Street View</a> · <a href="'+rm+'" target="_blank">Rightmove, this postcode area</a></div>';
+  return '<div class="bf-pop"><b>'+o.name+'</b><br>'+o.pc+' · '+o.laName+'<br>'+useName(o.use)+'<br>Ground floor <b>'+fmt(o.ground)+' sqm</b> (rated total '+fmt(o.total)+' sqm)<br>Eaves: '+(o.eaves==null?'<span style="color:#B8860B">not yet known</span>':'<b>'+o.eaves+'m</b>'+(o.maxh?' (ridge '+o.maxh+'m)':''))+(o.mkt?'<br><span style="display:inline-block;margin-top:4px;background:#FFF1E0;border:1px solid #F0B36B;color:#8A4B00;border-radius:6px;padding:2px 8px;font-weight:600">On the market</span> <a href="'+o.mkt.url+'" target="_blank"><b>View listing</b></a>'+(o.mkt.rent_psf?' · £'+o.mkt.rent_psf+'/sqft':(o.mkt.basis==='poa'?' · rent on application':''))+(o.mkt.sqft?' · '+fmt(o.mkt.sqft)+' sqft listed':'')+(o.mkt.eaves?' · eaves '+o.mkt.eaves+'m (listing)':''):'')+'<br>Rateable value £'+fmt(o.rv)+(sc!=null?'<br>Catchment score <b>'+sc+'/100</b>':'')+'<br><a href="'+g+'" target="_blank">Map</a> · <a href="'+sv+'" target="_blank">Street View</a> · <a href="'+rm+'" target="_blank">Rightmove, this postcode area</a></div>';
 }
 function build(){
   readF(); if(cluster){cluster.clearLayers();} markers={};
-  var n=0,nh=0,n6=0;
+  var n=0,nh=0,n6=0,nm=0;
   var rows=DATA.rows;
-  for(var i=0;i<rows.length;i++){ var o=row(rows[i]); if(!passes(o)) continue; n++; if(o.eaves!=null){nh++; if(o.eaves>=6)n6++;}
-    var m=L.circleMarker([o.lat,o.lng],{radius:6,color:o.eaves==null?'#5D6B63':(o.eaves>=6?'#0A7D4B':'#B3261E'),fillOpacity:.85,weight:1});
+  for(var i=0;i<rows.length;i++){ var o=row(rows[i]); if(!passes(o)) continue; n++; if(o.mkt)nm++; if(o.eaves!=null){nh++; if(o.eaves>=6)n6++;}
+    var m=L.circleMarker([o.lat,o.lng],{radius:o.mkt?8:6,color:o.mkt?'#E07B00':(o.eaves==null?'#5D6B63':(o.eaves>=6?'#0A7D4B':'#B3261E')),fillColor:o.eaves==null?'#5D6B63':(o.eaves>=6?'#0A7D4B':'#B3261E'),fillOpacity:.85,weight:o.mkt?3:1});
     m.bindPopup(function(){return popup(o);}); m._o=o; cluster.addLayer(m); markers[o.uarn]=m; }
-  $('bfN').textContent=fmt(n); $('bfNh').textContent=fmt(nh); $('bfN6').textContent=fmt(n6);
+  $('bfN').textContent=fmt(n); $('bfNh').textContent=fmt(nh); $('bfN6').textContent=fmt(n6); $('bfNm').textContent=fmt(nm);
   list();
 }
 function list(){
@@ -439,7 +444,7 @@ function list(){
   $('bfNv').textContent=fmt(viewRows.length);
   var L2=$('bfList'); L2.innerHTML='';
   viewRows.slice(0,150).forEach(function(o){ var d=document.createElement('div'); d.className='bf-item';
-    var sc=scores[o.uarn]; d.innerHTML=(sc!=null?'<span class="bf-sc'+(sc>=70?' hi':'')+'">'+sc+'</span>':'')+'<b>'+o.name+'</b><span class="m">'+o.pc+' · '+o.laName+' · '+useName(o.use)+'</span><br>'+fmt(o.ground)+' sqm ground · eaves '+(o.eaves==null?'n/k':o.eaves+'m');
+    var sc=scores[o.uarn]; d.innerHTML=(sc!=null?'<span class="bf-sc'+(sc>=70?' hi':'')+'">'+sc+'</span>':'')+'<b>'+o.name+'</b><span class="m">'+o.pc+' · '+o.laName+' · '+useName(o.use)+'</span><br>'+fmt(o.ground)+' sqm ground · eaves '+(o.eaves==null?'n/k':o.eaves+'m')+(o.mkt?' · <span style="color:#8A4B00;font-weight:600">On the market</span>':'');
     d.onclick=function(){ map.setView([o.lat,o.lng],15); var m=markers[o.uarn]; if(m){ cluster.zoomToShowLayer(m,function(){m.openPopup();}); } };
     L2.appendChild(d); });
   if(viewRows.length>150){ var more=document.createElement('div'); more.className='bf-item m'; more.textContent='Showing 150 of '+viewRows.length+'. Zoom in or filter to see the rest.'; L2.appendChild(more); }
@@ -479,11 +484,12 @@ async function init(){
   $('bfList').innerHTML='<div class="bf-item m">Loading 50,000 buildings…</div>';
   var SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlsbGJqbGxtYW55a2d3ZHJ4bGpnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyODM2MTQsImV4cCI6MjA5MTg1OTYxNH0.klAYglmbk7he-U-PF25zlLYacu4MH31XCLwPNmvvsOM';
   DATA=await fetch('https://yllbjllmanykgwdrxljg.supabase.co/rest/v1/rpc/pp_buildings_all',{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+SBK,'Content-Type':'application/json'},body:'{}'}).then(function(r){return r.json();});
+  try{ var LS=await fetch('https://yllbjllmanykgwdrxljg.supabase.co/rest/v1/rpc/pp_listings_active',{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+SBK,'Content-Type':'application/json'},body:JSON.stringify({days:12})}).then(function(r){return r.json();}); (LS||[]).forEach(function(l){ var k=pcKey(l.pc); if(!k) return; (MKT[k]=MKT[k]||[]).push(l); MKTN++; }); }catch(e){}
   var anyH=DATA.rows.some(function(r){return r[10]!=null;});
   if(anyH){ $('bfNote').style.display='none'; } else { $('bfEaves').disabled=true; }
   build(); map.on('moveend',list);
   var deb; function re(){ clearTimeout(deb); deb=setTimeout(build,250); }
-  ['bfMin','bfMax','bfEaves','bfUnk','bfTown','bfDrive'].forEach(function(id){ $(id).addEventListener('input',re); $(id).addEventListener('change',re); });
+  ['bfMin','bfMax','bfEaves','bfUnk','bfMkt','bfTown','bfDrive'].forEach(function(id){ $(id).addEventListener('input',re); $(id).addEventListener('change',re); });
   [].forEach.call(document.querySelectorAll('#bfUse .bf-chip'),function(c){ c.onclick=function(){ c.classList.toggle('on'); build(); }; });
   $('bfScore').onclick=scoreView; $('bfCsv').onclick=csv;
   $('bfTown').addEventListener('change',function(){ readF(); if(!F.town) return; var hit=null; for(var i=0;i<DATA.rows.length;i++){ var o=row(DATA.rows[i]); if(passes(o)){hit=o;break;} } if(hit) map.setView([hit.lat,hit.lng],11); });
