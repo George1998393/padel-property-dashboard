@@ -496,11 +496,11 @@ function render(){
  $('bfCok').textContent=n.ok; $('bfCchk').textContent=n.chk; $('bfCout').textContent=n.out;
  [].forEach.call(document.querySelectorAll('#bf2 .strip button'),function(b){ b.classList.toggle('on',b.getAttribute('data-view')===VIEW); });
  var show=all.filter(function(o){ if(VIEW==='all') return o.status!=='out'; return o.status===VIEW; }).sort(sorter(f));
- var L=$('bfList'); L.innerHTML='';
- if(!show.length){ L.innerHTML='<div class="empty">Nothing here with these rules. Loosen the rent cap or the catchment score, or tick more regions.</div>'; }
- show.forEach(function(o){ L.appendChild(card(o)); });
- [].forEach.call(L.querySelectorAll('[data-hide]'),function(x){ x.onclick=function(e){ e.stopPropagation(); var u=x.getAttribute('data-hide'); HID[u]=1; flag(u,{hidden:true}); render(); }; });
- [].forEach.call(L.querySelectorAll('[data-like]'),function(x){ x.onclick=function(e){ e.stopPropagation(); var u=x.getAttribute('data-like'); LIKE[u]=!LIKE[u]; flag(u,{liked:!!LIKE[u]}); render(); }; });
+ var LB=$('bfList'); LB.innerHTML='';
+ if(!show.length){ LB.innerHTML='<div class="empty">Nothing here with these rules. Loosen the rent cap or the catchment score, or tick more regions.</div>'; }
+ show.forEach(function(o){ LB.appendChild(card(o)); });
+ [].forEach.call(LB.querySelectorAll('[data-hide]'),function(x){ x.onclick=function(e){ e.stopPropagation(); var u=x.getAttribute('data-hide'); HID[u]=1; flag(u,{hidden:true}); render(); }; });
+ [].forEach.call(LB.querySelectorAll('[data-like]'),function(x){ x.onclick=function(e){ e.stopPropagation(); var u=x.getAttribute('data-like'); LIKE[u]=!LIKE[u]; flag(u,{liked:!!LIKE[u]}); render(); }; });
  if(cluster){ cluster.clearLayers(); markers={}; show.forEach(function(o){ var col={ok:'#0A7D4B',chk:'#B8860B',out:'#B3261E'}[o.status]; var m=L.circleMarker([o.lat,o.lng],{radius:8,color:col,fillColor:col,fillOpacity:.85,weight:2}); m.bindPopup('<b>'+(o.l.title||o.name)+'</b><br>'+o.pc+' · '+o.laName+'<br>Eaves '+(o.eaves==null?'n/k':o.eaves+'m')+' · '+(o.l.rent_psf==null?'POA':'£'+o.l.rent_psf+'/sqft')+' · score '+o.sc+'<br><a href="'+o.l.url+'" target="_blank">Listing</a>'); m.on('click',function(){ SEL=o.uarn; var el=document.querySelector('#bfList .site[data-u="'+o.uarn+'"]'); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); [].forEach.call(document.querySelectorAll('#bfList .site'),function(x){x.classList.toggle('sel',x===el);}); } }); cluster.addLayer(m); markers[o.uarn]=m; }); }
  var hid=Object.keys(HID).length; $('bfNote').textContent=(show.length+' shown · '+all.length+' on the market in your regions · '+(LS||[]).length+' listings read in the last scan'+(hid?' · '+hid+' hidden by you':''))+'. Eaves come from Ordnance Survey where matched, otherwise from the listing. Scores use the Opportunity Map model.';
 }
