@@ -417,8 +417,8 @@ function popup(o){
   var sc=scores[o.uarn];
   var g='https://www.google.com/maps/search/?api=1&query='+o.lat+','+o.lng;
   var sv='https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+o.lat+','+o.lng;
-  var rm='https://www.rightmove.co.uk/commercial-property-to-let/find.html?searchLocation='+encodeURIComponent(o.pc);
-  return '<div class="bf-pop"><b>'+o.name+'</b><br>'+o.pc+' · '+o.laName+'<br>'+useName(o.use)+'<br>Ground floor <b>'+fmt(o.ground)+' sqm</b> (rated total '+fmt(o.total)+' sqm)<br>Eaves: '+(o.eaves==null?'<span style="color:#B8860B">not yet known</span>':'<b>'+o.eaves+'m</b>'+(o.maxh?' (ridge '+o.maxh+'m)':''))+'<br>Rateable value £'+fmt(o.rv)+(sc!=null?'<br>Catchment score <b>'+sc+'/100</b>':'')+'<br><a href="'+g+'" target="_blank">Map</a> · <a href="'+sv+'" target="_blank">Street View</a> · <a href="'+rm+'" target="_blank">Rightmove nearby</a></div>';
+  var rm='https://www.rightmove.co.uk/commercial-property-to-let/'+encodeURIComponent(String(o.pc||'').trim().split(' ')[0])+'.html';
+  return '<div class="bf-pop"><b>'+o.name+'</b><br>'+o.pc+' · '+o.laName+'<br>'+useName(o.use)+'<br>Ground floor <b>'+fmt(o.ground)+' sqm</b> (rated total '+fmt(o.total)+' sqm)<br>Eaves: '+(o.eaves==null?'<span style="color:#B8860B">not yet known</span>':'<b>'+o.eaves+'m</b>'+(o.maxh?' (ridge '+o.maxh+'m)':''))+'<br>Rateable value £'+fmt(o.rv)+(sc!=null?'<br>Catchment score <b>'+sc+'/100</b>':'')+'<br><a href="'+g+'" target="_blank">Map</a> · <a href="'+sv+'" target="_blank">Street View</a> · <a href="'+rm+'" target="_blank">Rightmove, this postcode area</a></div>';
 }
 function build(){
   readF(); if(cluster){cluster.clearLayers();} markers={};
