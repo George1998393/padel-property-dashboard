@@ -333,216 +333,203 @@ document.addEventListener('change',function(e){if(e.target&&e.target.id==='osImp
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css">
 <style>
-#bfWrap{display:grid;grid-template-columns:1fr 380px;gap:16px}
-@media(max-width:1000px){#bfWrap{grid-template-columns:1fr}}
-#bfMap{height:640px;border-radius:12px;border:1px solid #D8E2DC}
-.bf-card{background:#fff;border:1px solid #D8E2DC;border-radius:12px;padding:14px 16px;margin-bottom:12px}
-.bf-card h3{margin:0 0 8px;font-size:15px}
-.bf-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:6px 0;font-size:13px}
-.bf-row label{color:#5D6B63}
-.bf-row input[type=number],.bf-row input[type=text],.bf-row select{width:150px;padding:6px 8px;border:1px solid #D8E2DC;border-radius:8px;font-size:13px}
-.bf-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.bf-chip{border:1px solid #D8E2DC;background:#fff;border-radius:999px;padding:5px 11px;font-size:12px;cursor:pointer}
-.bf-chip.on{background:#0A7D4B;color:#fff;border-color:#0A7D4B}
-#bfStats{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 12px}
-#bfStats div{background:#fff;border:1px solid #D8E2DC;border-radius:10px;padding:10px 14px;min-width:120px}
-#bfStats b{display:block;font-size:20px;color:#0A7D4B}
-#bfStats span{font-size:11px;color:#5D6B63;text-transform:uppercase;letter-spacing:.04em}
-#bfList{max-height:420px;overflow:auto;border-top:1px solid #EEF2F0;margin-top:8px}
-.bf-item{padding:9px 4px;border-bottom:1px solid #EEF2F0;cursor:pointer;font-size:12.5px;line-height:1.45}
-.bf-item:hover{background:#F4F8F5}
-.bf-item b{display:block;font-size:13px}
-.bf-item .m{color:#5D6B63}
-.bf-sc{float:right;background:#EAF2ED;color:#0A7D4B;border-radius:6px;padding:2px 7px;font-weight:600;font-size:12px}
-.bf-sc.hi{background:#0A7D4B;color:#fff}
-.bf-pop{font-size:13px;line-height:1.5;min-width:240px}
-.bf-pop b{font-size:14px}
-.bf-pop a{color:#0A7D4B}
-.bf-note{background:#FDF6E3;border:1px solid #E0C97F;border-radius:8px;padding:10px 12px;font-size:12.5px;line-height:1.5;margin-bottom:12px}
-.bf-btn{background:#0A7D4B;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;width:100%;margin-top:8px}
-.bf-btn.sec{background:#fff;color:#0A7D4B;border:1px solid #0A7D4B}
-.bf-btn:disabled{opacity:.5;cursor:default}
+#bf2{--ok:#0A7D4B;--chk:#B8860B;--out:#B3261E;--ink:#13201A;--mute:#5D6B63;--line:#D8E2DC;--soft:#F4F8F5}
+#bf2 h2{margin:0 0 4px;font-size:20px}
+#bf2 .sub{color:var(--mute);font-size:13px;margin-bottom:14px}
+#bf2 .strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+#bf2 .strip button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;text-align:left;cursor:pointer;transition:box-shadow .12s}
+#bf2 .strip button:hover{box-shadow:0 2px 10px rgba(0,0,0,.08)}
+#bf2 .strip button.on{outline:2px solid var(--ink);outline-offset:-2px}
+#bf2 .strip b{display:block;font-size:26px;line-height:1.1}
+#bf2 .strip span{font-size:12px;color:var(--mute)}
+#bf2 .strip .ok b{color:var(--ok)} #bf2 .strip .chk b{color:var(--chk)} #bf2 .strip .out b{color:var(--out)}
+#bf2 .bar{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+#bf2 .row{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-size:13px}
+#bf2 .row + .row{margin-top:10px;padding-top:10px;border-top:1px solid #EEF2F0}
+#bf2 .lbl{color:var(--mute);font-size:11px;text-transform:uppercase;letter-spacing:.05em;margin-right:4px}
+#bf2 input[type=number],#bf2 input[type=text]{padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:13px;width:74px}
+#bf2 input[type=text]{width:220px}
+#bf2 .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px;font-size:12px;cursor:pointer;user-select:none}
+#bf2 .chip.on{background:var(--ok);color:#fff;border-color:var(--ok)}
+#bf2 .chip.off{opacity:.55}
+#bf2 .main{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:1100px){#bf2 .main{grid-template-columns:1fr}}
+#bf2 #bfMap{height:560px;border-radius:12px;border:1px solid var(--line);position:sticky;top:12px}
+#bf2 .list{display:flex;flex-direction:column;gap:10px}
+#bf2 .site{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;position:relative;transition:box-shadow .12s}
+#bf2 .site:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+#bf2 .site.sel{outline:2px solid var(--ok)}
+#bf2 .site .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+#bf2 .site h4{margin:0;font-size:14.5px}
+#bf2 .site .where{color:var(--mute);font-size:12px;margin-top:2px}
+#bf2 .st{font-size:11px;font-weight:700;letter-spacing:.05em;border-radius:6px;padding:4px 8px;white-space:nowrap}
+#bf2 .st.ok{background:#EAF2ED;color:var(--ok)} #bf2 .st.chk{background:#FDF6E3;color:var(--chk)} #bf2 .st.out{background:#FDECEB;color:var(--out)}
+#bf2 .facts{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+@media(max-width:700px){#bf2 .facts{grid-template-columns:repeat(2,1fr)}}
+#bf2 .f{border-radius:8px;padding:7px 9px;background:var(--soft);font-size:12px;line-height:1.35}
+#bf2 .f b{display:block;font-size:13.5px}
+#bf2 .f small{color:var(--mute);display:block;font-size:11px}
+#bf2 .f.ok{background:#EAF2ED} #bf2 .f.chk{background:#FDF6E3} #bf2 .f.out{background:#FDECEB}
+#bf2 .f.ok b{color:var(--ok)} #bf2 .f.chk b{color:var(--chk)} #bf2 .f.out b{color:var(--out)}
+#bf2 .acts{display:flex;gap:12px;margin-top:10px;font-size:12.5px;align-items:center}
+#bf2 .acts a{color:var(--ok);font-weight:600}
+#bf2 .acts .x{margin-left:auto;color:var(--mute);cursor:pointer;font-size:12px}
+#bf2 .acts .x:hover{color:var(--out)}
+#bf2 .empty{color:var(--mute);font-size:13px;padding:20px;text-align:center;border:1px dashed var(--line);border-radius:12px}
+#bf2 .note{font-size:12px;color:var(--mute);margin-top:10px}
+#bf2 .sortsel{padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:13px}
 </style>
-<h2 style="margin:0 0 4px;font-size:20px">🏭 Building Finder</h2>
-<div style="color:#5D6B63;font-size:13px;margin-bottom:12px">Buildings on the market right now that match a rated warehouse, factory, workshop, retail warehouse, showroom or leisure building of 929 sqm or more, scored on the Opportunity Map catchment model. The map and the list underneath show the same set. Refreshed each morning by the Rightmove scan.</div>
-<div id="bfNote" class="bf-note">Eaves heights are being attached from Ordnance Survey building data. Until that lands the eaves filter is inactive and every building here passes on floor area only.</div>
-<div id="bfStats">
- <div><b id="bfN">…</b><span>On the market, in scope</span></div>
- <div><b id="bfNv">…</b><span>In view</span></div>
- <div><b id="bfNh">…</b><span>With eaves data</span></div>
- <div><b id="bfN6">…</b><span>Eaves 6m+</span></div>
- <div><b id="bfNm" style="color:#E07B00">…</b><span>On the market</span></div>
+<div id="bf2">
+<h2>🏭 Sites that work</h2>
+<div class="sub">Every warehouse on the market right now, checked against the four things that matter: tall enough, cheap enough, in a strong catchment, in your target regions. Refreshed each morning. Click a card to see it on the map.</div>
+
+<div class="strip">
+ <button class="ok" data-view="ok"><b id="bfCok">…</b><span>WORKS: eaves 6m+ confirmed, rent inside your cap, catchment 60+</span></button>
+ <button class="chk" data-view="chk"><b id="bfCchk">…</b><span>NEEDS A CALL: same, but eaves not published or rent on application</span></button>
+ <button class="out" data-view="out"><b id="bfCout">…</b><span>OUT: fails on height, rent or catchment (hidden unless you look)</span></button>
 </div>
-<div id="bfWrap">
- <div id="bfMap"></div>
- <div>
-  <div class="bf-card"><h3>Filters</h3>
-   <div class="bf-row"><label>Town or council</label><input type="text" id="bfTown" placeholder="e.g. Swindon"></div>
-   <div class="bf-row"><label>Min ground floor (sqm)</label><input type="number" id="bfMin" value="929" step="50"></div>
-   <div class="bf-row"><label>Max ground floor (sqm)</label><input type="number" id="bfMax" value="2800" step="50"></div>
-   <div class="bf-row"><label>Min eaves (m)</label><input type="number" id="bfEaves" value="6" step="0.5"></div>
-   <div class="bf-row"><label>Include unknown eaves</label><input type="checkbox" id="bfUnk" checked></div>
-   <div class="bf-row" style="display:none"><label>On the market only</label><input type="checkbox" id="bfMkt" checked></div>
-   <div class="bf-row"><label>Use class</label></div>
-   <div class="bf-chips" id="bfUse">
-    <span class="bf-chip on" data-u="WH">Warehouse</span><span class="bf-chip on" data-u="FA">Factory</span><span class="bf-chip on" data-u="WS">Workshop</span><span class="bf-chip on" data-u="RW">Retail warehouse</span><span class="bf-chip on" data-u="SH">Showroom</span><span class="bf-chip on" data-u="LE">Leisure</span><span class="bf-chip" data-u="OT">Other</span>
-   </div>
-   <div class="bf-row" style="margin-top:10px"><label>Drive time for scoring (min)</label><input type="number" id="bfDrive" value="15" step="1"></div>
-   <button class="bf-btn" id="bfScore" style="display:none">Score buildings in view</button>
-   <button class="bf-btn sec" id="bfCsv">Download visible as CSV</button>
-  </div>
-  <div class="bf-card"><h3>In view <span id="bfSortLbl" style="font-weight:400;color:#5D6B63;font-size:12px">(largest first)</span></h3><div id="bfList"></div></div>
+
+<div class="bar">
+ <div class="row"><span class="lbl">Target regions</span><span id="bfRegions"></span></div>
+ <div class="row">
+  <span class="lbl">Rules</span>
+  <label>Min eaves <input type="number" id="bfEaves" value="6" step="0.5"> m</label>
+  <label>Max rent £<input type="number" id="bfRent" value="10" step="0.5">/sqft</label>
+  <label>Catchment <input type="number" id="bfScore" value="60" step="5"> + at <input type="number" id="bfDrive" value="30" step="5"> min</label>
+  <label>Size <input type="number" id="bfMin" value="929" step="50"> to <input type="number" id="bfMax" value="2800" step="50"> sqm</label>
+ </div>
+ <div class="row">
+  <span class="lbl">Also</span>
+  <span id="bfUse"></span>
+  <label style="margin-left:auto">Sort <select id="bfSort" class="sortsel"><option value="status">Works first, then score</option><option value="score">Catchment score</option><option value="rent">Cheapest rent</option><option value="eaves">Tallest eaves</option><option value="size">Largest floor</option><option value="new">Newest listing</option></select></label>
+  <label><input type="text" id="bfTown" placeholder="Search town, council or postcode"></label>
  </div>
 </div>
-<div class="bf-card" id="bfMktCard" style="margin-top:16px"><h3 style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px"><span>🏷️ On the market in strong catchments <span id="bfMktCount" style="font-weight:400;color:#5D6B63;font-size:12px"></span></span><span style="font-weight:400;color:#5D6B63;font-size:12px">Live listings matched to rated buildings, scored on the Opportunity Map model. Refreshed by the daily scan.</span></h3><div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:6px 0 10px;font-size:12.5px"><label>Min score <input type="number" id="bfMktScore" value="60" step="5" style="width:64px;padding:4px 6px;border:1px solid #D8E2DC;border-radius:6px"></label><label>Drive time <input type="number" id="bfMktDrive" value="30" step="5" style="width:64px;padding:4px 6px;border:1px solid #D8E2DC;border-radius:6px"> min</label><label>Max rent outside London £<input type="number" id="bfMktRent" value="10" step="0.5" style="width:64px;padding:4px 6px;border:1px solid #D8E2DC;border-radius:6px">/sqft</label><label><input type="checkbox" id="bfMktNoLdn" checked> Exclude London</label><label>Max rent in London £<input type="number" id="bfMktRentL" value="15" step="0.5" style="width:64px;padding:4px 6px;border:1px solid #D8E2DC;border-radius:6px">/sqft</label><label><input type="checkbox" id="bfMktPoa" checked> Include rent on application</label><span style="color:#5D6B63">Columns:</span><span id="bfMktCols"></span></div><div id="bfMktQuick" class="bf-chips" style="margin:0 0 10px"></div><div style="overflow:auto"><table id="bfMktTable" style="width:100%;border-collapse:collapse;font-size:12.5px"><thead></thead><tbody></tbody></table></div></div>
+
+<div class="main">
+ <div id="bfMap"></div>
+ <div>
+  <div id="bfList" class="list"></div>
+  <div class="note" id="bfNote"></div>
+ </div>
+</div>
+</div>
 <script>
 (function(){
-var DATA=null,POP=null,CLUBS=null,map=null,cluster=null,markers={},scores={},inited=false,viewRows=[],MKT={},MKTN=0;
-function pcKey(p){return String(p||'').toUpperCase().replace(/\s+/g,'');}
-var ASSIGN={};
-function assignMkt(){ ASSIGN={}; var byPc={}; var f=DATA.fields; var iU=f.indexOf('uarn'),iP=f.indexOf('pc'),iG=f.indexOf('ground'),iT=f.indexOf('total'); DATA.rows.forEach(function(r){ var k=pcKey(r[iP]); if(!k) return; (byPc[k]=byPc[k]||[]).push(r); }); Object.keys(MKT).forEach(function(k){ var bl=byPc[k]; if(!bl) return; var iN=f.indexOf('name'); function toks(x){ return (String(x||'').toUpperCase().match(/[A-Z]?\d+[A-Z]?(?:\s*[-\/&]\s*[A-Z]?\d+[A-Z]?)*/g)||[]).map(function(t){return t.replace(/\s+/g,'');}); }
- MKT[k].forEach(function(l){ if(!l.sqm) return; var lt=toks(l.title); var best=null,bd=1e9,cands=0,named=false; bl.forEach(function(r){ if(ASSIGN[r[iU]]) return; var g=r[iG]||0,t=Math.max(r[iT]||0,g); if(l.sqm<g*0.6||l.sqm>t*1.8) return; cands++; var nm=toks(r[iN]); var hit=lt.length&&nm.some(function(x){return lt.indexOf(x)>-1;}); var d=Math.abs(l.sqm-g); if(hit&&!named){ named=true; bd=d; best=r; } else if(hit&&named){ if(d<bd){bd=d;best=r;} } else if(!named&&d<bd){ bd=d; best=r; } }); if(best){ ASSIGN[best[iU]]={l:l,amb:cands>1&&!named}; } }); }); }
-function matchMkt(o){ var a=ASSIGN[o.uarn]; if(!a) return null; var l=Object.assign({},a.l); l.amb=a.amb; return l; }
-function matchMktOld(o){var arr=MKT[pcKey(o.pc)]; if(!arr) return null; var best=null,bd=1e9; for(var i=0;i<arr.length;i++){var l=arr[i]; if(!l.sqm) continue; var lo=o.ground*0.6, hi=Math.max(o.total||o.ground,o.ground)*1.8; if(l.sqm<lo||l.sqm>hi) continue; var d=Math.abs(l.sqm-o.ground); if(d<bd){bd=d;best=l;}} return best;}
-var F={};
+var SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlsbGJqbGxtYW55a2d3ZHJ4bGpnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyODM2MTQsImV4cCI6MjA5MTg1OTYxNH0.klAYglmbk7he-U-PF25zlLYacu4MH31XCLwPNmvvsOM';
+var SB='https://yllbjllmanykgwdrxljg.supabase.co/rest/v1/';
+var DATA=null,LS=null,POP=null,CLUBS=null,map=null,cluster=null,markers={},inited=false,SITES=[],HID={},LIKE={},VIEW='all',SEL=null;
 function $(id){return document.getElementById(id);}
-function km(a,b,c,d){var R=6371,x=(c-a)*Math.PI/180,y=(d-b)*Math.PI/180;var s=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(s));}
-function useName(u){return {WH:'Warehouse',FA:'Factory',WS:'Workshop',RW:'Retail warehouse',SH:'Showroom',LE:'Leisure',OT:'Other'}[u]||u;}
 function fmt(n){return (n==null)?'':Number(n).toLocaleString('en-GB');}
-function row(r){ var f=DATA.fields; var o={}; for(var i=0;i<f.length;i++)o[f[i]]=r[i]; o.laName=o.la||''; o.mkt=matchMkt(o); if(o.eaves==null&&o.mkt&&o.mkt.eaves){ o.eaves=o.mkt.eaves; o.eavesSrc='listing'; } return o; }
-function passes(o){
-  if(F.uses.indexOf(o.use)<0) return false;
-  if(F.mkt&&!o.mkt) return false;
-  if(o.ground<F.min||o.ground>F.max) return false;
-  if(o.eaves==null){ if(!F.unk) return false; } else if(o.eaves<F.eaves) return false;
-  if(F.town){ var t=F.town; if((o.laName||'').toLowerCase().indexOf(t)<0 && (o.name||'').toLowerCase().indexOf(t)<0 && (o.pc||'').toLowerCase().indexOf(t)<0) return false; }
-  return true;
+function km(a,b,c,d){var R=6371,x=(c-a)*Math.PI/180,y=(d-b)*Math.PI/180;var s=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(s));}
+function pref(k,d){ try{ var v=JSON.parse(localStorage.getItem('bf2_'+k)||'null'); return v==null?d:v; }catch(e){ return d; } }
+function setPref(k,v){ try{ localStorage.setItem('bf2_'+k,JSON.stringify(v)); }catch(e){} }
+
+var REGIONS=[
+ ['SW','South West',['BA','BS','BH','DT','EX','GL','PL','SN','SP','TA','TQ','TR']],
+ ['SE','South East',['BN','CT','GU','HP','ME','MK','OX','PO','RG','RH','SL','SO','TN']],
+ ['EE','East of England',['AL','CB','CM','CO','IP','LU','NR','PE','SG','SS']],
+ ['EM','East Midlands',['DE','LE','LN','NG','NN']],
+ ['WM','West Midlands',['B','CV','DY','HR','ST','TF','WR','WS','WV']],
+ ['NW','North West',['BB','BL','CA','CH','CW','FY','L','LA','M','OL','PR','SK','WA','WN']],
+ ['YH','Yorkshire',['BD','DN','HD','HG','HU','HX','LS','S','WF','YO']],
+ ['NE','North East',['DH','DL','NE','SR','TS']],
+ ['WA','Wales',['CF','LD','LL','NP','SA','SY']],
+ ['LN','London',['E','EC','N','NW','SE','SW','W','WC','BR','CR','DA','EN','HA','IG','KT','RM','SM','TW','UB','WD']]
+];
+var LONDON_LA=['city of london','barking','barnet','bexley','brent','bromley','camden','croydon','ealing','enfield','greenwich','hackney','hammersmith','haringey','harrow','havering','hillingdon','hounslow','islington','kensington','kingston upon thames','lambeth','lewisham','merton','newham','redbridge','richmond upon thames','southwark','sutton','tower hamlets','waltham forest','wandsworth','westminster'];
+var regOn=pref('regions',{SW:1,SE:1,EE:1,EM:1,WM:1,NW:1,YH:1,NE:1,WA:1,LN:0});
+function areaOf(pc){ var m=String(pc||'').toUpperCase().match(/^([A-Z]{1,2})\d/); return m?m[1]:''; }
+function regionOf(o){ var la=(o.laName||'').toLowerCase().replace(/&/g,'and'); if(LONDON_LA.some(function(b){return la.indexOf(b)>-1;})) return 'LN'; var a=areaOf(o.pc); for(var i=0;i<REGIONS.length;i++){ if(REGIONS[i][2].indexOf(a)>-1) return REGIONS[i][0]; } return '??'; }
+var USES=[['WH','Warehouse'],['FA','Factory'],['WS','Workshop'],['RW','Retail warehouse'],['SH','Showroom'],['LE','Leisure']];
+var useOn=pref('uses',{WH:1,FA:1,WS:1,RW:1,SH:1,LE:1});
+
+function row(r){ var f=DATA.fields; var o={}; for(var i=0;i<f.length;i++)o[f[i]]=r[i]; o.laName=o.la||''; return o; }
+function pcKey(p){return String(p||'').toUpperCase().replace(/\s+/g,'');}
+function toks(x){ return (String(x||'').toUpperCase().match(/[A-Z]?\d+[A-Z]?(?:\s*[-\/&]\s*[A-Z]?\d+[A-Z]?)*/g)||[]).map(function(t){return t.replace(/\s+/g,'');}); }
+function match(){
+ var byPc={}; DATA.rows.forEach(function(r){ var o=row(r); var k=pcKey(o.pc); if(!k) return; (byPc[k]=byPc[k]||[]).push(o); });
+ var taken={}; SITES=[];
+ (LS||[]).forEach(function(l){ var k=pcKey(l.pc); var bl=byPc[k]; if(!bl||!l.sqm) return; var lt=toks(l.title); var best=null,bd=1e9,cands=0,named=false;
+  bl.forEach(function(o){ if(taken[o.uarn]) return; var g=o.ground||0,t=Math.max(o.total||0,g); if(l.sqm<g*0.6||l.sqm>t*1.8) return; cands++; var hit=lt.length&&toks(o.name).some(function(x){return lt.indexOf(x)>-1;}); var d=Math.abs(l.sqm-g); if(hit&&!named){named=true;bd=d;best=o;} else if(hit&&named){ if(d<bd){bd=d;best=o;} } else if(!named&&d<bd){bd=d;best=o;} });
+  if(!best) return; taken[best.uarn]=1; var o=Object.assign({},best); o.l=l; o.amb=cands>1&&!named; o.eavesSrc=o.eaves!=null?'OS':(l.eaves!=null?'listing':null); if(o.eaves==null&&l.eaves!=null) o.eaves=l.eaves; o.region=regionOf(o); SITES.push(o); });
 }
-function readF(){
-  F.uses=[].map.call(document.querySelectorAll('#bfUse .bf-chip.on'),function(c){return c.getAttribute('data-u');});
-  F.min=+$('bfMin').value||0; F.max=+$('bfMax').value||1e9; F.eaves=+$('bfEaves').value||0; F.unk=$('bfUnk').checked;
-  F.town=($('bfTown').value||'').trim().toLowerCase(); F.drive=+$('bfDrive').value||15; F.mkt=$('bfMkt').checked;
-}
-function popup(o){
-  var sc=scores[o.uarn];
-  var g='https://www.google.com/maps/search/?api=1&query='+o.lat+','+o.lng;
-  var sv='https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+o.lat+','+o.lng;
-  var rm='https://www.rightmove.co.uk/commercial-property-to-let/'+encodeURIComponent(String(o.pc||'').trim().split(' ')[0])+'.html';
-  return '<div class="bf-pop"><b>'+o.name+'</b><br>'+o.pc+' · '+o.laName+'<br>'+useName(o.use)+'<br>Ground floor <b>'+fmt(o.ground)+' sqm</b> (rated total '+fmt(o.total)+' sqm)<br>Eaves: '+(o.eaves==null?'<span style="color:#B8860B">not yet known</span>':'<b>'+o.eaves+'m</b>'+(o.eavesSrc==='listing'?' <span style="color:#5D6B63">(from the listing)</span>':'')+(o.maxh?' (ridge '+o.maxh+'m)':''))+(o.mkt?'<br><span style="display:inline-block;margin-top:4px;background:#FFF1E0;border:1px solid #F0B36B;color:#8A4B00;border-radius:6px;padding:2px 8px;font-weight:600">On the market'+(o.mkt.amb?' (best size match on a shared postcode)':'')+'</span> <a href="'+o.mkt.url+'" target="_blank"><b>View listing</b></a>'+(o.mkt.rent_psf?' · £'+o.mkt.rent_psf+'/sqft':(o.mkt.basis==='poa'?' · rent on application':''))+(o.mkt.sqft?' · '+fmt(o.mkt.sqft)+' sqft listed':'')+(o.mkt.eaves?' · eaves '+o.mkt.eaves+'m (listing)':'')+(function(){var pv=planVerdict(o),lt=leaseTxt(o);return '<br>Planning use: <b style="color:'+pv.col+'">'+pv.cls+'</b> '+pv.txt;})():'')+'<br>Rateable value £'+fmt(o.rv)+(sc!=null?'<br>Catchment score <b>'+sc+'/100</b>':'')+'<br><a href="'+g+'" target="_blank">Map</a> · <a href="'+sv+'" target="_blank">Street View</a> · <a href="'+rm+'" target="_blank">Rightmove, this postcode area</a></div>';
-}
-var WALES=['Cardiff','Swansea','Newport','Vale of Glamorgan','Bridgend','Rhondda Cynon Taf','Merthyr Tydfil','Caerphilly','Blaenau Gwent','Torfaen','Monmouthshire','Neath Port Talbot','Carmarthenshire','Pembrokeshire','Ceredigion','Powys','Gwynedd','Conwy','Denbighshire','Flintshire','Wrexham','Isle of Anglesey'];
-function isWales(o){ var la=(o.laName||''); return WALES.some(function(w){return la.indexOf(w)>-1;}); }
-function planVerdict(o){ var uc=(o.mkt&&o.mkt.use_class)||''; var hint=(o.mkt&&o.mkt.planning_hint)||''; var t=(uc+' '+hint).toUpperCase().replace(/\s+/g,' '); if(!t.trim()) return {cls:'',txt:'Not stated',col:'#5D6B63'}; var w=isWales(o); if(/E\s*\(?\s*G|CLASS E\b|USE CLASS E\b/.test(t)&&!w) return {cls:uc||'Class E',txt:'Within Class E, no change of use needed',col:'#0A7D4B'}; if(/\bB1\b/.test(t)) return w? {cls:'B1',txt:'B1 in Wales, change of use to D2 needed',col:'#B8860B'} : {cls:'B1 (now E(g))',txt:'Former B1, now Class E, no change of use needed',col:'#0A7D4B'}; if(/\bB8\b|\bB2\b/.test(t)) return {cls:uc||t.match(/B[28]/)[0],txt:'Change of use required',col:'#B8860B'}; if(/SUI GENERIS/.test(t)) return {cls:'Sui generis',txt:'Change of use required',col:'#B8860B'}; return {cls:uc||'?',txt:'Check with council',col:'#5D6B63'}; }
-function leaseMonths(d){ return Math.round((new Date(d)-Date.now())/2629800000); }
-function leaseTxt(o){ if(o.lease_end){ var mo=leaseMonths(o.lease_end); var dd=new Date(o.lease_end); return {txt:(mo<=0?'Lease ended '+dd.toLocaleDateString('en-GB',{month:'short',year:'numeric'}):'Lease ends '+dd.toLocaleDateString('en-GB',{month:'short',year:'numeric'})+' ('+mo+' mo)')+(o.lease_note&&/postcode match only/.test(o.lease_note)?' · postcode match':''),col:(mo<=24?'#B3261E':'#13201A'),months:mo}; } var l=o.mkt||{}; if(l.lease_end){ var d=new Date(l.lease_end); var months=Math.round((d-Date.now())/2629800000); return {txt:(months<=0?'Lease ended':'Lease ends '+d.toLocaleDateString('en-GB',{month:'short',year:'numeric'})+' ('+months+' mo)'),col:months<=18?'#B3261E':'#13201A'}; } if(l.lease_note) return {txt:l.lease_note,col:'#13201A'}; return {txt:'Not stated',col:'#5D6B63'}; }
 var MS={};
-var QUICK=(function(){ try{ return JSON.parse(localStorage.getItem('bf_quick')||'null')||{}; }catch(e){ return {}; } })();
-var QDEFS=[['plan','Right planning (Class E / former B1)'],['eaves','Eaves 6m+ confirmed'],['rent','Stated rent only'],['exact','Exact building match only'],['park','Parking stated']];
-function renderQuick(){ var box=$('bfMktQuick'); if(!box||box.children.length) return; QDEFS.forEach(function(q){ var c=document.createElement('span'); c.className='bf-chip'+(QUICK[q[0]]?' on':''); c.textContent=q[1]; c.onclick=function(){ QUICK[q[0]]=!QUICK[q[0]]; c.classList.toggle('on',!!QUICK[q[0]]); try{localStorage.setItem('bf_quick',JSON.stringify(QUICK));}catch(e){} mktList(); }; box.appendChild(c); }); }
-function quickPass(o){ if(QUICK.plan&&planVerdict(o).col!=='#0A7D4B') return false; if(QUICK.eaves&&!(o.eaves!=null&&o.eaves>=6)) return false; if(QUICK.rent&&!(o.mkt&&o.mkt.rent_psf!=null)) return false; if(QUICK.exact&&o.mkt&&o.mkt.amb) return false; if(QUICK.park&&!(o.mkt&&o.mkt.parking&&!/not stated|^n\/?a$|none/i.test(o.mkt.parking))) return false; return true; }
-var SORT=(function(){ try{ return JSON.parse(localStorage.getItem('bf_sort')||'null')||{k:'s',d:-1}; }catch(e){ return {k:'s',d:-1}; } })();
-function sortVal(o,k){ switch(k){ case 'b': return (o.name||'').toLowerCase(); case 'w': return ((o.laName||'')+' '+(o.pc||'')).toLowerCase(); case 'g': return o.ground||0; case 'e': return o.eaves==null?null:o.eaves; case 'r': return o.mkt&&o.mkt.rent_psf!=null?o.mkt.rent_psf:null; case 'p': return planVerdict(o).cls||''; case 's': return o.msc==null?null:o.msc; default: return 0; } }
-function cmpRows(a,b){ var k=SORT.k, d=SORT.d; var va=sortVal(a,k), vb=sortVal(b,k); if(va==null&&vb==null) return (b.msc||0)-(a.msc||0); if(va==null) return 1; if(vb==null) return -1; if(typeof va==='string'){ var c=va.localeCompare(vb); return c?c*d:((b.msc||0)-(a.msc||0)); } return (va-vb)*d || ((b.msc||0)-(a.msc||0)); }
-var LONDON=['city of london','barking','dagenham','barnet','bexley','brent','bromley','camden','croydon','ealing','enfield','greenwich','hackney','hammersmith','fulham','haringey','harrow','havering','hillingdon','hounslow','islington','kensington','chelsea','kingston upon thames','lambeth','lewisham','merton','newham','redbridge','richmond upon thames','southwark','sutton','tower hamlets','waltham forest','wandsworth','westminster'];
-function isLondon(o){ var la=(o.laName||'').toLowerCase().replace(/&/g,'and').replace(/\s+/g,' '); return LONDON.some(function(b){ return la.indexOf(b)>-1; }) || /^(E|EC|N|NW|SE|SW|W|WC)\d/i.test((o.pc||'').trim()); }
-var COLS=[['b','Building'],['w','Where'],['g','Ground'],['e','Eaves'],['r','Rent'],['p','Planning use'],['s','Score'],['l','Links']];
-function colPrefs(){ try{ return JSON.parse(localStorage.getItem('bf_cols')||'null')||{}; }catch(e){ return {}; } }
-function colOn(k){ var p=colPrefs(); return p[k]!==false; }
-function renderColToggles(){ var box=$('bfMktCols'); if(!box||box.children.length) return; COLS.forEach(function(c){ var l=document.createElement('label'); l.style.cssText='font-size:12px;margin-right:10px;cursor:pointer;white-space:nowrap'; var cb=document.createElement('input'); cb.type='checkbox'; cb.checked=colOn(c[0]); cb.onchange=function(){ var p=colPrefs(); p[c[0]]=cb.checked; try{localStorage.setItem('bf_cols',JSON.stringify(p));}catch(e){} mktList(); }; l.appendChild(cb); l.appendChild(document.createTextNode(' '+c[1])); box.appendChild(l); }); ['bfMktScore','bfMktDrive','bfMktRent','bfMktRentL','bfMktPoa','bfMktNoLdn'].forEach(function(id){ var el=$(id); if(el&&!el._w){ el._w=1; el.addEventListener('change',function(){ mktList(); }); } }); }
-async function mktList(){ var tb=document.querySelector('#bfMktTable tbody'), th=document.querySelector('#bfMktTable thead'); if(!tb) return; readF(); renderColToggles(); renderQuick();
- var minS=+($('bfMktScore').value)||0, drv=+($('bfMktDrive').value)||30, maxR=+($('bfMktRent').value)||0, maxRL=+($('bfMktRentL').value)||0, incPoa=$('bfMktPoa').checked, noLdn=$('bfMktNoLdn').checked;
- try{ if(!POP) POP=await fetch('population.json').then(function(r){return r.json();}); if(!CLUBS) CLUBS=await fetch('clubs.json').then(function(r){return r.json();}); }catch(e){}
- var cache=MS[drv]=MS[drv]||{}; var rows=[], total=0;
- DATA.rows.forEach(function(r){ var o=row(r); if(!o.mkt) return; if(F.uses.indexOf(o.use)<0) return; if(o.ground<F.min||o.ground>F.max) return; if(o.eaves!=null&&o.eaves<F.eaves) return; if(noLdn&&isLondon(o)) return; if(!quickPass(o)) return; var rp=o.mkt.rent_psf; if(rp==null){ if(!incPoa) return; } else { var cap=isLondon(o)?maxRL:maxR; if(cap&&rp>cap) return; } total++; if(POP&&CLUBS){ if(cache[o.uarn]==null){ var sd=F.drive; F.drive=drv; cache[o.uarn]=score(o); F.drive=sd; } o.msc=cache[o.uarn]; } else o.msc=null; if(o.msc!=null&&o.msc<minS) return; rows.push(o); });
- rows.sort(cmpRows);
- var keep={}; rows.forEach(function(o){keep[o.uarn]=1;}); Object.keys(markers).forEach(function(u){ if(!keep[u]){ cluster.removeLayer(markers[u]); delete markers[u]; } }); var vis=Object.keys(markers).length; $('bfN').textContent=fmt(vis); $('bfNm').textContent=fmt(vis); var eh=0,e6=0; rows.forEach(function(o){ if(o.eaves!=null){ eh++; if(o.eaves>=6) e6++; } }); $('bfNh').textContent=fmt(eh); $('bfN6').textContent=fmt(e6); list();
- $('bfMktCount').textContent='('+rows.length+' of '+total+' on the market score '+minS+'+ at '+drv+' min, rent ≤£'+maxR+' outside London, '+(noLdn?'London excluded':maxRL+' in London')+(incPoa?', incl. POA':'')+')';
- var on={}; COLS.forEach(function(c){ on[c[0]]=colOn(c[0]); });
- th.innerHTML='<tr style="text-align:left;color:#5D6B63;font-size:11px;text-transform:uppercase;letter-spacing:.04em">'+COLS.filter(function(c){return on[c[0]];}).map(function(c){ if(c[0]==='l') return '<th style="padding:6px 8px"></th>'; var act=SORT.k===c[0]; return '<th data-k="'+c[0]+'" style="padding:6px 8px;cursor:pointer;user-select:none;white-space:nowrap'+(act?';color:#0A7D4B':'')+'" title="Click to sort">'+c[1]+(act?(SORT.d>0?' ▲':' ▼'):' <span style="opacity:.35">⇅</span>')+'</th>'; }).join('')+'</tr>';
- [].forEach.call(th.querySelectorAll('th[data-k]'),function(h){ h.onclick=function(){ var k=h.getAttribute('data-k'); if(SORT.k===k) SORT.d=-SORT.d; else { SORT.k=k; SORT.d=(k==='b'||k==='w'||k==='p'||k==='r')?1:-1; } try{localStorage.setItem('bf_sort',JSON.stringify(SORT));}catch(e){} mktList(); }; });
- tb.innerHTML=''; if(!rows.length){ tb.innerHTML='<tr><td colspan="8" style="padding:10px 8px;color:#5D6B63">Nothing on the market clears that score. Lower the minimum score or widen the drive time.</td></tr>'; return; }
- rows.forEach(function(o){ var pv=planVerdict(o), sc=o.msc; var cells={};
- cells.b='<td style="padding:8px"><b>'+o.name+'</b>'+(o.mkt.amb?'<br><span style="color:#8A4B00;font-size:11px">best size match on a shared postcode</span>':'')+'</td>';
- cells.w='<td style="padding:8px">'+o.pc+'<br><span style="color:#5D6B63">'+o.laName+'</span></td>';
- cells.g='<td style="padding:8px">'+fmt(o.ground)+' sqm'+(o.mkt.sqft?'<br><span style="color:#5D6B63">'+fmt(o.mkt.sqft)+' sqft listed</span>':'')+'</td>';
- cells.e='<td style="padding:8px">'+(o.eaves!=null?(o.eaves+'m'+(o.eavesSrc==='listing'?' <span style="color:#5D6B63">(listing)</span>':'')):'n/k')+'</td>';
- cells.r='<td style="padding:8px">'+(o.mkt.rent_psf?'£'+o.mkt.rent_psf+'/sqft':(o.mkt.basis==='poa'?'POA':'n/k'))+'</td>';
- cells.p='<td style="padding:8px;color:'+pv.col+'"><b>'+pv.cls+'</b><br><span style="font-size:11px">'+pv.txt+'</span></td>';
- cells.s='<td style="padding:8px">'+(sc!=null?'<span class="bf-sc'+(sc>=70?' hi':'')+'">'+sc+'</span>':'')+'</td>';
- cells.l='<td style="padding:8px;white-space:nowrap"><a href="'+o.mkt.url+'" target="_blank" style="color:#0A7D4B;font-weight:600">Listing</a> · <a href="#" data-u="'+o.uarn+'" class="bf-goto">Map</a></td>';
- var tr=document.createElement('tr'); tr.style.borderTop='1px solid #EEF2F0'; tr.innerHTML=COLS.filter(function(c){return on[c[0]];}).map(function(c){return cells[c[0]];}).join(''); tb.appendChild(tr); });
- [].forEach.call(tb.querySelectorAll('.bf-goto'),function(a){ a.onclick=function(e){ e.preventDefault(); var m=markers[a.getAttribute('data-u')]; if(m){ map.setView(m.getLatLng(),15); cluster.zoomToShowLayer(m,function(){m.openPopup();}); window.scrollTo({top:document.getElementById('bfMap').getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'}); } }; }); }
-function build(){
-  readF(); if(cluster){cluster.clearLayers();} markers={};
-  var n=0,nh=0,n6=0,nm=0;
-  var rows=DATA.rows;
-  for(var i=0;i<rows.length;i++){ var o=row(rows[i]); if(!passes(o)) continue; if(!o.mkt) continue; n++; if(o.mkt)nm++; if(o.eaves!=null){nh++; if(o.eaves>=6)n6++;}
-    var m=L.circleMarker([o.lat,o.lng],{radius:o.mkt?8:6,color:o.mkt?'#E07B00':(o.eaves==null?'#5D6B63':(o.eaves>=6?'#0A7D4B':'#B3261E')),fillColor:o.eaves==null?'#5D6B63':(o.eaves>=6?'#0A7D4B':'#B3261E'),fillOpacity:.85,weight:o.mkt?3:1});
-    m.bindPopup(function(){return popup(o);}); m._o=o; cluster.addLayer(m); markers[o.uarn]=m; }
-  $('bfN').textContent=fmt(n); $('bfNh').textContent=fmt(nh); $('bfN6').textContent=fmt(n6); $('bfNm').textContent=fmt(nm);
-  list(); mktList();
+function score(o,drv){ var c=MS[drv]=MS[drv]||{}; if(c[o.uarn]!=null) return c[o.uarn]; var R=drv*0.75,R2=R*1.6,pop=0,sup=0; for(var i=0;i<POP.length;i++){var p=POP[i]; if(km(o.lat,o.lng,p[1],p[2])<=R) pop+=p[3];} for(var j=0;j<CLUBS.length;j++){var cl=CLUBS[j]; var d=km(o.lat,o.lng,cl[1],cl[2]); if(d>R2) continue; var w=d<=R?1:(R2-d)/(R2-R); sup+=w*((cl[3]||0)+0.5*(cl[4]||0));} var cap=pop/6000; var s=cap<=0?0:Math.round(100*(Math.max(0,cap-sup)/cap)*Math.min(1,pop/150000)); c[o.uarn]=s; return s; }
+var WALES_LA=['cardiff','swansea','newport','vale of glamorgan','bridgend','rhondda','merthyr','caerphilly','blaenau','torfaen','monmouthshire','neath','carmarthenshire','pembrokeshire','ceredigion','powys','gwynedd','conwy','denbighshire','flintshire','wrexham','anglesey'];
+function planning(o){ var uc=(o.l.use_class||''), hint=(o.l.planning_hint||''); var t=(uc+' '+hint).toUpperCase(); var w=WALES_LA.some(function(x){return (o.laName||'').toLowerCase().indexOf(x)>-1;}); if(!t.trim()) return {k:'chk',v:'Not stated',s:'Ask the agent'}; if(/E\s*\(?\s*G|CLASS E\b|USE CLASS E\b/.test(t)&&!w) return {k:'ok',v:uc||'Class E',s:'No change of use needed'}; if(/\bB1\b/.test(t)) return w?{k:'chk',v:'B1 (Wales)',s:'Change of use to D2 needed'}:{k:'ok',v:'B1, now E(g)',s:'No change of use needed'}; if(/\bB8\b|\bB2\b/.test(t)) return {k:'chk',v:uc||t.match(/B[28]/)[0],s:'Change of use application'}; if(/SUI GENERIS/.test(t)) return {k:'chk',v:'Sui generis',s:'Change of use application'}; return {k:'chk',v:uc||'?',s:'Check with council'}; }
+function F(){ return {eaves:+$('bfEaves').value||6, rent:+$('bfRent').value||10, sc:+$('bfScore').value||60, drv:+$('bfDrive').value||30, min:+$('bfMin').value||929, max:+$('bfMax').value||2800, town:($('bfTown').value||'').trim().toLowerCase(), sort:$('bfSort').value}; }
+function assess(o,f){
+ var r={};
+ r.size = (o.ground>=f.min&&o.ground<=f.max)?'ok':'out';
+ r.eaves = o.eaves==null?'chk':(o.eaves>=f.eaves?'ok':'out');
+ var rp=o.l.rent_psf; r.rent = rp==null?'chk':(rp<=f.rent?'ok':'out');
+ o.sc=score(o,f.drv); r.cat = o.sc>=f.sc?'ok':'out';
+ r.plan = planning(o);
+ var ks=[r.size,r.eaves,r.rent,r.cat];
+ o.status = ks.indexOf('out')>-1?'out':(ks.indexOf('chk')>-1?'chk':'ok');
+ o.r=r; return o;
 }
-function list(){
-  if(!map) return; var b=map.getBounds(); viewRows=[];
-  cluster.eachLayer(function(m){ if(b.contains(m.getLatLng())) viewRows.push(m._o); });
-  var scored=viewRows.some(function(o){return scores[o.uarn]!=null;});
-  viewRows.sort(function(a,b){ if(scored){ return (scores[b.uarn]||-1)-(scores[a.uarn]||-1); } return b.ground-a.ground; });
-  $('bfSortLbl').textContent=scored?'(best catchment first)':'(largest first)';
-  $('bfNv').textContent=fmt(viewRows.length);
-  var L2=$('bfList'); L2.innerHTML='';
-  viewRows.slice(0,150).forEach(function(o){ var d=document.createElement('div'); d.className='bf-item';
-    var sc=scores[o.uarn]; d.innerHTML=(sc!=null?'<span class="bf-sc'+(sc>=70?' hi':'')+'">'+sc+'</span>':'')+'<b>'+o.name+'</b><span class="m">'+o.pc+' · '+o.laName+' · '+useName(o.use)+'</span><br>'+fmt(o.ground)+' sqm ground · eaves '+(o.eaves==null?'n/k':o.eaves+'m'+(o.eavesSrc==='listing'?' (listing)':''))+(o.mkt?' · <span style="color:#8A4B00;font-weight:600">On the market</span>':'');
-    d.onclick=function(){ map.setView([o.lat,o.lng],15); var m=markers[o.uarn]; if(m){ cluster.zoomToShowLayer(m,function(){m.openPopup();}); } };
-    L2.appendChild(d); });
-  if(viewRows.length>150){ var more=document.createElement('div'); more.className='bf-item m'; more.textContent='Showing 150 of '+viewRows.length+'. Zoom in or filter to see the rest.'; L2.appendChild(more); }
+function inScope(o,f){ if(HID[o.uarn]) return false; if(!regOn[o.region]) return false; if(!useOn[o.use]) return false; if(f.town){ var t=f.town; if((o.laName||'').toLowerCase().indexOf(t)<0&&(o.name||'').toLowerCase().indexOf(t)<0&&(o.pc||'').toLowerCase().indexOf(t)<0&&(o.l.title||'').toLowerCase().indexOf(t)<0) return false; } return true; }
+function sorter(f){ var rank={ok:0,chk:1,out:2}; return function(a,b){ switch(f.sort){ case 'score': return b.sc-a.sc; case 'rent': var ra=a.l.rent_psf==null?99:a.l.rent_psf, rb=b.l.rent_psf==null?99:b.l.rent_psf; return ra-rb||b.sc-a.sc; case 'eaves': return ((b.eaves||0)-(a.eaves||0))||b.sc-a.sc; case 'size': return b.ground-a.ground; case 'new': return String(b.l.seen||'').localeCompare(String(a.l.seen||''))||b.sc-a.sc; default: return (rank[a.status]-rank[b.status])||(b.sc-a.sc); } }; }
+function fact(cls,label,val,sub){ return '<div class="f '+cls+'"><small>'+label+'</small><b>'+val+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div>'; }
+function card(o){
+ var l=o.l, r=o.r; var stTxt={ok:'WORKS',chk:'NEEDS A CALL',out:'OUT'}[o.status];
+ var g='https://www.google.com/maps/search/?api=1&query='+o.lat+','+o.lng, sv='https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+o.lat+','+o.lng;
+ var d=document.createElement('div'); d.className='site'+(SEL===o.uarn?' sel':''); d.setAttribute('data-u',o.uarn);
+ d.innerHTML='<div class="top"><div><h4>'+(l.title||o.name)+'</h4><div class="where">'+o.pc+' · '+o.laName+' · '+(REGIONS.filter(function(x){return x[0]===o.region;})[0]||['','?'])[1]+(o.amb?' · <span style="color:#8A4B00">size match on a shared postcode</span>':'')+(LIKE[o.uarn]?' · <span style="color:#E8453C">♥ liked</span>':'')+'</div></div><span class="st '+o.status+'">'+stTxt+'</span></div>'
+ +'<div class="facts">'
+ +fact(r.eaves,'Eaves',o.eaves==null?'Not stated':o.eaves+'m',o.eaves==null?'ask the agent':(o.eavesSrc==='OS'?'Ordnance Survey':'from the listing'))
+ +fact(r.rent,'Rent',l.rent_psf==null?'POA':'£'+l.rent_psf+'/sqft',l.rent_pa?'£'+fmt(l.rent_pa)+' pa':(l.rent_psf==null?'ask the agent':''))
+ +fact(r.cat,'Catchment',o.sc+'/100','at '+F().drv+' min drive')
+ +fact(r.size,'Floor',fmt(o.ground)+' sqm ground',(l.sqft?fmt(l.sqft)+' sqft listed':''))
+ +fact(r.plan.k,'Planning',r.plan.v,r.plan.s)
+ +'</div>'
+ +'<div class="acts"><a href="'+l.url+'" target="_blank">Listing ↗</a><a href="'+g+'" target="_blank">Map</a><a href="'+sv+'" target="_blank">Street View</a>'+(l.parking?'<span style="color:#5D6B63">Parking: '+l.parking+'</span>':'')+'<span class="x" data-like="'+o.uarn+'" title="Like">'+(LIKE[o.uarn]?'♥':'♡')+'</span><span class="x" data-hide="'+o.uarn+'" title="Hide this site">✕ hide</span></div>';
+ d.addEventListener('click',function(e){ if(e.target.closest('a')||e.target.closest('.x')) return; SEL=o.uarn; var m=markers[o.uarn]; if(m){ map.setView(m.getLatLng(),14); cluster.zoomToShowLayer(m,function(){m.openPopup();}); } [].forEach.call(document.querySelectorAll('#bfList .site'),function(x){x.classList.toggle('sel',x.getAttribute('data-u')===o.uarn);}); });
+ return d;
 }
-function score(o){
-  var R=F.drive*0.75, R2=R*1.6, pop=0, supply=0;
-  for(var i=0;i<POP.length;i++){ var p=POP[i]; var d=km(o.lat,o.lng,p[1],p[2]); if(d<=R) pop+=p[3]; }
-  for(var j=0;j<CLUBS.length;j++){ var c=CLUBS[j]; var d2=km(o.lat,o.lng,c[1],c[2]); if(d2>R2) continue; var w=d2<=R?1:(R2-d2)/(R2-R); supply+=w*((c[3]||0)+0.5*(c[4]||0)); }
-  var cap=pop/6000; if(cap<=0) return 0;
-  var room=Math.max(0,cap-supply);
-  var s=100*(room/cap)*Math.min(1,pop/150000);
-  return Math.round(s);
+function flag(u,patch){ var body=[{region:'bf',site_id:u,liked:!!LIKE[u],hidden:!!HID[u],updated_at:new Date().toISOString()}]; for(var k in patch) body[0][k]=patch[k]; fetch(SB+'pp_site_flags',{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+SBK,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify(body)}).catch(function(){}); }
+function render(){
+ var f=F(); var all=SITES.map(function(o){return assess(o,f);}).filter(function(o){return inScope(o,f);});
+ var n={ok:0,chk:0,out:0}; all.forEach(function(o){n[o.status]++;});
+ $('bfCok').textContent=n.ok; $('bfCchk').textContent=n.chk; $('bfCout').textContent=n.out;
+ [].forEach.call(document.querySelectorAll('#bf2 .strip button'),function(b){ b.classList.toggle('on',b.getAttribute('data-view')===VIEW); });
+ var show=all.filter(function(o){ if(VIEW==='all') return o.status!=='out'; return o.status===VIEW; }).sort(sorter(f));
+ var L=$('bfList'); L.innerHTML='';
+ if(!show.length){ L.innerHTML='<div class="empty">Nothing here with these rules. Loosen the rent cap or the catchment score, or tick more regions.</div>'; }
+ show.forEach(function(o){ L.appendChild(card(o)); });
+ [].forEach.call(L.querySelectorAll('[data-hide]'),function(x){ x.onclick=function(e){ e.stopPropagation(); var u=x.getAttribute('data-hide'); HID[u]=1; flag(u,{hidden:true}); render(); }; });
+ [].forEach.call(L.querySelectorAll('[data-like]'),function(x){ x.onclick=function(e){ e.stopPropagation(); var u=x.getAttribute('data-like'); LIKE[u]=!LIKE[u]; flag(u,{liked:!!LIKE[u]}); render(); }; });
+ if(cluster){ cluster.clearLayers(); markers={}; show.forEach(function(o){ var col={ok:'#0A7D4B',chk:'#B8860B',out:'#B3261E'}[o.status]; var m=L.circleMarker([o.lat,o.lng],{radius:8,color:col,fillColor:col,fillOpacity:.85,weight:2}); m.bindPopup('<b>'+(o.l.title||o.name)+'</b><br>'+o.pc+' · '+o.laName+'<br>Eaves '+(o.eaves==null?'n/k':o.eaves+'m')+' · '+(o.l.rent_psf==null?'POA':'£'+o.l.rent_psf+'/sqft')+' · score '+o.sc+'<br><a href="'+o.l.url+'" target="_blank">Listing</a>'); m.on('click',function(){ SEL=o.uarn; var el=document.querySelector('#bfList .site[data-u="'+o.uarn+'"]'); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); [].forEach.call(document.querySelectorAll('#bfList .site'),function(x){x.classList.toggle('sel',x===el);}); } }); cluster.addLayer(m); markers[o.uarn]=m; }); }
+ var hid=Object.keys(HID).length; $('bfNote').textContent=(show.length+' shown · '+all.length+' on the market in your regions · '+(LS||[]).length+' listings read in the last scan'+(hid?' · '+hid+' hidden by you':''))+'. Eaves come from Ordnance Survey where matched, otherwise from the listing. Scores use the Opportunity Map model.';
 }
-async function scoreView(){
-  var btn=$('bfScore'); btn.disabled=true; btn.textContent='Scoring…';
-  if(!POP) POP=await fetch('population.json').then(function(r){return r.json();});
-  if(!CLUBS) CLUBS=await fetch('clubs.json').then(function(r){return r.json();});
-  readF(); var todo=viewRows.slice(0,400), i=0;
-  function step(){ var t=Date.now(); while(i<todo.length&&Date.now()-t<40){ scores[todo[i].uarn]=score(todo[i]); i++; }
-    btn.textContent='Scoring… '+i+'/'+todo.length;
-    if(i<todo.length) setTimeout(step,0); else { btn.disabled=false; btn.textContent='Score buildings in view'; list(); mktList(); } }
-  step();
-}
-function csv(){
-  var h=['name','postcode','council','use','ground_sqm','total_sqm','eaves_m','ridge_m','rateable_value','catchment_score','lat','lng','uarn'];
-  var lines=[h.join(',')].concat(viewRows.map(function(o){ return [o.name,o.pc,o.laName,useName(o.use),o.ground,o.total,o.eaves==null?'':o.eaves,o.maxh==null?'':o.maxh,o.rv,scores[o.uarn]==null?'':scores[o.uarn],o.lat,o.lng,o.uarn].map(function(v){v=String(v==null?'':v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(','); }));
-  var blob=new Blob([lines.join('\n')],{type:'text/csv'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='buildings_in_view.csv'; a.click();
-}
+function chips(box,defs,state,key){ var b=$(box); b.innerHTML=''; defs.forEach(function(d){ var c=document.createElement('span'); c.className='chip'+(state[d[0]]?' on':' off'); c.textContent=d[1]; c.onclick=function(){ state[d[0]]=state[d[0]]?0:1; c.className='chip'+(state[d[0]]?' on':' off'); setPref(key,state); render(); }; b.appendChild(c); }); }
 async function init(){
-  if(inited) return; inited=true;
-  try{
-  if(!window.L){ $('bfList').innerHTML='<div class="bf-item m">Map library not loaded.</div>'; return; }
+ if(inited) return; inited=true;
+ try{
+  if(!window.L){ $('bfList').innerHTML='<div class="empty">Map library not loaded.</div>'; return; }
   if(!L.markerClusterGroup){ await new Promise(function(res,rej){ var sc=document.createElement('script'); sc.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js'; sc.onload=res; sc.onerror=rej; document.head.appendChild(sc); }); }
-  map=L.map('bfMap').setView([52.7,-1.7],6);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(map);
-  cluster=L.markerClusterGroup({chunkedLoading:true,maxClusterRadius:45,disableClusteringAtZoom:14}); map.addLayer(cluster);
-  $('bfList').innerHTML='<div class="bf-item m">Loading 50,000 buildings…</div>';
-  var SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlsbGJqbGxtYW55a2d3ZHJ4bGpnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyODM2MTQsImV4cCI6MjA5MTg1OTYxNH0.klAYglmbk7he-U-PF25zlLYacu4MH31XCLwPNmvvsOM';
-  DATA=await fetch('https://yllbjllmanykgwdrxljg.supabase.co/rest/v1/rpc/pp_buildings_all',{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+SBK,'Content-Type':'application/json'},body:'{}'}).then(function(r){return r.json();});
-  try{ var LS=await fetch('https://yllbjllmanykgwdrxljg.supabase.co/rest/v1/rpc/pp_listings_active',{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+SBK,'Content-Type':'application/json'},body:JSON.stringify({days:12})}).then(function(r){return r.json();}); (LS||[]).forEach(function(l){ var k=pcKey(l.pc); if(!k) return; (MKT[k]=MKT[k]||[]).push(l); MKTN++; }); assignMkt(); }catch(e){}
-  var anyH=DATA.rows.some(function(r){return r[10]!=null;});
-  if(anyH){ $('bfNote').style.display='none'; } else { $('bfEaves').disabled=true; }
-  build(); map.on('moveend',list);
-  var deb; function re(){ clearTimeout(deb); deb=setTimeout(build,250); }
-  ['bfMin','bfMax','bfEaves','bfUnk','bfMkt','bfTown','bfDrive'].forEach(function(id){ $(id).addEventListener('input',re); $(id).addEventListener('change',re); });
-  [].forEach.call(document.querySelectorAll('#bfUse .bf-chip'),function(c){ c.onclick=function(){ c.classList.toggle('on'); build(); }; });
-  $('bfScore').onclick=scoreView; $('bfCsv').onclick=csv;
-  $('bfTown').addEventListener('change',function(){ readF(); if(!F.town) return; var hit=null; for(var i=0;i<DATA.rows.length;i++){ var o=row(DATA.rows[i]); if(passes(o)){hit=o;break;} } if(hit) map.setView([hit.lat,hit.lng],11); });
-  }catch(e){ $('bfList').innerHTML='<div class="bf-item m">Failed to load: '+String(e).slice(0,120)+'</div>'; }
+  map=L.map('bfMap').setView([52.6,-1.8],6); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(map);
+  cluster=L.markerClusterGroup({maxClusterRadius:40,disableClusteringAtZoom:12}); map.addLayer(cluster);
+  $('bfList').innerHTML='<div class="empty">Loading the market and the building data…</div>';
+  var H={apikey:SBK,Authorization:'Bearer '+SBK,'Content-Type':'application/json'};
+  var res=await Promise.all([
+   fetch(SB+'rpc/pp_buildings_all',{method:'POST',headers:H,body:'{}'}).then(function(r){return r.json();}),
+   fetch(SB+'rpc/pp_listings_active',{method:'POST',headers:H,body:JSON.stringify({days:6})}).then(function(r){return r.json();}),
+   fetch('population.json').then(function(r){return r.json();}), fetch('clubs.json').then(function(r){return r.json();}),
+   fetch(SB+'pp_site_flags?select=site_id,liked,hidden&region=eq.bf',{headers:H}).then(function(r){return r.json();}).catch(function(){return [];})
+  ]);
+  DATA=res[0]; LS=res[1]||[]; POP=res[2]; CLUBS=res[3]; (res[4]||[]).forEach(function(x){ if(x.hidden) HID[x.site_id]=1; if(x.liked) LIKE[x.site_id]=1; });
+  match();
+  chips('bfRegions',REGIONS.map(function(r){return [r[0],r[1]];}),regOn,'regions');
+  chips('bfUse',USES,useOn,'uses');
+  ['bfEaves','bfRent','bfScore','bfDrive','bfMin','bfMax','bfTown','bfSort'].forEach(function(id){ var v=pref('f_'+id,null); if(v!=null) $(id).value=v; $(id).addEventListener('change',function(){ setPref('f_'+id,$(id).value); render(); }); $(id).addEventListener('input',function(){ clearTimeout($(id)._t); $(id)._t=setTimeout(function(){ setPref('f_'+id,$(id).value); render(); },300); }); });
+  [].forEach.call(document.querySelectorAll('#bf2 .strip button'),function(b){ b.onclick=function(){ var v=b.getAttribute('data-view'); VIEW=(VIEW===v)?'all':v; render(); }; });
+  render(); setTimeout(function(){ map.invalidateSize(); },100);
+ }catch(e){ $('bfList').innerHTML='<div class="empty">Failed to load: '+String(e).slice(0,140)+'</div>'; }
 }
-document.addEventListener('click',function(e){ var t=e.target.closest&&e.target.closest('[data-tab="buildings"]'); if(t){ setTimeout(function(){ init(); if(map) setTimeout(function(){map.invalidateSize();},100); },50); } },true);
+document.addEventListener('click',function(e){ var t=e.target.closest&&e.target.closest('[data-tab="buildings"]'); if(t){ setTimeout(function(){ init(); if(map) setTimeout(function(){map.invalidateSize();},120); },50); } },true);
 if(location.hash==='#buildings'){ setTimeout(init,300); }
 })();
 </script>
