@@ -364,10 +364,10 @@ document.addEventListener('change',function(e){if(e.target&&e.target.id==='osImp
 .bf-btn:disabled{opacity:.5;cursor:default}
 </style>
 <h2 style="margin:0 0 4px;font-size:20px">🏭 Building Finder</h2>
-<div style="color:#5D6B63;font-size:13px;margin-bottom:12px">Every rated warehouse, factory, workshop, retail warehouse, showroom and leisure building in England and Wales with 929 sqm or more of ground floor space, from the 2026 VOA rating list. Filter it down, then score what is left against the same catchment model as the Opportunity Map.</div>
+<div style="color:#5D6B63;font-size:13px;margin-bottom:12px">Buildings on the market right now that match a rated warehouse, factory, workshop, retail warehouse, showroom or leisure building of 929 sqm or more, scored on the Opportunity Map catchment model. The map and the list underneath show the same set. Refreshed each morning by the Rightmove scan.</div>
 <div id="bfNote" class="bf-note">Eaves heights are being attached from Ordnance Survey building data. Until that lands the eaves filter is inactive and every building here passes on floor area only.</div>
 <div id="bfStats">
- <div><b id="bfN">…</b><span>Buildings matching</span></div>
+ <div><b id="bfN">…</b><span>On the market, in scope</span></div>
  <div><b id="bfNv">…</b><span>In view</span></div>
  <div><b id="bfNh">…</b><span>With eaves data</span></div>
  <div><b id="bfN6">…</b><span>Eaves 6m+</span></div>
@@ -382,13 +382,13 @@ document.addEventListener('change',function(e){if(e.target&&e.target.id==='osImp
    <div class="bf-row"><label>Max ground floor (sqm)</label><input type="number" id="bfMax" value="2800" step="50"></div>
    <div class="bf-row"><label>Min eaves (m)</label><input type="number" id="bfEaves" value="6" step="0.5"></div>
    <div class="bf-row"><label>Include unknown eaves</label><input type="checkbox" id="bfUnk" checked></div>
-   <div class="bf-row"><label>On the market only</label><input type="checkbox" id="bfMkt"></div>
+   <div class="bf-row" style="display:none"><label>On the market only</label><input type="checkbox" id="bfMkt" checked></div>
    <div class="bf-row"><label>Use class</label></div>
    <div class="bf-chips" id="bfUse">
     <span class="bf-chip on" data-u="WH">Warehouse</span><span class="bf-chip on" data-u="FA">Factory</span><span class="bf-chip on" data-u="WS">Workshop</span><span class="bf-chip on" data-u="RW">Retail warehouse</span><span class="bf-chip on" data-u="SH">Showroom</span><span class="bf-chip on" data-u="LE">Leisure</span><span class="bf-chip" data-u="OT">Other</span>
    </div>
    <div class="bf-row" style="margin-top:10px"><label>Drive time for scoring (min)</label><input type="number" id="bfDrive" value="15" step="1"></div>
-   <button class="bf-btn" id="bfScore">Score buildings in view</button>
+   <button class="bf-btn" id="bfScore" style="display:none">Score buildings in view</button>
    <button class="bf-btn sec" id="bfCsv">Download visible as CSV</button>
   </div>
   <div class="bf-card"><h3>In view <span id="bfSortLbl" style="font-weight:400;color:#5D6B63;font-size:12px">(largest first)</span></h3><div id="bfList"></div></div>
@@ -454,6 +454,7 @@ async function mktList(){ var tb=document.querySelector('#bfMktTable tbody'), th
  var cache=MS[drv]=MS[drv]||{}; var rows=[], total=0;
  DATA.rows.forEach(function(r){ var o=row(r); if(!o.mkt) return; if(F.uses.indexOf(o.use)<0) return; if(o.ground<F.min||o.ground>F.max) return; if(o.eaves!=null&&o.eaves<F.eaves) return; if(noLdn&&isLondon(o)) return; if(!quickPass(o)) return; var rp=o.mkt.rent_psf; if(rp==null){ if(!incPoa) return; } else { var cap=isLondon(o)?maxRL:maxR; if(cap&&rp>cap) return; } total++; if(POP&&CLUBS){ if(cache[o.uarn]==null){ var sd=F.drive; F.drive=drv; cache[o.uarn]=score(o); F.drive=sd; } o.msc=cache[o.uarn]; } else o.msc=null; if(o.msc!=null&&o.msc<minS) return; rows.push(o); });
  rows.sort(cmpRows);
+ var keep={}; rows.forEach(function(o){keep[o.uarn]=1;}); Object.keys(markers).forEach(function(u){ if(!keep[u]){ cluster.removeLayer(markers[u]); delete markers[u]; } }); var vis=Object.keys(markers).length; $('bfN').textContent=fmt(vis); $('bfNm').textContent=fmt(vis); list();
  $('bfMktCount').textContent='('+rows.length+' of '+total+' on the market score '+minS+'+ at '+drv+' min, rent ≤£'+maxR+' outside London, '+(noLdn?'London excluded':maxRL+' in London')+(incPoa?', incl. POA':'')+')';
  var on={}; COLS.forEach(function(c){ on[c[0]]=colOn(c[0]); });
  th.innerHTML='<tr style="text-align:left;color:#5D6B63;font-size:11px;text-transform:uppercase;letter-spacing:.04em">'+COLS.filter(function(c){return on[c[0]];}).map(function(c){ if(c[0]==='l') return '<th style="padding:6px 8px"></th>'; var act=SORT.k===c[0]; return '<th data-k="'+c[0]+'" style="padding:6px 8px;cursor:pointer;user-select:none;white-space:nowrap'+(act?';color:#0A7D4B':'')+'" title="Click to sort">'+c[1]+(act?(SORT.d>0?' ▲':' ▼'):' <span style="opacity:.35">⇅</span>')+'</th>'; }).join('')+'</tr>';
@@ -474,7 +475,7 @@ function build(){
   readF(); if(cluster){cluster.clearLayers();} markers={};
   var n=0,nh=0,n6=0,nm=0;
   var rows=DATA.rows;
-  for(var i=0;i<rows.length;i++){ var o=row(rows[i]); if(!passes(o)) continue; n++; if(o.mkt)nm++; if(o.eaves!=null){nh++; if(o.eaves>=6)n6++;}
+  for(var i=0;i<rows.length;i++){ var o=row(rows[i]); if(!passes(o)) continue; if(!o.mkt) continue; n++; if(o.mkt)nm++; if(o.eaves!=null){nh++; if(o.eaves>=6)n6++;}
     var m=L.circleMarker([o.lat,o.lng],{radius:o.mkt?8:6,color:o.mkt?'#E07B00':(o.eaves==null?'#5D6B63':(o.eaves>=6?'#0A7D4B':'#B3261E')),fillColor:o.eaves==null?'#5D6B63':(o.eaves>=6?'#0A7D4B':'#B3261E'),fillOpacity:.85,weight:o.mkt?3:1});
     m.bindPopup(function(){return popup(o);}); m._o=o; cluster.addLayer(m); markers[o.uarn]=m; }
   $('bfN').textContent=fmt(n); $('bfNh').textContent=fmt(nh); $('bfN6').textContent=fmt(n6); $('bfNm').textContent=fmt(nm);
