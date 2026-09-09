@@ -477,7 +477,7 @@ function card(o){
  var l=o.l, r=o.r; var stTxt={ok:'WORKS',chk:'NEEDS A CALL',out:'OUT'}[o.status];
  var g='https://www.google.com/maps/search/?api=1&query='+o.lat+','+o.lng, sv='https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+o.lat+','+o.lng;
  var d=document.createElement('div'); d.className='site'+(SEL===o.uarn?' sel':''); d.setAttribute('data-u',o.uarn);
- d.innerHTML='<div class="top"><div><h4>'+(l.title||o.name)+'</h4><div class="where">'+o.pc+' · '+o.laName+' · '+(REGIONS.filter(function(x){return x[0]===o.region;})[0]||['','?'])[1]+(o.amb?' · <span style="color:#8A4B00">size match on a shared postcode</span>':'')+(LIKE[o.uarn]?' · <span style="color:#E8453C">♥ liked</span>':'')+'</div></div><span class="st '+o.status+'">'+stTxt+'</span></div>'
+ var ttl=(l.title||o.name||''); if(ttl.length>80) ttl=o.name+', '+o.laName; d.innerHTML='<div class="top"><div><h4>'+ttl+'</h4><div class="where">'+o.pc+' · '+o.laName+' · '+(REGIONS.filter(function(x){return x[0]===o.region;})[0]||['','?'])[1]+(o.amb?' · <span style="color:#8A4B00">size match on a shared postcode</span>':'')+(LIKE[o.uarn]?' · <span style="color:#E8453C">♥ liked</span>':'')+'</div></div><span class="st '+o.status+'">'+stTxt+'</span></div>'
  +'<div class="facts">'
  +fact(r.eaves,'Eaves',o.eaves==null?'Not stated':o.eaves+'m',o.eaves==null?'ask the agent':(o.eavesSrc==='OS'?'Ordnance Survey':'from the listing'))
  +fact(r.rent,'Rent',l.rent_psf==null?'POA':'£'+l.rent_psf+'/sqft',l.rent_pa?'£'+fmt(l.rent_pa)+' pa':(l.rent_psf==null?'ask the agent':''))
