@@ -381,7 +381,7 @@ document.addEventListener('change',function(e){if(e.target&&e.target.id==='osImp
 </style>
 <div id="bf2">
 <h2>🏭 Sites that work</h2>
-<div class="sub">Every warehouse on the market right now, checked against the four things that matter: tall enough, cheap enough, in a strong catchment, in your target regions. Refreshed each morning. Click a card to see it on the map.</div>
+<div class="sub">Every warehouse on the market right now, checked against the four things that matter: tall enough, cheap enough, in a strong catchment, within reach of one of your target towns. Nothing north of Birmingham. Refreshed each morning. Click a card to see it on the map.</div>
 
 <div class="strip">
  <button class="ok" data-view="ok"><b id="bfCok">…</b><span>WORKS: eaves 6m+ confirmed, rent inside your cap, catchment 60+</span></button>
@@ -390,7 +390,7 @@ document.addEventListener('change',function(e){if(e.target&&e.target.id==='osImp
 </div>
 
 <div class="bar">
- <div class="row"><span class="lbl">Target regions</span><span id="bfRegions"></span></div>
+ <div class="row"><span class="lbl">Target towns</span><span id="bfTowns"></span><label style="margin-left:auto;white-space:nowrap">within <input type="number" id="bfRadius" value="20" step="5"> km</label></div>
  <div class="row">
   <span class="lbl">Rules</span>
   <label>Min eaves <input type="number" id="bfEaves" value="6" step="0.5"> m</label>
@@ -439,6 +439,11 @@ var REGIONS=[
 ];
 var LONDON_LA=['city of london','barking','barnet','bexley','brent','bromley','camden','croydon','ealing','enfield','greenwich','hackney','hammersmith','haringey','harrow','havering','hillingdon','hounslow','islington','kensington','kingston upon thames','lambeth','lewisham','merton','newham','redbridge','richmond upon thames','southwark','sutton','tower hamlets','waltham forest','wandsworth','westminster'];
 var regOn=pref('regions',{SW:1,SE:1,EE:1,EM:1,WM:1,NW:1,YH:1,NE:1,WA:1,LN:0});
+var TOWNS=[['Merthyr Tydfil',51.749,-3.378],['Newton Abbot',50.529,-3.610],['Gosport',50.795,-1.129],['Abingdon',51.671,-1.283],['Greenwich',51.483,0.000],['Brent',51.559,-0.259],['Leicester',52.636,-1.133],['Cannock',52.691,-2.030],['Plymouth',50.376,-4.143],['Corby',52.488,-0.688],['Bedford',52.136,-0.467],['Redruth',50.233,-5.226],['Southend-on-Sea',51.538,0.714],['Coity',51.523,-3.556],['Margate',51.386,1.386],['Hitchin',51.949,-0.283],['Swansea',51.621,-3.944],['Peterborough',52.573,-0.243],['Great Yarmouth',52.607,1.732],['Clacton-on-Sea',51.790,1.155],['Southampton',50.910,-1.404],['Telford',52.678,-2.445],['Grimsby',53.567,-0.081,'north'],['Morecambe',54.073,-2.868,'north'],['Scunthorpe',53.589,-0.654,'north']];
+var NORTH={NW:1,NE:1,YH:1};
+var townOn=pref('towns',null); var RAD=pref('radius',20);
+function saveTowns(){ setPref('towns',townOn); setPref('radius',RAD); fetch(SB+'pp_prefs',{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+SBK,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify([{k:'bf_towns',v:townOn,updated_at:new Date().toISOString()},{k:'bf_radius',v:RAD,updated_at:new Date().toISOString()}])}).catch(function(){}); }
+function nearTown(o){ var best=null; for(var i=0;i<TOWNS.length;i++){ var t=TOWNS[i]; if(!townOn[t[0]]) continue; var d=km(o.lat,o.lng,t[1],t[2]); if(d<=RAD&&(!best||d<best.d)) best={t:t[0],d:d}; } return best; }
 function areaOf(pc){ var m=String(pc||'').toUpperCase().match(/^([A-Z]{1,2})\d/); return m?m[1]:''; }
 function regionOf(o){ var la=(o.laName||'').toLowerCase().replace(/&/g,'and'); if(LONDON_LA.some(function(b){return la.indexOf(b)>-1;})) return 'LN'; var a=areaOf(o.pc); for(var i=0;i<REGIONS.length;i++){ if(REGIONS[i][2].indexOf(a)>-1) return REGIONS[i][0]; } return '??'; }
 var USES=[['WH','Warehouse'],['FA','Factory'],['WS','Workshop'],['RW','Retail warehouse'],['SH','Showroom'],['LE','Leisure']];
@@ -470,14 +475,14 @@ function assess(o,f){
  o.status = ks.indexOf('out')>-1?'out':(ks.indexOf('chk')>-1?'chk':'ok');
  o.r=r; return o;
 }
-function inScope(o,f){ if(HID[o.uarn]) return false; if(!regOn[o.region]) return false; if(!useOn[o.use]) return false; if(f.town){ var t=f.town; if((o.laName||'').toLowerCase().indexOf(t)<0&&(o.name||'').toLowerCase().indexOf(t)<0&&(o.pc||'').toLowerCase().indexOf(t)<0&&(o.l.title||'').toLowerCase().indexOf(t)<0) return false; } return true; }
+function inScope(o,f){ if(HID[o.uarn]) return false; if(NORTH[o.region]) return false; var nt=nearTown(o); if(!nt) return false; o.near=nt; if(!useOn[o.use]) return false; if(f.town){ var t=f.town; if((o.laName||'').toLowerCase().indexOf(t)<0&&(o.name||'').toLowerCase().indexOf(t)<0&&(o.pc||'').toLowerCase().indexOf(t)<0&&(o.l.title||'').toLowerCase().indexOf(t)<0) return false; } return true; }
 function sorter(f){ var rank={ok:0,chk:1,out:2}; return function(a,b){ switch(f.sort){ case 'score': return b.sc-a.sc; case 'rent': var ra=a.l.rent_psf==null?99:a.l.rent_psf, rb=b.l.rent_psf==null?99:b.l.rent_psf; return ra-rb||b.sc-a.sc; case 'eaves': return ((b.eaves||0)-(a.eaves||0))||b.sc-a.sc; case 'size': return b.ground-a.ground; case 'new': return String(b.l.seen||'').localeCompare(String(a.l.seen||''))||b.sc-a.sc; default: return (rank[a.status]-rank[b.status])||(b.sc-a.sc); } }; }
 function fact(cls,label,val,sub){ return '<div class="f '+cls+'"><small>'+label+'</small><b>'+val+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div>'; }
 function card(o){
  var l=o.l, r=o.r; var stTxt={ok:'WORKS',chk:'NEEDS A CALL',out:'OUT'}[o.status];
  var g='https://www.google.com/maps/search/?api=1&query='+o.lat+','+o.lng, sv='https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+o.lat+','+o.lng;
  var d=document.createElement('div'); d.className='site'+(SEL===o.uarn?' sel':''); d.setAttribute('data-u',o.uarn);
- var ttl=(l.title||o.name||''); if(ttl.length>80) ttl=o.name+', '+o.laName; d.innerHTML='<div class="top"><div><h4>'+ttl+'</h4><div class="where">'+o.pc+' · '+o.laName+' · '+(REGIONS.filter(function(x){return x[0]===o.region;})[0]||['','?'])[1]+(o.amb?' · <span style="color:#8A4B00">size match on a shared postcode</span>':'')+(LIKE[o.uarn]?' · <span style="color:#E8453C">♥ liked</span>':'')+'</div></div><span class="st '+o.status+'">'+stTxt+'</span></div>'
+ var ttl=(l.title||o.name||''); if(ttl.length>80) ttl=o.name+', '+o.laName; d.innerHTML='<div class="top"><div><h4>'+ttl+'</h4><div class="where">'+o.pc+' · '+o.laName+(o.near?' · '+Math.round(o.near.d)+' km from '+o.near.t:'')+(o.amb?' · <span style="color:#8A4B00">size match on a shared postcode</span>':'')+(LIKE[o.uarn]?' · <span style="color:#E8453C">♥ liked</span>':'')+'</div></div><span class="st '+o.status+'">'+stTxt+'</span></div>'
  +'<div class="facts">'
  +fact(r.eaves,'Eaves',o.eaves==null?'Not stated':o.eaves+'m',o.eaves==null?'ask the agent':(o.eavesSrc==='OS'?'Ordnance Survey':'from the listing'))
  +fact(r.rent,'Rent',l.rent_psf==null?'POA':'£'+l.rent_psf+'/sqft',l.rent_pa?'£'+fmt(l.rent_pa)+' pa':(l.rent_psf==null?'ask the agent':''))
@@ -497,12 +502,12 @@ function render(){
  [].forEach.call(document.querySelectorAll('#bf2 .strip button'),function(b){ b.classList.toggle('on',b.getAttribute('data-view')===VIEW); });
  var show=all.filter(function(o){ if(VIEW==='all') return o.status!=='out'; return o.status===VIEW; }).sort(sorter(f));
  var LB=$('bfList'); LB.innerHTML='';
- if(!show.length){ LB.innerHTML='<div class="empty">Nothing here with these rules. Loosen the rent cap or the catchment score, or tick more regions.</div>'; }
+ if(!show.length){ LB.innerHTML='<div class="empty">Nothing here with these rules. Loosen the rent cap or the catchment score, widen the radius, or tick more towns.</div>'; }
  show.forEach(function(o){ LB.appendChild(card(o)); });
  [].forEach.call(LB.querySelectorAll('[data-hide]'),function(x){ x.onclick=function(e){ e.stopPropagation(); var u=x.getAttribute('data-hide'); HID[u]=1; flag(u,{hidden:true}); render(); }; });
  [].forEach.call(LB.querySelectorAll('[data-like]'),function(x){ x.onclick=function(e){ e.stopPropagation(); var u=x.getAttribute('data-like'); LIKE[u]=!LIKE[u]; flag(u,{liked:!!LIKE[u]}); render(); }; });
  if(cluster){ cluster.clearLayers(); markers={}; show.forEach(function(o){ var col={ok:'#0A7D4B',chk:'#B8860B',out:'#B3261E'}[o.status]; var m=L.circleMarker([o.lat,o.lng],{radius:8,color:col,fillColor:col,fillOpacity:.85,weight:2}); m.bindPopup('<b>'+(o.l.title||o.name)+'</b><br>'+o.pc+' · '+o.laName+'<br>Eaves '+(o.eaves==null?'n/k':o.eaves+'m')+' · '+(o.l.rent_psf==null?'POA':'£'+o.l.rent_psf+'/sqft')+' · score '+o.sc+'<br><a href="'+o.l.url+'" target="_blank">Listing</a>'); m.on('click',function(){ SEL=o.uarn; var el=document.querySelector('#bfList .site[data-u="'+o.uarn+'"]'); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); [].forEach.call(document.querySelectorAll('#bfList .site'),function(x){x.classList.toggle('sel',x===el);}); } }); cluster.addLayer(m); markers[o.uarn]=m; }); }
- var hid=Object.keys(HID).length; $('bfNote').textContent=(show.length+' shown · '+all.length+' on the market in your regions · '+(LS||[]).length+' listings read in the last scan'+(hid?' · '+hid+' hidden by you':''))+'. Eaves come from Ordnance Survey where matched, otherwise from the listing. Scores use the Opportunity Map model.';
+ var hid=Object.keys(HID).length; $('bfNote').textContent=(show.length+' shown · '+all.length+' on the market near your target towns · '+(LS||[]).length+' listings read in the last scan'+(hid?' · '+hid+' hidden by you':''))+'. Eaves come from Ordnance Survey where matched, otherwise from the listing. Scores use the Opportunity Map model.';
 }
 function chips(box,defs,state,key){ var b=$(box); b.innerHTML=''; defs.forEach(function(d){ var c=document.createElement('span'); c.className='chip'+(state[d[0]]?' on':' off'); c.textContent=d[1]; c.onclick=function(){ state[d[0]]=state[d[0]]?0:1; c.className='chip'+(state[d[0]]?' on':' off'); setPref(key,state); render(); }; b.appendChild(c); }); }
 async function init(){
@@ -522,7 +527,10 @@ async function init(){
   ]);
   DATA=res[0]; LS=res[1]||[]; POP=res[2]; CLUBS=res[3]; (res[4]||[]).forEach(function(x){ if(x.hidden) HID[x.site_id]=1; if(x.liked) LIKE[x.site_id]=1; });
   match();
-  chips('bfRegions',REGIONS.map(function(r){return [r[0],r[1]];}),regOn,'regions');
+  try{ var pr=await fetch(SB+'pp_prefs?select=k,v&k=in.(bf_towns,bf_radius)',{headers:H}).then(function(r){return r.json();}); (pr||[]).forEach(function(p){ if(p.k==='bf_towns'&&p.v) townOn=p.v; if(p.k==='bf_radius'&&p.v) RAD=+p.v; }); }catch(e){}
+  if(!townOn){ townOn={}; TOWNS.forEach(function(t){ townOn[t[0]]=t[3]==='north'?0:1; }); }
+  $('bfRadius').value=RAD; $('bfRadius').addEventListener('change',function(){ RAD=+$('bfRadius').value||20; saveTowns(); render(); });
+  (function(){ var b=$('bfTowns'); b.innerHTML=''; TOWNS.forEach(function(t){ var c=document.createElement('span'); var north=t[3]==='north'; c.className='chip'+(north?' off':(townOn[t[0]]?' on':' off')); c.textContent=t[0]+(north?' (north of Birmingham)':''); c.title=north?'Excluded: north of Birmingham':'Click to toggle'; if(north){ c.style.textDecoration='line-through'; c.style.cursor='default'; return b.appendChild(c); } c.onclick=function(){ townOn[t[0]]=townOn[t[0]]?0:1; c.className='chip'+(townOn[t[0]]?' on':' off'); saveTowns(); render(); }; b.appendChild(c); }); })();
   chips('bfUse',USES,useOn,'uses');
   ['bfEaves','bfRent','bfScore','bfDrive','bfMin','bfMax','bfTown','bfSort'].forEach(function(id){ var v=pref('f_'+id,null); if(v!=null) $(id).value=v; $(id).addEventListener('change',function(){ setPref('f_'+id,$(id).value); render(); }); $(id).addEventListener('input',function(){ clearTimeout($(id)._t); $(id)._t=setTimeout(function(){ setPref('f_'+id,$(id).value); render(); },300); }); });
   [].forEach.call(document.querySelectorAll('#bf2 .strip button'),function(b){ b.onclick=function(){ var v=b.getAttribute('data-view'); VIEW=(VIEW===v)?'all':v; render(); }; });
