@@ -148,7 +148,7 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 <div class="cp-tabs" id="cpTabs">
 <button class="cp-tab active" data-tab="sites">Property Sites</button><button class="cp-tab" data-tab="oursites">Our Sites</button>
 <button class="cp-tab" data-tab="projection">Club Projection</button>
-<button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="planning">Planning<span id="cpPlanBadge" style="display:none;margin-left:6px;background:var(--green);color:#fff;border-radius:20px;padding:1px 7px;font-size:10.5px;font-weight:800"></span></button><button class="cp-tab" data-tab="planner">Court Planner</button><button class="cp-tab" data-tab="canopy">Canopy Visualiser</button><button class="cp-tab" data-tab="operators">UK Operators</button><button class="cp-tab" data-tab="buildings">Building Finder</button><button class="cp-tab" data-tab="sponsorship">Sponsorship</button></div>
+<button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="planning">Planning<span id="cpPlanBadge" style="display:none;margin-left:6px;background:var(--green);color:#fff;border-radius:20px;padding:1px 7px;font-size:10.5px;font-weight:800"></span></button><button class="cp-tab" data-tab="planner">Court Planner</button><button class="cp-tab" data-tab="canopy">Canopy Visualiser</button><button class="cp-tab" data-tab="operators">UK Operators</button><button class="cp-tab" data-tab="buildings">Building Finder</button><button class="cp-tab" data-tab="sponsorship">Sponsorship</button><button class="cp-tab" data-tab="news">News</button></div>
 <div id="tab-sponsorship" class="cp-panel" hidden>
 <div class="cp-card">
 <div class="cp-head"><div class="cp-ic">&#129309;</div><div><h2 class="cp-title">Sponsorship</h2><p class="cp-sub">Brand conversations across our clubs &mdash; banners, court naming, kit and more</p></div></div>
@@ -468,6 +468,65 @@ calc();
 document.addEventListener("click",function(e){
 var b=e.target.closest?e.target.closest(".cp-tab"):null;
 if(b&&b.dataset.tab==="sponsorship"&&!loaded){ loadRows(); loadSites(); }
+});
+})();</script>
+<div id="tab-news" class="cp-panel" hidden="">
+<div class="cp-card" style="max-width:1120px">
+<div class="cp-head"><div class="cp-ic">📰</div><div><h2 class="cp-title">UK padel news</h2><p class="cp-sub">Industry and business only — openings, funding, operators, property, market</p></div></div>
+<div id="nwChips" style="margin:2px 0 10px"></div>
+<div id="nwList"></div>
+<div class="cp-note" id="nwNote">Loading…</div>
+</div>
+</div>
+<script>/*news*/(function(){
+var items=[], filt=null, loaded=false;
+function $(id){return document.getElementById(id);}
+function esc(t){return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+var CATS={funding:['Funding','#0a7d4b'],openings:['Openings','#1d4ed8'],operators:['Operators','#7c3aed'],property:['Property','#b8860b'],market:['Market','#b3261e']};
+var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fmt(d){var p=(d||'').split('-');if(p.length!==3)return d||'';return (+p[2])+' '+MON[(+p[1])-1]+' '+p[0];}
+function ago(d){var t=Date.parse(d+'T12:00:00Z');if(isNaN(t))return '';var n=Math.floor((Date.now()-t)/864e5);if(n<=0)return 'today';if(n===1)return 'yesterday';if(n<30)return n+' days ago';if(n<60)return 'last month';return Math.floor(n/30)+' months ago';}
+function pill(c){var m=CATS[c]||['Other','#5d6b63'];return '<span style="display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;color:'+m[1]+';background:'+m[1]+'14;border:1px solid '+m[1]+'44">'+m[0]+'</span>';}
+function chipCss(on){return 'margin:0 6px 6px 0;padding:5px 11px;font-size:12px;font-weight:700;border-radius:20px;cursor:pointer;border:1px solid '+(on?'var(--green)':'var(--line)')+';background:'+(on?'var(--green)':'#fff')+';color:'+(on?'#fff':'var(--muted)');}
+function chips(){
+  var host=$('nwChips');if(!host)return;
+  var counts={},i;for(i=0;i<items.length;i++){var k=items[i].cat||'other';counts[k]=(counts[k]||0)+1;}
+  var h='<button class="nw-chip" data-cat="" style="'+chipCss(filt===null)+'">All ('+items.length+')</button>';
+  for(var k2 in CATS){ if(!counts[k2])continue; h+='<button class="nw-chip" data-cat="'+k2+'" style="'+chipCss(filt===k2)+'">'+CATS[k2][0]+' ('+counts[k2]+')</button>'; }
+  host.innerHTML=h;
+}
+function render(){
+  var host=$('nwList');if(!host)return;
+  var list=items.filter(function(x){return !filt||x.cat===filt;});
+  if(!list.length){host.innerHTML='<div style="font-size:13px;color:var(--muted);padding:18px 0">Nothing here yet.</div>';return;}
+  host.innerHTML=list.map(function(x){
+    return '<a href="'+esc(x.url)+'" target="_blank" rel="noopener" style="display:block;text-decoration:none;color:inherit;padding:14px 0;border-top:1px solid var(--line)">'
+      +'<div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;flex-wrap:wrap">'+pill(x.cat)
+      +'<span style="font-size:11.5px;color:var(--muted)">'+esc(fmt(x.date))+' · '+esc(ago(x.date))+'</span></div>'
+      +'<div style="font-size:14.5px;font-weight:700;line-height:1.35;color:var(--ink)">'+esc(x.title)+'</div>'
+      +(x.summary?'<div style="font-size:12.5px;color:#5d6b63;line-height:1.5;margin-top:4px">'+esc(x.summary)+'</div>':'')
+      +'<div style="font-size:11.5px;color:var(--green);font-weight:700;margin-top:6px">'+esc(x.source)+' →</div>'
+      +'</a>';
+  }).join('');
+}
+function load(){
+  if(loaded)return;loaded=true;
+  fetch('news.json?cb='+Date.now()).then(function(r){return r.json();}).then(function(d){
+    items=(d&&d.items)||[];
+    items.sort(function(a,b){return (b.date||'').localeCompare(a.date||'');});
+    chips();render();
+    var n=$('nwNote');
+    if(n)n.textContent='UK padel industry news, refreshed daily. Sources include Padel Underground, The Padel Paper, Padel Business Magazine and the UK business press. Last updated '+fmt((d&&d.updated)||'')+'. Headlines link to the original article — always read the source before acting on it.';
+  }).catch(function(e){
+    loaded=false;
+    var n=$('nwNote');if(n)n.textContent='Could not load news ('+e+')';
+  });
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest?e.target.closest('.cp-tab'):null;
+  if(b&&b.dataset.tab==='news'){load();return;}
+  var ch=e.target.closest?e.target.closest('.nw-chip'):null;
+  if(ch){filt=ch.dataset.cat||null;chips();render();}
 });
 })();</script>
 <div id="tab-sites" class="cp-panel">
