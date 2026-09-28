@@ -148,7 +148,7 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 <div class="cp-tabs" id="cpTabs">
 <button class="cp-tab active" data-tab="sites">Property Sites</button><button class="cp-tab" data-tab="oursites">Our Sites</button>
 <button class="cp-tab" data-tab="projection">Club Projection</button>
-<button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="planning">Planning<span id="cpPlanBadge" style="display:none;margin-left:6px;background:var(--green);color:#fff;border-radius:20px;padding:1px 7px;font-size:10.5px;font-weight:800"></span></button><button class="cp-tab" data-tab="planner">Court Planner</button><button class="cp-tab" data-tab="canopy">Canopy Visualiser</button><button class="cp-tab" data-tab="operators">UK Operators</button><button class="cp-tab" data-tab="buildings">Building Finder</button><button class="cp-tab" data-tab="sponsorship">Sponsorship</button><button class="cp-tab" data-tab="news">News</button></div>
+<button class="cp-tab" data-tab="map">Opportunity Map</button><button class="cp-tab" data-tab="planning">Planning<span id="cpPlanBadge" style="display:none;margin-left:6px;background:var(--green);color:#fff;border-radius:20px;padding:1px 7px;font-size:10.5px;font-weight:800"></span></button><button class="cp-tab" data-tab="planner">Court Planner</button><button class="cp-tab" data-tab="canopy">Canopy Visualiser</button><button class="cp-tab" data-tab="operators">UK Operators</button><button class="cp-tab" data-tab="buildings">Building Finder</button><button class="cp-tab" data-tab="sponsorship">Sponsorship</button><button class="cp-tab" data-tab="news">News</button><button class="cp-tab" data-tab="revenue">Club Revenue</button></div>
 <div id="tab-sponsorship" class="cp-panel" hidden>
 <div class="cp-card">
 <div class="cp-head"><div class="cp-ic">&#129309;</div><div><h2 class="cp-title">Sponsorship</h2><p class="cp-sub">Brand conversations across our clubs &mdash; banners, court naming, kit and more</p></div></div>
@@ -540,6 +540,130 @@ document.addEventListener('click',function(e){
   var ch=e.target.closest?e.target.closest('.nw-chip'):null;
   if(ch){filt=ch.dataset.cat||null;chips();render();}
 });
+})();</script>
+<div id="tab-revenue" class="cp-panel" hidden="">
+<div class="cp-card" style="max-width:1120px">
+<div class="cp-head"><div class="cp-ic">💷</div><div><h2 class="cp-title">Club revenue</h2><p class="cp-sub">Occupancy, pricing and turnover for UK padel venues — measured from live booking availability</p></div></div>
+<div id="rvStrip" class="rv-strip"></div>
+<div class="rv-bar">
+<div id="rvChips"></div>
+<input id="rvSearch" type="text" autocomplete="off" placeholder="🔍  Search venue, town or postcode…">
+<select id="rvSort">
+<option value="cap">Sort: turnover</option>
+<option value="occ">Sort: occupancy</option>
+<option value="price">Sort: peak price</option>
+<option value="courts">Sort: courts</option>
+</select>
+</div>
+<div class="cp-flabel" id="rvCount">Loading…</div>
+<div id="rvList"></div>
+<div class="cp-note" id="rvNote">Loading…</div>
+</div>
+</div>
+<style id="rvCss">
+.rv-strip{display:flex;gap:10px;flex-wrap:wrap;margin:2px 0 14px}
+.rv-tile{flex:1;min-width:132px;border:1px solid var(--line);border-radius:11px;padding:10px 12px;background:#fff}
+.rv-tl{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+.rv-tv{font-size:19px;font-weight:800;color:var(--ink);margin-top:2px}
+.rv-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.rv-chip{margin:0 6px 6px 0;padding:5px 11px;font-size:12px;font-weight:700;border-radius:20px;cursor:pointer}
+#rvSearch{flex:1;min-width:220px;height:40px;border:1px solid var(--line);border-radius:11px;padding:0 13px;font-size:13.5px;background:#fff}
+#rvSort{height:40px;border:1px solid var(--line);border-radius:11px;padding:0 10px;font-size:13px;background:#fff;font-weight:600;color:var(--ink)}
+#rvList{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;align-items:stretch;margin-top:8px}
+.rv-card{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 15px 12px;transition:box-shadow .15s ease,transform .15s ease}
+.rv-card:hover{box-shadow:0 8px 22px rgba(19,32,26,.10);transform:translateY(-2px)}
+.rv-rank{position:absolute;top:12px;right:13px;font-size:11px;font-weight:800;color:#c7d0ca}
+.rv-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.rv-name{font-size:14px;font-weight:800;line-height:1.3;color:var(--ink);padding-right:26px}
+.rv-loc{font-size:11.5px;color:var(--muted);margin-top:2px}
+.rv-badge{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:3px 7px;border-radius:20px;white-space:nowrap}
+.rv-meas{color:#0a7d4b;background:#0a7d4b14;border:1px solid #0a7d4b44}
+.rv-mod{color:#b8860b;background:#b8860b14;border:1px solid #b8860b44}
+.rv-mid{margin:11px 0 9px;padding:9px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.rv-big{font-size:24px;font-weight:800;color:var(--green-dark,#0a7d4b);line-height:1.1}
+.rv-big.rv-dim{color:#8a938d}
+.rv-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.rv-prices{display:flex;flex-direction:column;gap:3px}
+.rv-prow{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.rv-prow b{color:var(--ink);font-weight:700}
+.rv-prow.rv-dim{color:#a8b0aa;font-style:italic}
+.rv-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:11px;font-size:11.5px;color:var(--muted)}
+.rv-foot a{color:var(--green);font-weight:700;text-decoration:none}
+.rv-empty{grid-column:1/-1;font-size:13px;color:var(--muted);padding:18px 0}
+</style>
+<script>/*revenue*/(function(){
+var V=[], OCC={}, filt='all', q='', sortBy='cap', loaded=false;
+function $(id){return document.getElementById(id);}
+function esc(t){return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function money(n){ if(n==null||isNaN(n)) return '-'; if(n>=1e6) return '\u00a3'+(n/1e6).toFixed(2)+'M'; if(n>=1e3) return '\u00a3'+Math.round(n/1e3)+'k'; return '\u00a3'+Math.round(n); }
+function occOf(v){ var h=OCC[v.id]; if(!h||!h.length) return null; var last=h.slice(-28), s=0, n=0; for(var i=0;i<last.length;i++){ if(last[i].occ!=null){ s+=last[i].occ; n++; } } return n?{occ:s/n, days:n}:null; }
+function turnover(v){ var o=occOf(v); if(o&&v.cap) return {val:v.cap*o.occ, occ:o.occ, days:o.days}; return {val:null, occ:null, days:0}; }
+function stats(){
+  var courts=0, caps=0, prices=[], meas=0;
+  V.forEach(function(v){ courts+=v.c||0; caps+=v.cap||0; if(v.avg)prices.push(v.avg); if(v.m)meas++; });
+  prices.sort(function(a,b){return a-b;});
+  var med=prices.length?prices[Math.floor(prices.length/2)]:null;
+  var withOcc=V.filter(function(v){return occOf(v);}).length;
+  $('rvStrip').innerHTML=[['Venues tracked',V.length],['Courts',courts],['Median price/hr',med?('\u00a3'+med.toFixed(2)):'-'],['Capacity at 100%',money(caps)],['With occupancy',withOcc+' / '+meas]].map(function(x){ return '<div class="rv-tile"><div class="rv-tl">'+x[0]+'</div><div class="rv-tv">'+x[1]+'</div></div>'; }).join('');
+}
+function chips(){
+  var n={all:V.length, measured:V.filter(function(v){return v.m;}).length, modelled:V.filter(function(v){return !v.m;}).length};
+  $('rvChips').innerHTML=[['all','All'],['measured','Measured'],['modelled','Modelled']].map(function(d){
+    var on=filt===d[0];
+    return '<button class="rv-chip" data-f="'+d[0]+'" style="border:1px solid '+(on?'var(--green)':'var(--line)')+';background:'+(on?'var(--green)':'#fff')+';color:'+(on?'#fff':'var(--muted)')+'">'+d[1]+' ('+n[d[0]]+')</button>';
+  }).join('');
+}
+function rows(){
+  var list=V.filter(function(v){
+    if(filt==='measured'&&!v.m) return false;
+    if(filt==='modelled'&&v.m) return false;
+    if(q){ var s=((v.n||'')+' '+(v.t||'')+' '+(v.pc||'')).toLowerCase(); if(s.indexOf(q)<0) return false; }
+    return true;
+  });
+  list.sort(function(a,b){
+    if(sortBy==='price') return (b.pk||0)-(a.pk||0);
+    if(sortBy==='courts') return (b.c||0)-(a.c||0);
+    if(sortBy==='occ'){ var x=occOf(a),y=occOf(b); return ((y?y.occ:-1)-(x?x.occ:-1)); }
+    var ta=turnover(a), tb=turnover(b);
+    return ((tb.val!=null?tb.val:b.cap)||0)-((ta.val!=null?ta.val:a.cap)||0);
+  });
+  return list;
+}
+function card(v,i){
+  var t=turnover(v);
+  var badge=v.m?'<span class="rv-badge rv-meas">Measured</span>':'<span class="rv-badge rv-mod">Modelled</span>';
+  var head=(t.val!=null)?'<div class="rv-big">'+money(t.val)+'</div><div class="rv-sub">est. turnover/yr \u00b7 '+Math.round(t.occ*100)+'% occupancy over '+t.days+'d</div>':'<div class="rv-big rv-dim">'+money(v.cap)+'</div><div class="rv-sub">capacity/yr at 100% \u2014 occupancy pending</div>';
+  var price=v.pk?('<div class="rv-prow"><span>Peak</span><b>\u00a3'+v.pk+'</b></div>'+(v.op?'<div class="rv-prow"><span>Off-peak</span><b>\u00a3'+v.op+'</b></div>':'')+(v.we?'<div class="rv-prow"><span>Weekend</span><b>\u00a3'+v.we+'</b></div>':'')):'<div class="rv-prow rv-dim"><span>No published prices</span></div>';
+  var url=v.id&&v.id.indexOf('pt:')===0?'https://playtomic.com/clubs/'+v.id.slice(3):(v.id&&v.id.indexOf('nt:')===0?'https://app.nettla.co/clubs/'+v.id.slice(3):'');
+  return '<div class="rv-card"><div class="rv-rank">'+(i+1)+'</div>'+
+    '<div class="rv-head"><div><div class="rv-name">'+esc(v.n||'')+'</div><div class="rv-loc">'+esc(v.t||'')+(v.pc?' \u00b7 '+esc(v.pc):'')+'</div></div>'+badge+'</div>'+
+    '<div class="rv-mid">'+head+'</div><div class="rv-prices">'+price+'</div>'+
+    '<div class="rv-foot"><span>'+(v.c||'?')+' courts'+(v.from?' \u00b7 '+v.from+'-'+v.to:'')+'</span>'+(url?'<a href="'+url+'" target="_blank" rel="noopener">Booking page \u2192</a>':'')+'</div></div>';
+}
+function render(){
+  var list=rows();
+  $('rvCount').textContent=list.length+' venue'+(list.length===1?'':'s');
+  $('rvList').innerHTML=list.length?list.map(card).join(''):'<div class="rv-empty">Nothing matches that search.</div>';
+}
+function load(){
+  if(loaded) return; loaded=true;
+  Promise.all([
+    fetch('venues_pub.json?cb='+Date.now()).then(function(r){return r.json();}),
+    fetch('occupancy.json?cb='+Date.now()).then(function(r){return r.json();}).catch(function(){return {days:{}};})
+  ]).then(function(res){
+    V=(res[0]&&res[0].venues)||[]; OCC=(res[1]&&res[1].days)||{};
+    stats(); chips(); render();
+    var n=$('rvNote'); if(n) n.textContent=(res[0].note||'')+' Venue list updated '+(res[0].updated||'')+'.';
+  }).catch(function(e){ var n=$('rvNote'); if(n) n.textContent='Could not load venue data ('+e+')'; loaded=false; });
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest?e.target.closest('.cp-tab'):null;
+  if(b&&b.dataset.tab==='revenue'){ load(); return; }
+  var c=e.target.closest?e.target.closest('.rv-chip'):null;
+  if(c){ filt=c.dataset.f; chips(); render(); }
+});
+document.addEventListener('input',function(e){ if(e.target&&e.target.id==='rvSearch'){ q=(e.target.value||'').toLowerCase().trim(); render(); } });
+document.addEventListener('change',function(e){ if(e.target&&e.target.id==='rvSort'){ sortBy=e.target.value; render(); } });
 })();</script>
 <div id="tab-sites" class="cp-panel">
 
