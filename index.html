@@ -2627,19 +2627,70 @@ setTimeout(run,80);
   }
   $('plPng').addEventListener('click',function(){
     var sw=cv.width/DPR, sh=cv.height/DPR, pad=20;
+    var mL=66, mR=24, mT=18, mB=58;
+    var OW=sw+mL+mR, OH=sh+mT+mB;
     var order=['double','single','pickleball','obstacle','pillar','entrance','shutter','toilet','shower','social','office','storage','speaker','plug','cctv','text'];
     var present={}; objs.forEach(function(o){present[o.type]=true;});
     var entries=order.filter(function(t){return present[t];}); // only item types actually in the layout
-    var cols=sw<520?2:3, colW=(sw-2*pad)/cols, rowH=26, rows=Math.ceil(entries.length/cols);
+    var cols=OW<520?2:3, colW=(OW-2*pad)/cols, rowH=26, rows=Math.ceil(entries.length/cols);
     var legH=entries.length?(pad+24+rows*rowH+8):0;
-    var out=document.createElement('canvas'); out.width=sw*DPR; out.height=(sh+legH)*DPR;
+    var out=document.createElement('canvas'); out.width=OW*DPR; out.height=(OH+legH)*DPR;
     var g=out.getContext('2d'); g.setTransform(DPR,0,0,DPR,0,0);
-    g.fillStyle='#fff'; g.fillRect(0,0,sw,sh+legH);
-    g.drawImage(cv,0,0,sw,sh);
+    g.fillStyle='#fff'; g.fillRect(0,0,OW,OH+legH);
+    g.drawImage(cv,mL,mT,sw,sh);
+    // ---- dimensions (metres) ----
+    var DIM='#45544c';
+    function fm(v){ return (Math.round(v*10)/10).toFixed(1).replace(/\.0$/,''); }
+    function X(m){ return mL+padPx+m*scale; }
+    function Y(m){ return mT+padPx+m*scale; }
+    function tag(x,y,txt,fs){
+      g.font='700 '+(fs||12)+'px -apple-system,Arial'; g.textAlign='center'; g.textBaseline='middle';
+      var w=g.measureText(txt).width+10;
+      g.fillStyle='#fff'; g.fillRect(x-w/2,y-9,w,18);
+      g.fillStyle=DIM; g.fillText(txt,x,y);
+    }
+    function hDim(m1,m2,y,txt){
+      var x1=X(m1), x2=X(m2);
+      g.strokeStyle=DIM; g.lineWidth=1; g.beginPath();
+      g.moveTo(x1,y); g.lineTo(x2,y);
+      g.moveTo(x1,y-5); g.lineTo(x1,y+5);
+      g.moveTo(x2,y-5); g.lineTo(x2,y+5); g.stroke();
+      tag((x1+x2)/2,y,txt);
+    }
+    function vDim(m1,m2,x,txt){
+      var y1=Y(m1), y2=Y(m2);
+      g.strokeStyle=DIM; g.lineWidth=1; g.beginPath();
+      g.moveTo(x,y1); g.lineTo(x,y2);
+      g.moveTo(x-5,y1); g.lineTo(x+5,y1);
+      g.moveTo(x-5,y2); g.lineTo(x+5,y2); g.stroke();
+      g.save(); g.translate(x,(y1+y2)/2); g.rotate(-Math.PI/2); tag(0,0,txt); g.restore();
+    }
+    // witness lines out to the dimension lines
+    g.strokeStyle='#cfd8d2'; g.lineWidth=1; g.setLineDash([3,3]); g.beginPath();
+    g.moveTo(X(0),Y(W)); g.lineTo(X(0),Y(W)+34);
+    g.moveTo(X(L),Y(W)); g.lineTo(X(L),Y(W)+34);
+    g.moveTo(X(0),Y(0)); g.lineTo(X(0)-38,Y(0));
+    g.moveTo(X(0),Y(W)); g.lineTo(X(0)-38,Y(W));
+    g.stroke(); g.setLineDash([]);
+    hDim(0,L,Y(W)+30,fm(L)+' m');
+    vDim(0,W,X(0)-34,fm(W)+' m');
+    // size on each court, where it fits
+    objs.forEach(function(o){
+      if(o.type!=='double'&&o.type!=='single'&&o.type!=='pickleball') return;
+      var t=fm(o.w)+' × '+fm(o.h)+' m';
+      g.font='700 11px -apple-system,Arial'; g.textAlign='center'; g.textBaseline='middle';
+      var tw=g.measureText(t).width+8;
+      if(tw>o.w*scale-6||o.h*scale<26) return;
+      var cx=X(o.x+o.w/2), cy=Y(o.y+o.h)-11;
+      g.fillStyle='rgba(255,255,255,.9)'; g.fillRect(cx-tw/2,cy-8,tw,16);
+      g.fillStyle=DIM; g.fillText(t,cx,cy);
+    });
+    g.font='600 11.5px -apple-system,Arial'; g.textAlign='left'; g.textBaseline='alphabetic'; g.fillStyle='#5d6b63';
+    g.fillText('All dimensions in metres · building '+fm(L)+' × '+fm(W)+' m · '+fm(L*W)+' m²',mL,OH-16);
     if(entries.length){
-      g.strokeStyle='#dbe4de'; g.lineWidth=1; g.beginPath(); g.moveTo(pad,sh+0.5); g.lineTo(sw-pad,sh+0.5); g.stroke();
-      g.fillStyle='#0f1a14'; g.textBaseline='top'; g.textAlign='left'; g.font='800 15px -apple-system,Arial'; g.fillText('Key',pad,sh+pad-6);
-      entries.forEach(function(t,i){ var T=TYPES[t], c=i%cols, r=Math.floor(i/cols), x=pad+c*colW, y=sh+pad+20+r*rowH;
+      g.strokeStyle='#dbe4de'; g.lineWidth=1; g.beginPath(); g.moveTo(pad,OH+0.5); g.lineTo(OW-pad,OH+0.5); g.stroke();
+      g.fillStyle='#0f1a14'; g.textBaseline='top'; g.textAlign='left'; g.font='800 15px -apple-system,Arial'; g.fillText('Key',pad,OH+pad-6);
+      entries.forEach(function(t,i){ var T=TYPES[t], c=i%cols, r=Math.floor(i/cols), x=pad+c*colW, y=OH+pad+20+r*rowH;
         g.fillStyle=(T.fill&&T.fill!=='rgba(0,0,0,0)')?T.fill:'#fff'; g.strokeStyle=T.color; g.lineWidth=2; g.fillRect(x,y,18,18); g.strokeRect(x,y,18,18);
         if(T.icon){ g.font='12px -apple-system,Arial'; g.textAlign='center'; g.fillStyle='#0f1a14'; g.fillText(T.icon,x+9,y+3); g.textAlign='left'; }
         g.fillStyle='#0f1a14'; g.font='600 12.5px -apple-system,Arial'; g.fillText(T.name,x+26,y+3);
