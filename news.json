@@ -1,6 +1,30 @@
 {
-  "updated": "2026-10-21",
+  "updated": "2026-10-27",
   "items": [
+    {
+      "date": "2026-10-26",
+      "title": "UK passes 3,000 padel courts landmark",
+      "summary": "Padel Genie counts 3,053 courts across 890 clubs in Britain as of 24 October 2026, with 2,707 in England, 124 in Northern Ireland, 112 in Scotland and 110 in Wales. It expects at least 4,000 courts within a year.",
+      "source": "The Padel Paper",
+      "url": "https://thepadelpaper.com/uk-3000-padel-courts-padel-genie/",
+      "cat": "market"
+    },
+    {
+      "date": "2026-10-25",
+      "title": "Council refusal for popular padel court branded 'shortsighted'",
+      "summary": "West Berkshire Council refused retrospective planning permission for a padel court at The Retreat at Elcot Park hotel near Newbury, voting seven to one with one abstention, citing noise and lack of a nearby bus stop. The court has about 1,500 registered players and 64 of 67 online comments supported it.",
+      "source": "The Padel Paper",
+      "url": "https://thepadelpaper.com/padel-court-retrospective-planning-permission-refused-newbury/",
+      "cat": "property"
+    },
+    {
+      "date": "2026-10-22",
+      "title": "Padel Alba builds club inside its own factory",
+      "summary": "UK court supplier Padel Alba has invested EUR 750,000 in a new Alicante factory with an on-site four-court club that doubles as a showroom. The expanded plant could raise output from 10 courts a week to as many as 30.",
+      "source": "The Padel Paper",
+      "url": "https://thepadelpaper.com/padel-alba-ray-brinkmanis/",
+      "cat": "market"
+    },
     {
       "date": "2026-10-20",
       "title": "LTA: padel hits 1.5 million players across 2,445 courts at 682 British venues",
