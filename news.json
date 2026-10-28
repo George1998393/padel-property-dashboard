@@ -1,6 +1,14 @@
 {
-  "updated": "2026-10-27",
+  "updated": "2026-10-28",
   "items": [
+    {
+      "date": "2026-10-27",
+      "title": "Padel's north/south price divide: a statistical deep dive",
+      "summary": "Playskan data shows London padel averages £47 per hour versus £37 in Manchester, £33 in Liverpool and £32 in Leeds, against a UK average of £34. London courts also run at 66% occupancy versus 50% in Manchester.",
+      "source": "The Padel Paper",
+      "url": "https://thepadelpaper.com/padel-prices-north-south-divide/",
+      "cat": "market"
+    },
     {
       "date": "2026-10-26",
       "title": "UK passes 3,000 padel courts landmark",
