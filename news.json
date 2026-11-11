@@ -1,6 +1,22 @@
 {
-  "updated": "2026-11-06",
+  "updated": "2026-11-11",
   "items": [
+    {
+      "date": "2026-11-11",
+      "title": "At least 23 padel clubs opened across the UK in 2026, Padel Underground count finds",
+      "summary": "Padel Underground's region-by-region round-up lists every UK padel club it could confirm opened between 1 January and 11 November 2026, from Ballymoney to Exeter, with dates and court counts checked against operator, council or press sources. Slazenger Padel Clubs Exeter is the largest, with nine indoor courts, and Padel United Redbridge is London's newest.",
+      "source": "Padel Underground",
+      "url": "https://padelunderground.co.uk/news/padel-new-clubs-uk-2026/",
+      "cat": "market"
+    },
+    {
+      "date": "2026-11-10",
+      "title": "BallBall app aggregates open matches across platforms: 958 open London games found in one week",
+      "summary": "BallBall pulls open games and events from different booking platforms, clubs and communities into one app. Its London snapshot on 14 October found 958 open matches over the following seven days, with 2,106 available player places and 211 matches one player short.",
+      "source": "The Padel Paper",
+      "url": "https://thepadelpaper.com/padel-finding-a-fourth-player-ballball-app/",
+      "cat": "market"
+    },
     {
       "date": "2026-11-06",
       "title": "Second UK Padel Convention draws 1,027 attendees at The Padel Club, Gloucester Quays",
