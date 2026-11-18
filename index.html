@@ -2218,18 +2218,20 @@ setTimeout(run,80);
   function computeCatch(list){ var key=dExcl?'x':'a'; if(catchCache[key]) return catchCache[key];
     var RAD=13.3, MAXR=RAD*1.6, cut=new Date(Date.now()-730*864e5).toISOString().slice(0,10), res=[];
     var decd=list.filter(function(a){ if(!a[5]||!a[6]) return false; var o=outcomeOf(a); return o==='ok'||o==='no'; });
-    var geoAll=apps.filter(function(a){return a[5]&&a[6];}), live=list.filter(function(a){ if(!a[5]||!a[6]) return false; var o=outcomeOf(a); return (o==='ok'||o==='pend')&&(a[8]||a[4]||'')>=cut; });
+    var recent=list.filter(function(a){return a[5]&&a[6]&&(a[8]||'')>=cut;}), geoAll=apps.filter(function(a){return a[5]&&a[6];}), live=list.filter(function(a){ if(!a[5]||!a[6]) return false; var o=outcomeOf(a); return (o==='ok'||o==='pend')&&(a[8]||a[4]||'')>=cut; });
     popD.forEach(function(t){ if(t[3]<12000) return; var lat=t[1], lng=t[2], people=0, big=t, i, d;
-      for(i=0;i<popD.length;i++){ var p=popD[i]; if(Math.abs(p[1]-lat)>0.2) continue; d=kmD(lat,lng,p[1],p[2]); if(d<=RAD){ people+=p[3]; if(d<=9&&p[3]>big[3]) big=p; } }
-      if(people<80000) return;
+      for(i=0;i<popD.length;i++){ var p=popD[i]; if(Math.abs(p[1]-lat)>0.2) continue; d=kmD(lat,lng,p[1],p[2]); if(d<=RAD){ people+=p[3]; if(p[3]>big[3]) big=p; } }
+      if(big!==t||people<80000) return;
       var ind=0,outd=0,eff=0; for(i=0;i<clubsD.length;i++){ var c=clubsD[i]; if(Math.abs(c[1]-lat)>0.3) continue; d=kmD(lat,lng,c[1],c[2]); if(d>MAXR) continue; var w=d<=RAD?1:(MAXR-d)/(MAXR-RAD); eff+=((c[3]||0)+0.5*(c[4]||0))*w; if(d<=RAD){ ind+=c[3]||0; outd+=c[4]||0; } }
+      var rec=0; for(i=0;i<recent.length;i++){ var ra=recent[i]; if(Math.abs(ra[5]-lat)>0.2) continue; if(kmD(lat,lng,+ra[5],+ra[6])<=RAD) rec++; }
       var grp={}; for(i=0;i<live.length;i++){ var a=live[i]; if(Math.abs(a[5]-lat)>0.3) continue; d=kmD(lat,lng,+a[5],+a[6]); if(d>MAXR) continue; var k=siteKeyP(a), g=grp[k]||(grp[k]={app:false,d:d,c:0}); if(d<g.d) g.d=d; if(outcomeOf(a)==='ok') g.app=true; var n=courtsIn(a[0]); if(n>g.c) g.c=n; }
       var pA=0,pU=0,pipe=0; Object.keys(grp).forEach(function(k){ var g=grp[k], w=g.d<=RAD?1:(MAXR-g.d)/(MAXR-RAD), n=g.c||4; if(g.app){ if(g.d<=RAD) pA++; pipe+=n*w; } else { if(g.d<=RAD) pU++; pipe+=n*0.5*w; } });
-      var la='', bd=1e9; for(i=0;i<geoAll.length;i++){ var q=geoAll[i]; if(Math.abs(q[5]-lat)>0.5) continue; d=kmD(lat,lng,+q[5],+q[6]); if(d<bd){ bd=d; la=q[2]; } }
-      if(bd>8) la=''; var s={ok:0,no:0}; for(i=0;i<decd.length;i++){ var z=decd[i]; if(Math.abs(z[5]-lat)>0.2) continue; if(kmD(lat,lng,+z[5],+z[6])<=RAD) s[outcomeOf(z)]++; } var need=people/6000, gap=need-eff-pipe;
-      res.push({name:big[0],lat:lat,lng:lng,people:people,ind:ind,outd:outd,pA:pA,pU:pU,need:need,gap:gap,gp:gap/need,la:la,cty:PD_LA[la]||'',ok:s.ok,no:s.no}); });
-    function pick(rows,cmp){ var keep=[]; rows.sort(cmp).forEach(function(r){ if(keep.length>=25) return; for(var j=0;j<keep.length;j++){ if(kmD(r.lat,r.lng,keep[j].lat,keep[j].lng)<=RAD*1.6) return; } keep.push(r); }); return keep; }
-    var out={ town:pick(res.filter(function(r){return r.people<=400000;}),function(x,y){return (Math.round(y.gp*10)-Math.round(x.gp*10))||(y.gap-x.gap);}), city:pick(res.filter(function(r){return r.people>400000;}),function(x,y){return y.gap-x.gap;}) };
+      var la='', bd=1e9; for(i=0;i<geoAll.length;i++){ var q=geoAll[i]; if(Math.abs(q[5]-big[1])>0.5) continue; d=kmD(big[1],big[2],+q[5],+q[6]); if(d<bd){ bd=d; la=q[2]; } }
+      var ctyN=PD_LA[la]||''; if(bd>8) la=''; var s={ok:0,no:0}; for(i=0;i<decd.length;i++){ var z=decd[i]; if(Math.abs(z[5]-lat)>0.2) continue; if(kmD(lat,lng,+z[5],+z[6])<=RAD) s[outcomeOf(z)]++; } var need=people/6000, gap=need-eff-pipe;
+      var nm=big[0]; if(nm==='Paignton') nm='Torbay (Paignton, Torquay)'; else if(nm==='Saint Peters') nm='Thanet (Margate, Ramsgate)'; else if(nm==='Rhondda') nm='Rhondda valleys'; else if(nm==='Newport'&&lat<51) nm='Newport, Isle of Wight';
+      res.push({rec:rec,ctyN:ctyN,name:nm,lat:lat,lng:lng,people:people,ind:ind,outd:outd,pA:pA,pU:pU,need:need,gap:gap,gp:gap/need,la:la,cty:PD_LA[la]||'',ok:s.ok,no:s.no}); });
+    function pick(rows,cmp){ var keep=[]; rows.sort(cmp).forEach(function(r){ if(keep.length>=25) return; for(var j=0;j<keep.length;j++){ if(keep[j].name===r.name||kmD(r.lat,r.lng,keep[j].lat,keep[j].lng)<=RAD*1.6) return; } keep.push(r); }); return keep; }
+    var out={ all:res.slice(), town:pick(res.filter(function(r){return r.people<=400000;}),function(x,y){return (Math.round(y.gp*10)-Math.round(x.gp*10))||(y.gap-x.gap);}), city:pick(res.filter(function(r){return r.people>400000;}),function(x,y){return y.gap-x.gap;}) };
     catchCache[key]=out; return out; }
   function renderOpp(list){ if(popD===null) return '<div class="pd-box"><div class="pd-h">🎯 Population vs planning</div><div style="padding:14px;font-size:13px;color:var(--muted)">Loading population data…</div></div>';
     var cc=clubsD.length?clubCounties():{}, N=0, T=0, rows=[];
@@ -2252,6 +2254,20 @@ setTimeout(run,80);
       +'<div class="pd-grid">'+mini('🟢 Applications lag population','(under-developed, counties of 700k+)',lag)+mini('🔴 Applications run ahead','(crowded, counties of 700k+)',ahead)+'</div>'
       +ctyT+catT
       +'<div class="cp-note" style="margin:0 0 18px">County populations are 2021-22 official estimates. Catchments use the town populations in this dashboard within a straight 13km of each town, roughly a 20 minute drive, with the central London total left out so it is not counted twice. Shortfall compares one court per 6,000 people with courts open (outdoor counted at half) plus sites approved or pending in the last two years (pending at half, 4 courts assumed where the description gives no number). Population only: income, age and real drive times are not in the figures. Click a row to see it on the map.</div>'; }
+  /* ---- Target score ---- */
+  function renderTargets(list){ if(popD===null||!clubsD||!clubsD.length) return '';
+    var ct=computeCatch(list), all=ct.all||[], T=0; Object.keys(PD_POP).forEach(function(k){T+=PD_POP[k];});
+    var cut=new Date(Date.now()-730*864e5).toISOString().slice(0,10), recAll=list.filter(function(a){return (a[8]||'')>=cut;}).length, avg2=recAll/T*1e5;
+    var tl={}; tally(list,countyOf).forEach(function(t){ tl[t.k]=t; }); var ov=tally(list,function(){return 'all';})[0]||{rate:.85};
+    var rows=all.map(function(r){ var dec=r.ok+r.no, c=tl[r.ctyN], rate=dec>=5?r.ok/dec:((c&&c.dec>=5)?c.rate:ov.rate), src=dec>=5?'nearby decisions':((c&&c.dec>=5)?r.ctyN:'UK average');
+      var sU=40*Math.max(0,Math.min(1,r.gp)), sM=20*Math.min(1,r.people/250000), a100=r.rec/r.people*1e5, sQ=15*(1-Math.min(1,a100/(2*avg2))), sA=25*Math.max(0,Math.min(1,(rate-0.5)/0.5));
+      return {r:r,sU:sU,sM:sM,sQ:sQ,sA:sA,score:Math.round(sU+sM+sQ+sA),rate:rate,src:src,a100:a100}; }).sort(function(x,y){return y.score-x.score||y.r.gap-x.r.gap;});
+    var keep=[]; rows.forEach(function(x){ if(keep.length>=30) return; for(var j=0;j<keep.length;j++){ if(keep[j].r.name===x.r.name||kmD(x.r.lat,x.r.lng,keep[j].r.lat,keep[j].r.lng)<=13.3*1.6) return; } keep.push(x); });
+    function part(v,max){ return '<span class="pd-bar" style="width:38px;margin-right:5px"><i style="width:'+Math.round(v/max*100)+'%"></i></span>'+Math.round(v); }
+    function tier(s){ return s>=80?['Top target','#0a7d4b']:(s>=70?['Strong','#2f8f63']:(s>=60?['Worth a look','#b8860b']:['Lower priority','#8a938d'])); }
+    return '<div class="cp-seclabel" style="margin:6px 0 8px">Target score: where to look first</div><div class="pd-box"><div class="pd-h">🏆 Top 30 places to target <span>(scored out of 100 · click a row to see it on the map)</span></div><div class="pd-scroll" style="max-height:640px"><table class="pd-t"><thead><tr><th>Place</th><th>Score</th><th title="How far courts open and in the pipeline fall short of one per 6,000 people. Out of 40.">Under-supply /40</th><th title="People within about 20 minutes. Full marks at 250,000. Out of 20.">Market size /20</th><th title="Few applications submitted nearby in the last two years, per head, against the UK average. Out of 15.">Quiet pipeline /15</th><th title="Approval rate from decisions in the catchment where there are five or more, otherwise the county rate. Out of 25.">Approval odds /25</th><th>People</th><th>Courts now</th></tr></thead><tbody>'
+      +keep.map(function(x,i){ var r=x.r, t=tier(x.score), crt=r.ind+r.outd; return '<tr class="pd-click" data-clat="'+r.lat+'" data-clng="'+r.lng+'"><td>'+(i+1)+'. '+esc(r.name)+' <span class="pd-dim" style="font-weight:500">'+esc(r.cty&&r.cty!==r.name?r.cty:'')+'</span></td><td><span style="display:inline-block;min-width:34px;text-align:center;padding:3px 8px;border-radius:8px;font-weight:800;font-size:13px;color:#fff;background:'+t[1]+'">'+x.score+'</span> <span style="font-size:11px;font-weight:700;color:'+t[1]+'">'+t[0]+'</span></td><td>'+part(x.sU,40)+'</td><td>'+part(x.sM,20)+'</td><td>'+part(x.sQ,15)+'</td><td title="'+Math.round(x.rate*100)+'% approved ('+esc(x.src)+')">'+part(x.sA,25)+'</td><td>'+Math.round(r.people/1000)+'k</td><td>'+(crt||'<span style="font-weight:800;color:#0a7d4b">None</span>')+'</td></tr>'; }).join('')+'</tbody></table></div></div>'
+      +'<div class="cp-note" style="margin:0 0 18px">Score = under-supply (40) + market size (20) + quiet pipeline (15) + approval odds (25). Under-supply is the share of the catchment’s need, at one court per 6,000 people, not met by courts open or in the pipeline. Market size gives full marks at 250,000 people within about 20 minutes. Quiet pipeline rewards places with few applications per head in the last two years. Approval odds use decisions inside the catchment where there are five or more, otherwise the county’s approval rate. Nearby places are merged so each area appears once. The score does not include income, age, rents or site availability.</div>'; }
   function renderData(){ var host=$('cpPlanViewData'); if(!host) return;
     var nFollow=apps.filter(followOn).length, list=dExcl?apps.filter(function(a){return !followOn(a);}):apps, N=list.length||1;
     var all=tally(list,function(){return 'all';})[0]||{n:0,ok:0,no:0,wd:0,pend:0,unk:0,dec:0,rate:null};
@@ -2302,6 +2318,7 @@ setTimeout(run,80);
       +monthChart+monthTable
       +'<div class="pd-grid">'+simpleTable('👤 By applicant type','(inferred from the venue)',types,N,'Applicant')+simpleTable('🎾 By proposed surface','(inferred from the description)',surf,N,'Surface')+'</div>'
       +'<div class="pd-grid">'+laTable('🚧 Toughest councils','(lowest approval rate, 8+ decisions)',tough)+laTable('✅ Easiest councils','(highest approval rate, 8+ decisions)',easy)+'</div>'
+      +renderTargets(list)
       +'<div class="cp-note" style="margin-top:0">Approval rate = approved (permitted or approved with conditions) ÷ (approved + refused). Withdrawn and pending applications are left out of the rate. Counties are ceremonial counties built up from the council on each application; Scotland, Wales and Northern Ireland are shown as nations. Time to decision runs from the submitted date to the decision date on the council record.</div>';
   }
 
