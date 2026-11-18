@@ -106,6 +106,35 @@ footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid va
 .cp-pchip{padding:7px 13px;border:1px solid var(--line);border-radius:20px;background:#fff;font-size:12.5px;font-weight:600;cursor:pointer;margin:0 6px 6px 0;color:var(--muted)}
 .cp-pchip.active{background:var(--green);color:#fff;border-color:var(--green)}
 .cp-pchip:hover{border-color:var(--green)}
+.pd-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:6px 0 18px}
+.pd-kpi{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff}
+.pd-kpi .n{font-size:24px;font-weight:800;color:var(--green-dark);line-height:1.15}
+.pd-kpi .l{font-size:12px;font-weight:700;margin-top:2px}
+.pd-kpi .s{font-size:11.5px;color:var(--muted);margin-top:2px}
+.pd-box{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden;margin-bottom:16px}
+.pd-h{padding:12px 14px;background:#f4f8f5;border-bottom:1px solid var(--line);font-weight:800;font-size:13.5px}
+.pd-h span{color:var(--muted);font-weight:600}
+.pd-scroll{max-height:520px;overflow:auto}
+.pd-t{width:100%;border-collapse:collapse;font-size:12.5px}
+.pd-t th{position:sticky;top:0;background:#fff;text-align:right;padding:8px 10px;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);border-bottom:1px solid var(--line);white-space:nowrap}
+.pd-t th[data-sort]{cursor:pointer}.pd-t th[data-sort]:hover{color:var(--ink)}.pd-t th.on{color:var(--green)}
+.pd-t td{text-align:right;padding:7px 10px;border-top:1px solid var(--line);white-space:nowrap;font-variant-numeric:tabular-nums}
+.pd-t th:first-child,.pd-t td:first-child{text-align:left}
+.pd-t td:first-child{font-weight:600;white-space:normal}
+.pd-t tr.pd-click{cursor:pointer}.pd-t tr.pd-click:hover td{background:#f4f8f5}
+.pd-bar{display:inline-block;vertical-align:middle;width:70px;height:10px;background:#eef4f0;border-radius:5px;overflow:hidden;margin-right:7px}
+.pd-bar i{display:block;height:100%;background:#0a7d4b}
+.pd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:16px}
+.pd-months{display:flex;align-items:flex-end;gap:3px;height:150px;padding:14px 14px 0}
+.pd-months div{flex:1;background:#0a7d4b;border-radius:3px 3px 0 0;min-height:1px}
+.pd-months div.part{background:#9ccdb5}
+.pd-mlab{display:flex;gap:3px;padding:4px 14px 12px;font-size:9.5px;color:var(--muted)}
+.pd-mlab span{flex:1;text-align:center;overflow:hidden}
+.pd-dim{color:var(--muted)}
+.pd-grid .pd-bar{width:34px;margin-right:5px}
+.pd-grid .pd-t td,.pd-grid .pd-t th{padding:7px 6px}
+.pd-grid .pd-box{overflow-x:auto;margin-bottom:0}
+.pd-grid{margin-bottom:16px}
 .cp-tchip{padding:6px 12px;border:1px solid var(--line);border-radius:20px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;margin:0 6px 6px 0;color:var(--muted)}
 .cp-tchip.active{background:#0369a1;color:#fff;border-color:#0369a1}
 .cp-tchip:hover{border-color:#0369a1}
@@ -801,7 +830,7 @@ Source: Rightmove (West Midlands, East Midlands, South East, London, East of Eng
 </div><div id="tab-planning" class="cp-panel" hidden="">
     <div class="cp-card" style="max-width:1120px">
       <div class="cp-head"><div class="cp-ic">🏗️</div><div><h2 class="cp-title">Planning applications</h2><p class="cp-sub">UK padel-court planning applications — who's building, where, and the status</p></div></div>
-      <div id="cpPlanGranted"></div><div id="cpPlanChips" style="margin:6px 0 6px"></div>
+      <div id="cpPlanViewTabs" style="margin:0 0 8px"><button class="cp-pchip cp-vchip active" data-view="apps">Applications</button><button class="cp-pchip cp-vchip" data-view="data">📊 Data</button></div><div id="cpPlanViewApps"><div id="cpPlanGranted"></div><div id="cpPlanChips" style="margin:6px 0 6px"></div>
       <div class="cp-flabel" style="font-size:11px;color:var(--muted);margin:2px 0 4px">Filter by applicant type</div>
       <div id="cpPlanTypeChips" style="margin:0 0 12px"></div>
       <input id="cpPlanSearch" type="text" autocomplete="off" placeholder="🔍  Search description, town or council…" style="width:100%;height:44px;border:1px solid var(--line);border-radius:11px;padding:0 14px;font-size:14px;margin-bottom:12px;background:#fff">
@@ -810,7 +839,7 @@ Source: Rightmove (West Midlands, East Midlands, South East, London, East of Eng
         <div style="flex:1;min-width:320px"><div class="cp-flabel" id="cpPlanCount" style="margin-bottom:6px">Loading…</div><div id="cpPlanList" style="max-height:460px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff"></div></div>
       </div>
       <div id="cpPlanRecent" style="margin-top:20px"></div>
-      <div id="cpPlanAreas" style="margin-top:20px"></div>
+      <div id="cpPlanAreas" style="margin-top:20px"></div></div><div id="cpPlanViewData" hidden=""></div>
       <div class="cp-note">Source: PlanIt (planit.org.uk), aggregating UK council planning portals. Green = permitted/approved, amber = undecided, red = rejected/withdrawn. Refreshed weekly · not exhaustive — confirm on the council page.</div>
     </div>
   </div>
@@ -2083,7 +2112,7 @@ setTimeout(run,80);
   function showTab(name){ document.querySelectorAll('.cp-tab').forEach(function(b){b.classList.toggle('active',b.dataset.tab===name);}); document.querySelectorAll('.cp-panel').forEach(function(p){p.hidden=(p.id!=='tab-'+name);}); if(name==='map'){ initMap(); loadData(); ensureRankUI(); setupSearch(); setTimeout(function(){ if(map) map.invalidateSize(); },180); } }
   document.addEventListener('click',function(e){ var b=e.target.closest?e.target.closest('.cp-tab'):null; if(b&&b.dataset.tab){ showTab(b.dataset.tab); } });
 })();</script><script>/*cpPlanMap init*/(function(){
-  var loaded=false, pmap, apps=[], markers, fstatus=null, ftype=null, fq='';
+  var loaded=false, pmap, apps=[], markers, fstatus=null, ftype=null, fq='', fcounty=null;
   function $(id){return document.getElementById(id);}
   function scolor(s){ if(/permit|condition/i.test(s))return '#0a7d4b'; if(/undecid|referr|unresolv/i.test(s))return '#b8860b'; if(/reject|withdraw/i.test(s))return '#b3261e'; return '#8a938d'; }
   function badge(s){ return '<span style="display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;color:#fff;background:'+scolor(s)+'">'+(s||'Unknown')+'</span>'; }
@@ -2091,8 +2120,8 @@ setTimeout(run,80);
   function popupHtml(a){ return '<div style="font-size:13px;max-width:250px;line-height:1.45"><div style="font-weight:800;margin-bottom:4px">'+esc(a[2])+'</div>'+badge(a[3])+' '+typePill(a)+' '+surfacePill(a)+'<div style="font-size:12.5px;margin:6px 0 4px">'+esc(a[0])+'</div><div style="font-size:12px;color:#5d6b63">'+esc(a[1]||'')+'</div><div style="font-size:12px;color:#5d6b63;margin-top:3px">'+(a[4]||'')+'</div><a href="'+a[7]+'" target="_blank" rel="noopener" style="display:inline-block;margin-top:7px;font-size:12.5px;font-weight:700;color:#0a7d4b">View application →</a></div>'; }
   function initMap(){ if(pmap||typeof L==='undefined') return; pmap=L.map('cpPlanMap',{scrollWheelZoom:true}).setView([52.7,-1.7],6); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(pmap); setTimeout(function(){pmap.invalidateSize();},150); }
   function plot(list){ if(!pmap) return; if(markers)markers.remove(); markers=L.layerGroup(); list.forEach(function(a){ if(a[5]&&a[6]) L.circleMarker([a[5],a[6]],{radius:5,color:scolor(a[3]),weight:1,fillColor:scolor(a[3]),fillOpacity:.7}).bindPopup(popupHtml(a),{maxWidth:290}).addTo(markers); }); markers.addTo(pmap); }
-  function filtered(){ return apps.filter(function(a){ if(fstatus && a[3]!==fstatus) return false; if(ftype && applicantType(a)[0]!==ftype) return false; if(fq){ var q=fq.toLowerCase(); if((a[0]+' '+a[1]+' '+a[2]).toLowerCase().indexOf(q)<0) return false; } return true; }); }
-  function render(){ var list=filtered(); plot(list); var host=$('cpPlanList'); host.innerHTML=list.slice(0,300).map(function(a,i){ return '<div class="cp-planrow" data-i="'+i+'" data-lat="'+a[5]+'" data-lng="'+a[6]+'" style="padding:11px 12px;border-top:1px solid var(--line);cursor:pointer"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="font-weight:600;font-size:13px">'+esc(a[2])+'</div><div style="white-space:nowrap;display:flex;gap:6px;align-items:center">'+typePill(a)+badge(a[3])+'</div></div><div style="font-size:12.5px;margin:3px 0;color:var(--ink)">'+esc(a[0])+'</div><div style="font-size:12px;color:var(--muted)">'+surfacePill(a)+' '+esc(a[1]||'')+' · '+(a[4]||'')+' · <a href="'+a[7]+'" target="_blank" rel="noopener" style="color:var(--green);font-weight:600">view</a></div></div>'; }).join('')+(list.length>300?'<div style="padding:12px;color:var(--muted);font-size:12px">Showing first 300 of '+list.length+'. Filter to narrow.</div>':''); host._list=list; if($('cpPlanCount'))$('cpPlanCount').textContent=list.length+' applications'; }
+  function filtered(){ return apps.filter(function(a){ if(fstatus && a[3]!==fstatus) return false; if(ftype && applicantType(a)[0]!==ftype) return false; if(fcounty && countyOf(a)!==fcounty) return false; if(fq){ var q=fq.toLowerCase(); if((a[0]+' '+a[1]+' '+a[2]).toLowerCase().indexOf(q)<0) return false; } return true; }); }
+  function render(){ var list=filtered(); plot(list); var host=$('cpPlanList'); host.innerHTML=list.slice(0,300).map(function(a,i){ return '<div class="cp-planrow" data-i="'+i+'" data-lat="'+a[5]+'" data-lng="'+a[6]+'" style="padding:11px 12px;border-top:1px solid var(--line);cursor:pointer"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="font-weight:600;font-size:13px">'+esc(a[2])+'</div><div style="white-space:nowrap;display:flex;gap:6px;align-items:center">'+typePill(a)+badge(a[3])+'</div></div><div style="font-size:12.5px;margin:3px 0;color:var(--ink)">'+esc(a[0])+'</div><div style="font-size:12px;color:var(--muted)">'+surfacePill(a)+' '+esc(a[1]||'')+' · '+(a[4]||'')+' · <a href="'+a[7]+'" target="_blank" rel="noopener" style="color:var(--green);font-weight:600">view</a></div></div>'; }).join('')+(list.length>300?'<div style="padding:12px;color:var(--muted);font-size:12px">Showing first 300 of '+list.length+'. Filter to narrow.</div>':''); host._list=list; if($('cpPlanCount'))$('cpPlanCount').innerHTML=list.length+' applications'+(fcounty?' in '+esc(fcounty)+' \u00b7 <a href="#" class="cp-cclear" style="color:var(--green)">clear county</a>':''); }
   function chips(){ var counts={}; apps.forEach(function(a){var s=a[3]||'Unknown';counts[s]=(counts[s]||0)+1;}); var order=['Permitted','Conditions','Undecided','Rejected','Withdrawn','Unknown']; var html='<button class="cp-pchip active" data-s="">All ('+apps.length+')</button>'; order.forEach(function(s){ if(counts[s]) html+='<button class="cp-pchip" data-s="'+s+'">'+s+' ('+counts[s]+')</button>'; }); $('cpPlanChips').innerHTML=html; }
   function typeChips(){ var defs=[['Council / parish / community','Council / public'],['Sports club','Sports club'],['School / college','School / college'],['Private / commercial','Private / commercial'],['Unknown','Unknown']]; var counts={}; apps.forEach(function(a){var t=applicantType(a)[0];counts[t]=(counts[t]||0)+1;}); var html='<button class="cp-tchip active" data-type="">All applicants ('+apps.length+')</button>'; defs.forEach(function(d){ var n=counts[d[1]]||0; if(n) html+='<button class="cp-tchip" data-type="'+d[1]+'">'+d[0]+' ('+n+')</button>'; }); var el=$('cpPlanTypeChips'); if(el) el.innerHTML=html; }
   function renderAreas(){ var host=$('cpPlanAreas'); if(!host) return; var counts={}; apps.forEach(function(a){var k=a[2]||'Unknown';counts[k]=(counts[k]||0)+1;}); var arr=Object.keys(counts).map(function(k){return [k,counts[k]];}).sort(function(x,y){return y[1]-x[1]||x[0].localeCompare(y[0]);}); var max=arr.length?arr[0][1]:1; var rows=arr.map(function(r,i){ var w=Math.round(r[1]/max*100); return '<div class="cp-arearow" data-area="'+esc(r[0])+'" style="display:flex;align-items:center;gap:8px;padding:6px 12px;border-top:1px solid var(--line);font-size:12.5px;cursor:pointer"><span style="width:22px;color:var(--muted);text-align:right">'+(i+1)+'</span><span style="flex:1;font-weight:600">'+esc(r[0])+'</span><span style="flex:0 0 110px;background:#eef4f0;border-radius:6px;height:13px;position:relative;overflow:hidden"><span style="position:absolute;left:0;top:0;bottom:0;width:'+w+'%;background:#0a7d4b"></span></span><span style="width:30px;text-align:right;font-weight:700">'+r[1]+'</span></div>'; }).join(''); host.innerHTML='<div style="border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden"><div style="padding:12px 14px;background:#f4f8f5;border-bottom:1px solid var(--line);font-weight:800;font-size:13.5px">\uD83D\uDCCD Applications by area <span style="color:var(--muted);font-weight:600">('+arr.length+' councils \u00b7 most \u2192 least)</span></div><div style="max-height:460px;overflow:auto">'+rows+'</div></div>'; }
@@ -2109,6 +2138,125 @@ setTimeout(run,80);
     if(/\bgrass|playing field|grassland|amenity (land|grass)|green space|meadow|sports field|recreation ground/.test(s)) return ['Grass / field','#0a7d4b'];
     return ['Surface n/k','#8a938d']; }
   function surfacePill(a){ var t=surfaceType(a); return '<span title="Surface the courts are proposed on, inferred from the description" style="display:inline-block;padding:1px 7px;border-radius:20px;font-size:10.5px;font-weight:700;color:'+t[1]+';background:'+t[1]+'14;border:1px solid '+t[1]+'44">'+t[0]+'</span>'; }
+  /* ---- Planning data view ---- */
+  var PD_COUNTIES={
+'Greater London':['London','Barking and Dagenham|Barnet|Bexley|Brent|Bromley|Camden|Croydon|Ealing|Enfield|Greenwich|Hackney|Hammersmith and Fulham|Haringey|Havering|Hillingdon|Hounslow|Islington|Kensington|Kingston|Lambeth|Lewisham|London Legacy|Merton|Newham|Redbridge|Richmond|Southwark|Sutton|Tower Hamlets|Wandsworth|Westminster'],
+'Surrey':['South East','Elmbridge|Epsom and Ewell|Guildford|Mole Valley|Reigate|Runnymede|Spelthorne|Surrey Heath|Tandridge|Waverley|Woking'],
+'Kent':['South East','Ashford|Canterbury|Dartford|Dover|Medway|Mid Kent|Sevenoaks|Shepway|Thanet|Tonbridge|Tunbridge Wells'],
+'East Sussex':['South East','Brighton|Eastbourne|Lewes|Rother|Wealden'],
+'West Sussex':['South East','Adur and Worthing|Arun|Chichester|Horsham|Mid Sussex'],
+'Hampshire':['South East','Basingstoke|East Hampshire|Eastleigh|Fareham|Gosport|Hart|Havant|New Forest (District)|Portsmouth|Rushmoor|Test Valley|Winchester'],
+'Isle of Wight':['South East','Isle of Wight'],
+'Berkshire':['South East','Bracknell|Reading|Slough|West Berkshire|Windsor|Wokingham'],
+'Buckinghamshire':['South East','Buckinghamshire|Milton Keynes'],
+'Oxfordshire':['South East','Cherwell|Oxford|South Oxfordshire|Vale of White Horse|West Oxfordshire'],
+'Hertfordshire':['East of England','Broxbourne|Dacorum|East Hertfordshire|Hertsmere|North Hertfordshire|St Albans|Stevenage|Three Rivers|Watford|Welwyn Hatfield'],
+'Bedfordshire':['East of England','Bedford|Central Bedfordshire|Luton'],
+'Essex':['East of England','Basildon|Braintree|Brentwood|Chelmsford|Colchester|Epping Forest|Harlow|Maldon|Rochford|Southend|Tendring|Thurrock|Uttlesford'],
+'Cambridgeshire':['East of England','Cambridge|East Cambridgeshire|Fenland|Huntingdonshire|Peterborough|South Cambridgeshire'],
+'Norfolk':['East of England','Kings Lynn|North Norfolk|Norwich|South Norfolk Broadland'],
+'Suffolk':['East of England','Babergh Mid Suffolk|East Suffolk|Ipswich|West Suffolk'],
+'Dorset':['South West','BCP|Dorset'],
+'Wiltshire':['South West','Wiltshire|Swindon'],
+'Somerset':['South West','Bath|North Somerset|Sedgemoor|South Somerset|Taunton Deane'],
+'Bristol':['South West','Bristol'],
+'Gloucestershire':['South West','Cheltenham|Cotswold|Forest of Dean|Gloucester|South Gloucestershire|Stroud|Tewkesbury'],
+'Devon':['South West','Dartmoor|East Devon|Exeter|Mid Devon|North Devon|Plymouth|South West Devon|Torbay'],
+'Cornwall':['South West','Cornwall|Scilly Isles'],
+'West Midlands':['West Midlands','Birmingham|Coventry|Dudley|Sandwell|Solihull|Walsall|Wolverhampton'],
+'Warwickshire':['West Midlands','North Warwickshire|Rugby|Stratford on Avon|Warwick'],
+'Worcestershire':['West Midlands','Bromsgrove Redditch|Malvern Hills|Worcester|Wychavon|Wyre Forest'],
+'Staffordshire':['West Midlands','East Staffordshire|Lichfield|Newcastle under Lyme|South Staffordshire|Stafford|Staffordshire|Staffordshire Moorlands|Stoke on Trent'],
+'Shropshire':['West Midlands','Shropshire|Telford'],
+'Herefordshire':['West Midlands','Herefordshire'],
+'Derbyshire':['East Midlands','Amber Valley|Bolsover|Chesterfield|Derby|Erewash|High Peak|North East Derbyshire|South Derbyshire|Peak District'],
+'Nottinghamshire':['East Midlands','Ashfield|Bassetlaw|Broxtowe|Gedling|Mansfield|Newark and Sherwood|Nottingham|Rushcliffe'],
+'Leicestershire':['East Midlands','Blaby|Charnwood|Harborough|Hinckley and Bosworth|Leicester|Melton|North West Leicestershire|Oadby and Wigston'],
+'Rutland':['East Midlands','Rutland'],
+'Northamptonshire':['East Midlands','East Northamptonshire|Kettering|North Northamptonshire|Wellingborough|West Northamptonshire'],
+'Lincolnshire':['East Midlands','East Lindsey|Lincoln|North East Lincs|North Kesteven|North Lincs|South Holland|South Kesteven|West Lindsey'],
+'Greater Manchester':['North West','Bolton|Bury|Manchester|Oldham|Rochdale|Salford|Stockport|Tameside|Trafford|Wigan'],
+'Merseyside':['North West','Liverpool|Sefton|St Helens|Wirral'],
+'Cheshire':['North West','Cheshire East|Chester|Halton|Warrington'],
+'Lancashire':['North West','Blackpool|Chorley|Fylde|Hyndburn|Lancaster|Preston|Ribble Valley|Rossendale|South Ribble|West Lancashire|Wyre'],
+'Cumbria':['North West','Carlisle|Lake District|Westmorland and Furness'],
+'West Yorkshire':['Yorkshire & Humber','Bradford|Calderdale|Kirklees|Leeds|Wakefield'],
+'South Yorkshire':['Yorkshire & Humber','Barnsley|Doncaster|Rotherham|Sheffield'],
+'North Yorkshire':['Yorkshire & Humber','Hambleton|Harrogate|Middlesbrough|North York Moors|North Yorkshire|Redcar and Cleveland|Richmondshire|Ryedale|Scarborough|Selby|York'],
+'East Riding of Yorkshire':['Yorkshire & Humber','East Riding|Hull'],
+'County Durham':['North East','Darlington|Durham|Hartlepool|Stockton-on-Tees'],
+'Tyne and Wear':['North East','Gateshead|Newcastle upon Tyne|North Tyneside|South Tyneside|Sunderland'],
+'Northumberland':['North East','Northumberland (County)'],
+'Scotland':['Scotland','Aberdeen|Aberdeenshire|Cairngorms|Dumfries|Dundee|East Ayrshire|East Lothian|East Renfrewshire|Edinburgh|Fife|Glasgow|Highland|Midlothian|Moray|North Ayrshire|North Lanarkshire|Perth|Renfrewshire|Scottish Borders|South Ayrshire|South Lanarkshire|Stirling|West Dunbartonshire|West Lothian'],
+'Wales':['Wales','Anglesey|Brecon Beacons|Bridgend|Caerphilly|Cardiff|Carmarthenshire|Ceredigion|Conwy|Denbighshire|Flintshire|Glamorgan|Gwynedd|Monmouthshire|Neath|Newport|Pembroke Coast|Pembrokeshire|Rhondda|Swansea|Torfaen|Wrexham'],
+'Northern Ireland':['Northern Ireland','Antrim and Newtownabbey|Ards and North Down|Belfast|Causeway and Glens|Derry and Strabane|Fermanagh and Omagh|Lisburn and Castlereagh|Mid East Antrim|Mid Ulster|Newry Mourne Down'],
+'Channel Islands & Isle of Man':['Crown Dependencies','Alderney|Guernsey|Isle of Man|Jersey']};
+  var PD_LA={}, PD_REG={}; Object.keys(PD_COUNTIES).forEach(function(c){ PD_REG[c]=PD_COUNTIES[c][0]; PD_COUNTIES[c][1].split('|').forEach(function(la){ PD_LA[la]=c; }); });
+  PD_REG['Unmapped council']='Other';
+  var dExcl=true, dSort='n', dDir=-1;
+  function countyOf(a){ var la=a[2]||''; if(la==='South Downs'){ var x=+a[6]; if(!x) return 'West Sussex'; return x<-0.93?'Hampshire':(x<-0.14?'West Sussex':'East Sussex'); } return PD_LA[la]||'Unmapped council'; }
+  function outcomeOf(a){ var s=a[3]||''; if(/permit|condition/i.test(s)) return 'ok'; if(/reject/i.test(s)) return 'no'; if(/withdraw/i.test(s)) return 'wd'; if(/undecid|referr|unresolv/i.test(s)) return 'pend'; return 'unk'; }
+  function followOn(a){ return /discharge|pursuant to condition|approval of details|non[- ]material|variation of condition|removal of condition|vary condition|section 73|\bs\.?73\b|advertisement consent|screening opinion|neighbouring (borough|authority)|adjoining (borough|authority)|consultation/i.test(a[0]||''); }
+  function daysBetween(a,b){ var x=Date.parse(a), y=Date.parse(b); return (isNaN(x)||isNaN(y))?null:Math.round((y-x)/864e5); }
+  function median(v){ if(!v.length) return null; var s=v.slice().sort(function(a,b){return a-b;}), m=Math.floor(s.length/2); return s.length%2?s[m]:(s[m-1]+s[m])/2; }
+  function tally(list,keyFn){ var o={}; list.forEach(function(a){ var k=keyFn(a); if(k==null) return; var t=o[k]||(o[k]={k:k,n:0,ok:0,no:0,wd:0,pend:0,unk:0}); t.n++; t[outcomeOf(a)]++; }); return Object.keys(o).map(function(k){ var t=o[k]; t.dec=t.ok+t.no; t.rate=t.dec?t.ok/t.dec:null; return t; }); }
+  function pct(x,dp){ return x==null?'–':(x*100).toFixed(dp==null?0:dp)+'%'; }
+  function rateCell(t){ if(t.rate==null) return '<span class="pd-dim">–</span>'; var c=t.dec<5?'#8a938d':(t.rate>=.85?'#0a7d4b':(t.rate>=.7?'#b8860b':'#b3261e')); return '<span style="font-weight:800;color:'+c+'"'+(t.dec<5?' title="Fewer than 5 decisions, treat with caution"':'')+'>'+pct(t.rate)+'</span>'; }
+  function simpleTable(title,sub,rows,total,firstHead){ var max=rows.reduce(function(m,t){return Math.max(m,t.n);},1); return '<div class="pd-box"><div class="pd-h">'+title+(sub?' <span>'+sub+'</span>':'')+'</div><table class="pd-t"><thead><tr><th>'+firstHead+'</th><th>Apps</th><th>% of total</th><th>Approved</th><th>Refused</th><th>Approval rate</th></tr></thead><tbody>'+rows.map(function(t){ return '<tr><td>'+esc(t.k)+'</td><td>'+t.n+'</td><td><span class="pd-bar"><i style="width:'+Math.round(t.n/max*100)+'%"></i></span>'+pct(t.n/total,1)+'</td><td>'+t.ok+'</td><td>'+t.no+'</td><td>'+rateCell(t)+'</td></tr>'; }).join('')+'</tbody></table></div>'; }
+  function showView(v){ var a=$('cpPlanViewApps'), d=$('cpPlanViewData'); if(!a||!d) return; a.hidden=(v!=='apps'); d.hidden=(v!=='data'); document.querySelectorAll('.cp-vchip').forEach(function(x){x.classList.toggle('active',x.dataset.view===v);}); if(v==='apps'&&pmap) setTimeout(function(){pmap.invalidateSize();},120); }
+  function renderData(){ var host=$('cpPlanViewData'); if(!host) return;
+    var nFollow=apps.filter(followOn).length, list=dExcl?apps.filter(function(a){return !followOn(a);}):apps, N=list.length||1;
+    var all=tally(list,function(){return 'all';})[0]||{n:0,ok:0,no:0,wd:0,pend:0,unk:0,dec:0,rate:null};
+    var dOk=[], dNo=[]; list.forEach(function(a){ var o=outcomeOf(a); if(o!=='ok'&&o!=='no') return; var x=daysBetween(a[8],a[4]); if(x==null||x<0) return; (o==='ok'?dOk:dNo).push(x); });
+    var mAll=median(dOk.concat(dNo)), mOk=median(dOk), mNo=median(dNo);
+    var cutY=new Date(Date.now()-365*864e5).toISOString().slice(0,10), cutP=new Date(Date.now()-730*864e5).toISOString().slice(0,10);
+    var last12=list.filter(function(a){return (a[8]||'')>=cutY;}).length, prev12=list.filter(function(a){var d=a[8]||''; return d>=cutP&&d<cutY;}).length;
+    var grow=prev12?(last12/prev12-1):null;
+    function kpi(n,l,s){ return '<div class="pd-kpi"><div class="n">'+n+'</div><div class="l">'+l+'</div><div class="s">'+s+'</div></div>'; }
+    var kpis='<div class="pd-kpis">'
+      +kpi(list.length.toLocaleString('en-GB'),'Applications',last12+' submitted in the last 12 months'+(grow==null?'':' ('+(grow>=0?'+':'')+Math.round(grow*100)+'% on the year before)'))
+      +kpi(pct(all.rate),'Approval rate',all.ok+' approved vs '+all.no+' refused')
+      +kpi(all.wd,'Withdrawn',pct(all.wd/N,1)+' of all applications, often pulled ahead of a refusal')
+      +kpi(all.pend,'Awaiting decision',pct(all.pend/N,1)+' of all applications')
+      +kpi(mAll==null?'–':(mAll/7).toFixed(1)+' wks','Median time to decision','Approved '+(mOk==null?'–':(mOk/7).toFixed(1))+' wks · refused '+(mNo==null?'–':(mNo/7).toFixed(1))+' wks')
+      +kpi(pct(all.ok/((all.ok+all.no+all.wd)||1)),'Success incl. withdrawals','Approved ÷ (approved + refused + withdrawn)')
+      +'</div>';
+    var cty=tally(list,countyOf); cty.forEach(function(t){ t.reg=PD_REG[t.k]||'Other'; t.share=t.n/N; t.r=t.rate==null?-1:t.rate; });
+    cty.sort(function(x,y){ var a=x[dSort], b=y[dSort]; var c=(typeof a==='string')?a.localeCompare(b):(a-b); return (c*dDir)||(y.n-x.n)||x.k.localeCompare(y.k); });
+    var cmax=cty.reduce(function(m,t){return Math.max(m,t.n);},1);
+    function th(k,l){ return '<th data-sort="'+k+'"'+(dSort===k?' class="on"':'')+'>'+l+(dSort===k?(dDir<0?' ▾':' ▴'):'')+'</th>'; }
+    var ctyTable='<div class="pd-box"><div class="pd-h">🗺️ By county <span>('+cty.length+' · click a heading to sort, a row to see its applications)</span></div><div class="pd-scroll"><table class="pd-t"><thead><tr>'+th('k','County')+th('reg','Region')+th('n','Apps')+th('share','% of UK total')+th('ok','Approved')+th('no','Refused')+th('wd','Withdrawn')+th('pend','Pending')+th('r','Approval rate')+'</tr></thead><tbody>'
+      +cty.map(function(t){ return '<tr class="pd-click" data-county="'+esc(t.k)+'"><td>'+esc(t.k)+'</td><td class="pd-dim">'+esc(t.reg)+'</td><td>'+t.n+'</td><td><span class="pd-bar"><i style="width:'+Math.round(t.n/cmax*100)+'%"></i></span>'+pct(t.share,1)+'</td><td>'+t.ok+'</td><td>'+t.no+'</td><td>'+t.wd+'</td><td>'+t.pend+'</td><td>'+rateCell(t)+'</td></tr>'; }).join('')+'</tbody></table></div></div>';
+    var byN=function(x,y){return y.n-x.n;};
+    var reg=tally(list,function(a){return PD_REG[countyOf(a)]||'Other';}).sort(byN);
+    var yrs=tally(list,function(a){return (a[8]||'').slice(0,4)||null;}).sort(function(x,y){return y.k.localeCompare(x.k);});
+    var thisY=new Date().getFullYear()+'';
+    var yrTable='<div class="pd-box"><div class="pd-h">📅 By year submitted <span>(outcome of each year’s applications)</span></div><table class="pd-t"><thead><tr><th>Year</th><th>Apps</th><th>Approved</th><th>Refused</th><th>Withdrawn</th><th>Pending</th><th>Approval rate</th></tr></thead><tbody>'+yrs.map(function(t){ return '<tr><td>'+t.k+(t.k===thisY?' <span class="pd-dim" style="font-weight:500">to date</span>':'')+'</td><td>'+t.n+'</td><td>'+t.ok+'</td><td>'+t.no+'</td><td>'+t.wd+'</td><td>'+t.pend+'</td><td>'+rateCell(t)+'</td></tr>'; }).join('')+'</tbody></table></div>';
+    var months=[], now=new Date(); for(var i=23;i>=0;i--){ var dt=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth()-i,1)); months.push(dt.toISOString().slice(0,7)); }
+    var mc={}; list.forEach(function(a){ var k=(a[8]||'').slice(0,7); mc[k]=(mc[k]||0)+1; });
+    var mmax=months.reduce(function(m,k){return Math.max(m,mc[k]||0);},1), mn=['J','F','M','A','M','J','J','A','S','O','N','D'];
+    var monthChart='<div class="pd-box"><div class="pd-h">📈 Applications submitted per month <span>(last 24 months, current month part-complete)</span></div><div class="pd-months">'+months.map(function(k,i){ var n=mc[k]||0; return '<div'+(i===23?' class="part"':'')+' title="'+k+': '+n+' submitted" style="height:'+Math.max(1,Math.round(n/mmax*100))+'%"></div>'; }).join('')+'</div><div class="pd-mlab">'+months.map(function(k){ var m=+k.slice(5); return '<span>'+mn[m-1]+(m===1?'<br>'+k.slice(2,4):'')+'</span>'; }).join('')+'</div><div style="padding:0 14px 12px;font-size:12px;color:var(--muted)">Peak month: '+mmax+' submitted. Hover a bar for the count.</div></div>';
+    var mo={}; function mrow(k){ return mo[k]||(mo[k]={k:k,sub:0,ok:0,no:0,wd:0}); }
+    list.forEach(function(a){ var ks=(a[8]||'').slice(0,7); if(ks) mrow(ks).sub++; var o=outcomeOf(a), kd=(a[4]||'').slice(0,7); if(kd&&(o==='ok'||o==='no'||o==='wd')) mrow(kd)[o]++; });
+    var mrows=Object.keys(mo).sort().reverse().map(function(k){ var t=mo[k]; t.dec=t.ok+t.no; t.rate=t.dec?t.ok/t.dec:null; return t; });
+    var mfull=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], curM=new Date().toISOString().slice(0,7);
+    var smax=mrows.reduce(function(m,t){return Math.max(m,t.sub);},1);
+    var monthTable='<div class="pd-box"><div class="pd-h">🗓️ By month <span>(submitted that month, and decisions made that month · newest first)</span></div><div class="pd-scroll" style="max-height:440px"><table class="pd-t"><thead><tr><th>Month</th><th>Submitted</th><th>Approved</th><th>Refused</th><th>Withdrawn</th><th>Approval rate</th></tr></thead><tbody>'+mrows.map(function(t){ return '<tr><td>'+mfull[+t.k.slice(5)-1]+' '+t.k.slice(0,4)+(t.k===curM?' <span class="pd-dim" style="font-weight:500">to date</span>':'')+'</td><td><span class="pd-bar"><i style="width:'+Math.round(t.sub/smax*100)+'%"></i></span>'+t.sub+'</td><td>'+t.ok+'</td><td>'+t.no+'</td><td>'+t.wd+'</td><td>'+rateCell(t)+'</td></tr>'; }).join('')+'</tbody></table></div></div>';
+    var types=tally(list,function(a){return applicantType(a)[0];}).sort(byN);
+    var surf=tally(list,function(a){return surfaceType(a)[0];}).sort(byN);
+    var las=tally(list,function(a){return a[2]||null;}).filter(function(t){return t.dec>=8;});
+    function laTable(title,sub,rows){ return '<div class="pd-box"><div class="pd-h">'+title+' <span>'+sub+'</span></div><table class="pd-t"><thead><tr><th>Council</th><th>Decided</th><th>Approved</th><th>Refused</th><th>Approval rate</th></tr></thead><tbody>'+(rows.length?rows.map(function(t){ return '<tr class="pd-click" data-la="'+esc(t.k)+'"><td>'+esc(t.k)+' <span class="pd-dim" style="font-weight:500">'+esc(PD_LA[t.k]&&PD_LA[t.k]!==t.k?PD_LA[t.k]:'')+'</span></td><td>'+t.dec+'</td><td>'+t.ok+'</td><td>'+t.no+'</td><td>'+rateCell(t)+'</td></tr>'; }).join(''):'<tr><td colspan="5" class="pd-dim">Not enough decisions yet.</td></tr>')+'</tbody></table></div>'; }
+    var tough=las.slice().sort(function(x,y){return x.rate-y.rate||y.dec-x.dec;}).slice(0,10);
+    var easy=las.slice().sort(function(x,y){return y.rate-x.rate||y.dec-x.dec;}).slice(0,10);
+    host.innerHTML='<label style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);margin:2px 0 10px;cursor:pointer"><input type="checkbox" id="pdExcl"'+(dExcl?' checked':'')+' style="accent-color:var(--green)"> Leave out follow-on paperwork ('+nFollow+' condition discharges, variations, amendments and neighbouring-council consultations) so the figures reflect actual proposals</label>'
+      +kpis+ctyTable
+      +'<div class="pd-grid">'+simpleTable('🧭 By region','',reg,N,'Region')+yrTable+'</div>'
+      +monthChart+monthTable
+      +'<div class="pd-grid">'+simpleTable('👤 By applicant type','(inferred from the venue)',types,N,'Applicant')+simpleTable('🎾 By proposed surface','(inferred from the description)',surf,N,'Surface')+'</div>'
+      +'<div class="pd-grid">'+laTable('🚧 Toughest councils','(lowest approval rate, 8+ decisions)',tough)+laTable('✅ Easiest councils','(highest approval rate, 8+ decisions)',easy)+'</div>'
+      +'<div class="cp-note" style="margin-top:0">Approval rate = approved (permitted or approved with conditions) ÷ (approved + refused). Withdrawn and pending applications are left out of the rate. Counties are ceremonial counties built up from the council on each application; Scotland, Wales and Northern Ireland are shown as nations. Time to decision runs from the submitted date to the decision date on the council record.</div>';
+  }
+
   function fmtDate(s){ if(!s) return ''; var p=(''+s).split('-'); if(p.length!==3) return s; var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return (+p[2])+' '+m[+p[1]-1]+' '+p[0]; }
   function renderGranted(){ var host=$('cpPlanGranted'); if(!host) return;
     var cut=new Date(Date.now()-30*864e5).toISOString().slice(0,10);
@@ -2130,10 +2278,16 @@ setTimeout(run,80);
     }).join('');
     host.innerHTML='<div style="border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden"><div style="padding:12px 14px;background:#f4f8f5;border-bottom:1px solid var(--line);font-weight:800;font-size:13.5px">\uD83C\uDD95 Submitted in the last 30 days <span style="color:var(--muted);font-weight:600">('+rec.length+')</span></div>'+(rec.length?('<div style="max-height:460px;overflow:auto">'+body+'</div>'):'<div style="padding:16px;color:var(--muted);font-size:13px">No new padel applications submitted in the last 30 days.</div>')+'</div>';
   }
-  function load(){ if(loaded)return; loaded=true; initMap(); fetch('planning.json?cb='+Date.now()).then(function(r){return r.json();}).then(function(d){ apps=d; chips(); typeChips(); render(); renderGranted(); renderRecent(); renderAreas(); }).catch(function(e){ if($('cpPlanList'))$('cpPlanList').innerHTML='<div style="padding:16px;color:#b3261e">Could not load planning data ('+e+')</div>'; }); }
+  function load(){ if(loaded)return; loaded=true; initMap(); fetch('planning.json?cb='+Date.now()).then(function(r){return r.json();}).then(function(d){ apps=d; chips(); typeChips(); render(); renderGranted(); renderRecent(); renderAreas(); renderData(); }).catch(function(e){ if($('cpPlanList'))$('cpPlanList').innerHTML='<div style="padding:16px;color:#b3261e">Could not load planning data ('+e+')</div>'; }); }
   document.addEventListener('input',function(e){ if(e.target&&e.target.id==='cpPlanSearch'){ fq=e.target.value; render(); } });
+  document.addEventListener('change',function(e){ if(e.target&&e.target.id==='pdExcl'){ dExcl=e.target.checked; renderData(); } });
   document.addEventListener('click',function(e){
+    if(e.target.classList&&e.target.classList.contains('cp-cclear')){ e.preventDefault(); fcounty=null; render(); return; }
     if(e.target.tagName==='A') return;
+    var vc=e.target.closest?e.target.closest('.cp-vchip'):null; if(vc){ showView(vc.dataset.view); return; }
+    var sh=e.target.closest?e.target.closest('#cpPlanViewData th[data-sort]'):null; if(sh){ var k=sh.dataset.sort; if(dSort===k) dDir=-dDir; else { dSort=k; dDir=(k==='k'||k==='reg')?1:-1; } renderData(); return; }
+    var cr=e.target.closest?e.target.closest('tr[data-county]'):null; if(cr){ fcounty=cr.dataset.county; fq=''; var s0=$('cpPlanSearch'); if(s0) s0.value=''; showView('apps'); render(); var pl0=$('cpPlanList'); if(pl0) pl0.scrollIntoView({block:'center'}); return; }
+    var la0=e.target.closest?e.target.closest('tr[data-la]'):null; if(la0){ fcounty=null; fq=la0.dataset.la; var s1=$('cpPlanSearch'); if(s1) s1.value=fq; showView('apps'); render(); var pl1=$('cpPlanList'); if(pl1) pl1.scrollIntoView({block:'center'}); return; }
     var row=e.target.closest?e.target.closest('.cp-planrow'):null;
     if(row){ var la=+row.dataset.lat, ln=+row.dataset.lng, host=(row.dataset.granted?$('cpPlanGranted'):(row.dataset.recent?$('cpPlanRecent'):$('cpPlanList'))), a=host&&host._list&&host._list[+row.dataset.i]; if(la&&ln&&pmap&&a){ pmap.setView([la,ln],13); L.popup({maxWidth:290}).setLatLng([la,ln]).setContent(popupHtml(a)).openOn(pmap); } return; }
     var c=e.target.closest?e.target.closest('.cp-pchip'):null; if(c){ fstatus=c.dataset.s||null; document.querySelectorAll('.cp-pchip').forEach(function(x){x.classList.toggle('active',x===c);}); render(); return; }
