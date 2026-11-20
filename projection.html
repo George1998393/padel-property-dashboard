@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Padel Club Projection | Padel People</title>
+<style>
+:root{
+--green:#0a7d4b; --green-dark:#075a36; --ink:#13201a; --muted:#5d6b63;
+--bg:#f4f7f5; --card:#ffffff; --line:#e3eae6;
+--amber:#b8860b; --amber-bg:#fdf6e3; --red:#b3261e; --red-bg:#fdeceb; --ok:#0a7d4b; --ok-bg:#e7f4ee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;padding:28px 18px 60px}
+.wrap{max-width:1180px;margin:0 auto}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:8px}
+h1{font-size:26px;letter-spacing:-.02em}
+h1 span{color:var(--green)}
+.sub{color:var(--muted);font-size:14px;margin-top:2px}
+.spec{background:var(--green);color:#fff;border-radius:12px;padding:12px 16px;font-size:13px;margin:18px 0 22px;display:flex;flex-wrap:wrap;gap:8px 22px}
+.spec b{font-weight:600}
+.stats{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:120px}
+.stat .n{font-size:22px;font-weight:700;color:var(--green-dark)}
+.stat .l{font-size:12px;color:var(--muted)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.controls button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 14px;border-radius:20px;cursor:pointer}
+.controls button.active{background:var(--green);color:#fff;border-color:var(--green)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;transition:.15s}
+.card:hover{box-shadow:0 6px 22px rgba(10,125,75,.10);transform:translateY(-2px)}
+.card h3{font-size:16px;letter-spacing:-.01em}
+.thumb{width:100%;height:158px;object-fit:cover;border-radius:10px;display:block;background:#e7ece9;border:1px solid var(--line)}
+.region{font-size:12px;color:var(--muted);margin-top:2px}
+.rentbig{font-size:24px;font-weight:700;color:var(--green-dark)}
+.rentbig small{font-size:13px;color:var(--muted);font-weight:500}
+.rows{display:flex;flex-direction:column;gap:6px;font-size:13px}
+.row{display:flex;justify-content:space-between;gap:10px;border-top:1px dashed var(--line);padding-top:6px}
+.row span:first-child{color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.b{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px}
+.b.ok{background:var(--ok-bg);color:var(--ok)}
+.b.amber{background:var(--amber-bg);color:var(--amber)}
+.b.red{background:var(--red-bg);color:var(--red)}
+.notes{font-size:12.5px;color:var(--muted)}
+.added{font-size:11.5px;color:var(--muted);margin-top:3px}
+.added.arch{color:var(--amber);font-weight:600}
+.card.archived{opacity:.7}
+.empty{grid-column:1/-1;color:var(--muted);font-size:14px;padding:28px 4px}
+.card a.cta{margin-top:auto;text-align:center;background:var(--green);color:#fff;text-decoration:none;font-size:13px;font-weight:600;padding:9px;border-radius:9px}
+.card a.cta:hover{background:var(--green-dark)}
+footer{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+.nearmiss{background:#fff8ec;border:1px solid #f0e0bd;border-radius:12px;padding:14px 16px;margin-top:22px;font-size:13px}
+.nearmiss b{color:var(--amber)}
+
+.cp-tabs{display:flex;gap:6px;margin:14px 0 22px;border-bottom:1px solid var(--line)}
+.cp-tab{appearance:none;border:none;background:none;font:inherit;cursor:pointer;padding:10px 16px;font-size:14px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.cp-tab:hover{color:var(--ink)}
+.cp-tab.active{color:var(--green);border-bottom-color:var(--green)}
+.cp-panel[hidden]{display:none}
+.cp-wrap{max-width:900px}
+.cp-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 20px 22px;margin-bottom:16px;box-shadow:0 1px 2px rgba(19,32,26,.04),0 6px 20px rgba(19,32,26,.05)}
+.cp-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:6px}
+.cp-ic{width:34px;height:34px;border-radius:9px;background:var(--ok-bg);display:grid;place-items:center;font-size:17px;flex:none}
+.cp-title{font-size:18px;font-weight:700;margin:0;letter-spacing:-.01em}
+.cp-sub{font-size:13px;color:var(--muted);margin:2px 0 0}
+.cp-loc{border:none;border-bottom:1px dashed var(--muted);font:inherit;font-weight:700;color:var(--green);width:120px;padding:0 2px;background:none}
+.cp-loc:focus{outline:none;border-bottom-style:solid}
+.cp-seclabel{font-size:14px;font-weight:700;margin:18px 0 2px}
+.cp-secnote{font-size:12.5px;color:var(--muted);margin:2px 0 16px}
+.cp-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cp-grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:640px){.cp-grid3,.cp-grid2{grid-template-columns:1fr 1fr}}
+@media(max-width:430px){.cp-grid3,.cp-grid2{grid-template-columns:1fr}}
+.cp-flabel{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--muted);text-transform:uppercase;margin-bottom:7px}
+.cp-stepper{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:#fff;height:50px}
+.cp-stepper button{width:46px;border:none;background:#fff;color:var(--muted);font-size:22px;cursor:pointer;display:grid;place-items:center}
+.cp-stepper button:hover{background:var(--bg);color:var(--ink)}
+.cp-stepper button:disabled{color:#cbd5d2;cursor:not-allowed;background:#fff}
+.cp-stepper .cp-val{flex:1;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;border-left:1px solid var(--line);border-right:1px solid var(--line);min-width:0}
+.cp-stepper .cp-val small{font-weight:600;color:var(--muted);font-size:13px;margin:0 1px}
+.cp-pill{display:flex;align-items:center;justify-content:center;gap:7px;height:50px;background:var(--ok-bg);border:1px solid var(--line);border-radius:11px;color:var(--green-dark);font-weight:700;font-size:14px}
+.cp-pill b{font-size:19px}
+.cp-result{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff;min-height:116px;display:flex;flex-direction:column;justify-content:space-between}
+.cp-result .cp-rl{font-size:12.5px;color:var(--muted);font-weight:600;margin-bottom:10px}
+.cp-result .cp-rv{font-size:29px;font-weight:800;letter-spacing:-.5px;line-height:1}
+.cp-result .cp-rf{font-size:12px;color:var(--muted);margin-top:10px}
+.cp-result.cp-primary{background:var(--green);border-color:var(--green);color:#fff}
+.cp-result.cp-primary .cp-rl{color:rgba(255,255,255,.85)}
+.cp-result.cp-primary .cp-rf{color:rgba(255,255,255,.8)}
+.cp-assump>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:9px;font-size:14px;font-weight:700;padding:4px 0}
+.cp-assump>summary::-webkit-details-marker{display:none}
+.cp-assump>summary .cp-chev{margin-left:auto;color:var(--muted);transition:transform .2s}
+.cp-assump[open]>summary .cp-chev{transform:rotate(180deg)}
+.cp-arow{display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid var(--line)}
+.cp-arow:first-of-type{border-top:none}
+.cp-arow .cp-at{flex:1;min-width:0}
+.cp-arow .cp-an{font-size:13.5px;font-weight:600}
+.cp-arow .cp-ad{font-size:12px;color:var(--muted);margin-top:1px}
+.cp-arow input[type=range]{flex:1.1;accent-color:var(--green)}
+.cp-arow .cp-num{width:74px;height:38px;border:1px solid var(--line);border-radius:9px;text-align:center;font-size:14px;font-weight:700;color:var(--ink)}
+.cp-arow .cp-num:focus{outline:none;border-color:var(--green)}
+.cp-readout{font-size:12.5px;color:var(--muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.cp-readout b{color:var(--ink)}
+.cp-note{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.6}
+
+.cp-pchip{padding:7px 13px;border:1px solid var(--line);border-radius:20px;background:#fff;font-size:12.5px;font-weight:600;cursor:pointer;margin:0 6px 6px 0;color:var(--muted)}
+.cp-pchip.active{background:var(--green);color:#fff;border-color:var(--green)}
+.cp-pchip:hover{border-color:var(--green)}
+.pd-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:6px 0 18px}
+.pd-kpi{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff}
+.pd-kpi .n{font-size:24px;font-weight:800;color:var(--green-dark);line-height:1.15}
+.pd-kpi .l{font-size:12px;font-weight:700;margin-top:2px}
+.pd-kpi .s{font-size:11.5px;color:var(--muted);margin-top:2px}
+.pd-box{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden;margin-bottom:16px}
+.pd-h{padding:12px 14px;background:#f4f8f5;border-bottom:1px solid var(--line);font-weight:800;font-size:13.5px}
+.pd-h span{color:var(--muted);font-weight:600}
+.pd-scroll{max-height:520px;overflow:auto}
+.pd-t{width:100%;border-collapse:collapse;font-size:12.5px}
+.pd-t th{position:sticky;top:0;background:#fff;text-align:right;padding:8px 10px;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);border-bottom:1px solid var(--line);white-space:nowrap}
+.pd-t th[data-sort]{cursor:pointer}.pd-t th[data-sort]:hover{color:var(--ink)}.pd-t th.on{color:var(--green)}
+.pd-t td{text-align:right;padding:7px 10px;border-top:1px solid var(--line);white-space:nowrap;font-variant-numeric:tabular-nums}
+.pd-t th:first-child,.pd-t td:first-child{text-align:left}
+.pd-t td:first-child{font-weight:600;white-space:normal}
+.pd-t tr.pd-click{cursor:pointer}.pd-t tr.pd-click:hover td{background:#f4f8f5}
+.pd-bar{display:inline-block;vertical-align:middle;width:70px;height:10px;background:#eef4f0;border-radius:5px;overflow:hidden;margin-right:7px}
+.pd-bar i{display:block;height:100%;background:#0a7d4b}
+.pd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:16px}
+.pd-months{display:flex;align-items:flex-end;gap:3px;height:150px;padding:14px 14px 0}
+.pd-months div{flex:1;background:#0a7d4b;border-radius:3px 3px 0 0;min-height:1px}
+.pd-months div.part{background:#9ccdb5}
+.pd-mlab{display:flex;gap:3px;padding:4px 14px 12px;font-size:9.5px;color:var(--muted)}
+.pd-mlab span{flex:1;text-align:center;overflow:hidden}
+.pd-dim{color:var(--muted)}
+.pd-grid .pd-bar{width:34px;margin-right:5px}
+.pd-grid .pd-t td,.pd-grid .pd-t th{padding:7px 6px}
+.pd-grid .pd-box{overflow-x:auto;margin-bottom:0}
+.pd-grid{margin-bottom:16px}
+.cp-tchip{padding:6px 12px;border:1px solid var(--line);border-radius:20px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;margin:0 6px 6px 0;color:var(--muted)}
+.cp-tchip.active{background:#0369a1;color:#fff;border-color:#0369a1}
+.cp-tchip:hover{border-color:#0369a1}
+
+body{margin:0;padding:0;background:var(--bg)} .pj-top{max-width:900px;margin:0 auto;padding:22px 16px 0;font-size:20px;font-weight:800;color:var(--ink);letter-spacing:-.02em} .pj-top span{color:var(--green)} .pj-body{padding:14px 12px 40px} .pj-body .cp-wrap{margin:0 auto}</style>
+</head><body>
+<div class="pj-top">Padel <span>People</span></div>
+<div class="pj-body">
+<div id="tab-projection" class="cp-panel">
+<div class="cp-wrap">
+<div class="cp-card">
+<div class="cp-head"><div class="cp-ic">📋</div>
+<div><h2 class="cp-title">Club Projection</h2><p class="cp-sub">Estimate monthly &amp; yearly revenue for a club layout</p></div></div>
+<div class="cp-seclabel">Inputs</div><div class="cp-secnote">Court mix, opening hours and peak / off-peak rates</div>
+<div class="cp-grid3">
+<div><div class="cp-flabel">Indoor courts</div><div class="cp-stepper" data-step="indoor"><button data-dir="-1">−</button><div class="cp-val"><span data-out="indoor">3</span></div><button data-dir="1">+</button></div></div>
+<div><div class="cp-flabel">Outdoor courts</div><div class="cp-stepper" data-step="outdoor"><button data-dir="-1">−</button><div class="cp-val"><span data-out="outdoor">0</span></div><button data-dir="1">+</button></div></div>
+<div><div class="cp-flabel">Covered courts</div><div class="cp-stepper" data-step="covered"><button data-dir="-1">−</button><div class="cp-val"><span data-out="covered">1</span></div><button data-dir="1">+</button></div></div>
+</div>
+<div class="cp-grid3" style="margin-top:14px">
+<div><div class="cp-flabel">Singles courts</div><div class="cp-stepper" data-step="singles"><button data-dir="-1">−</button><div class="cp-val"><span data-out="singles">0</span></div><button data-dir="1">+</button></div></div>
+<div><div class="cp-flabel">Operating hours / day</div><div class="cp-stepper" data-step="hours"><button data-dir="-1">−</button><div class="cp-val"><span data-out="hours">14</span><small>h</small></div><button data-dir="1">+</button></div></div>
+<div><div class="cp-flabel">Total</div><div class="cp-pill"><b id="cpTotal">4</b> total courts</div></div>
+</div>
+<div class="cp-grid2" style="margin-top:14px">
+<div><div class="cp-flabel">Opens at</div><input type="time" id="cpOpen" value="07:00" style="width:100%;height:50px;border:1px solid var(--line);border-radius:11px;padding:0 14px;font-size:16px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div style="display:flex;align-items:flex-end"><div class="cp-secnote" style="margin:0 0 4px">Used to split open hours into peak vs off-peak. Closes at <span id="cpClose">21:00</span>.</div></div>
+</div>
+<div style="margin-top:18px">
+<div class="cp-flabel">Hire rates (£ per hour)</div>
+<div class="cp-secnote" style="margin-bottom:10px">Peak = weekdays from 5pm + all weekend · Off-peak = all other open hours</div>
+<div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px 14px;align-items:center;max-width:560px">
+<div></div>
+<div class="cp-flabel" style="margin:0;text-align:center">Peak</div>
+<div class="cp-flabel" style="margin:0;text-align:center">Off-peak</div>
+<div style="font-size:13.5px;font-weight:600">Standard courts</div>
+<input type="number" min="0" data-rate="stdPeak" value="44" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+<input type="number" min="0" data-rate="stdOff" value="33" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+<div style="font-size:13.5px;font-weight:600">Singles courts</div>
+<input type="number" min="0" data-rate="sinPeak" value="30" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+<input type="number" min="0" data-rate="sinOff" value="22" style="height:46px;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:16px;font-weight:700;color:var(--ink);background:#fff;width:100%">
+</div>
+</div>
+<div style="margin-top:18px"><div class="cp-flabel">Expected occupancy — how full you think the courts will be</div>
+<div style="display:flex;align-items:center;gap:14px;margin-top:8px"><input type="range" id="cpOccIn" min="0" max="100" step="0.5" value="58.5" style="flex:1;accent-color:var(--green)"><div style="min-width:92px;height:50px;border:1px solid var(--line);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;background:#fff"><span id="cpOccNum">58.5</span><small style="font-weight:600;color:var(--muted);margin-left:1px">%</small></div></div>
+</div>
+</div>
+<div class="cp-card">
+<div class="cp-seclabel">Results</div><div class="cp-secnote">Live projection — updates as you tweak inputs above</div>
+<div class="cp-grid3">
+<div class="cp-result cp-primary"><div class="cp-rl">Est. Monthly Revenue</div><div class="cp-rv" id="cpMonthly">£38K</div><div class="cp-rf" id="cpMonthlyF">997 booked court-hrs/mo</div></div>
+<div class="cp-result"><div class="cp-rl">Est. Yearly Revenue</div><div class="cp-rv" id="cpYearly">£459K</div><div class="cp-rf" id="cpYearlyF">4 courts</div></div>
+<div class="cp-result"><div class="cp-rl">Revenue per Court</div><div class="cp-rv" id="cpPer">£10K</div><div class="cp-rf">per month</div></div>
+</div>
+<div class="cp-grid2" style="margin-top:14px">
+<div class="cp-result"><div class="cp-rl">Peak Revenue / mo</div><div class="cp-rv" id="cpPeakRev">£21K</div><div class="cp-rf">weekdays 5pm+ &amp; weekends</div></div>
+<div class="cp-result"><div class="cp-rl">Off-Peak Revenue / mo</div><div class="cp-rv" id="cpOffRev">£17K</div><div class="cp-rf">weekday daytime</div></div>
+</div>
+<div class="cp-note">Revenue = each court × open hours in each time band × occupancy × that band's rate. Occupancy is your own estimate; slide it for best / worst case. Estimates only.</div>
+</div>
+<div class="cp-card" id="cpCostsCard">
+<div class="cp-seclabel">Costs &amp; EBITDA</div>
+<div class="cp-secnote">Annual. Enter staff, rent &amp; rates and any other costs; utilities, maintenance and software are calculated (percentages editable).</div>
+<div class="cp-grid3">
+<div><div class="cp-flabel">Staff (£ / yr)</div><input type="number" id="cpStaff" value="90000" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div><div class="cp-flabel">Rent &amp; rates (£ / yr)</div><input type="number" id="cpRR" value="100000" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div><div class="cp-flabel">Other costs (£ / yr)</div><input type="number" id="cpOther" value="0" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+</div>
+<div class="cp-grid3" style="margin-top:14px">
+<div><div class="cp-flabel">Utilities — % of rent &amp; rates</div><input type="number" step="0.1" id="cpUtil" value="1" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div><div class="cp-flabel">Maintenance — % of revenue</div><input type="number" step="0.1" id="cpMaint" value="1.2" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+<div><div class="cp-flabel">Software — % of revenue</div><input type="number" step="0.1" id="cpSoft" value="3.5" style="width:100%;height:46px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-weight:700;color:var(--ink);background:#fff"></div>
+</div>
+<div class="cp-grid3" style="margin-top:16px">
+<div class="cp-result"><div class="cp-rl">Total annual costs</div><div class="cp-rv" id="cpTotalCosts">£0</div><div class="cp-rf">per year</div></div>
+<div class="cp-result cp-primary"><div class="cp-rl">EBITDA</div><div class="cp-rv" id="cpEbitda">£0</div><div class="cp-rf" id="cpEbitdaF">0% margin</div></div>
+<div class="cp-result"><div class="cp-rl">Revenue</div><div class="cp-rv" id="cpRevYr">£0</div><div class="cp-rf">per year</div></div>
+</div>
+<div class="cp-note" id="cpCostBreak"></div>
+</div></div>
+</div>
+</div>
+<script>(function(){
+var D={indoor:3,outdoor:0,covered:1,singles:0,hours:14,open:7,occ:58.5,dpm:30.44,stdPeak:44,stdOff:33,sinPeak:30,sinOff:22};
+var S=Object.assign({},D); var PEAK_START=17;
+var LIM={indoor:[0,40],outdoor:[0,40],covered:[0,40],singles:[0,40],hours:[1,24]};
+var root=document.getElementById('tab-projection'); if(!root)return;
+function q(s){return root.querySelector(s);}
+function IN(id){return root.querySelector('#'+id);}
+function num(id,d){var e=IN(id);var v=e?parseFloat(e.value):NaN;return isNaN(v)?d:v;}
+function out(k){return root.querySelector('[data-out="'+k+'"]');}
+function money(n){var neg=n<0;n=Math.abs(n);var s;if(n>=1e6)s='£'+(n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M';else if(n>=1000)s='£'+Math.round(n/1000)+'K';else s='£'+Math.round(n);return neg?'-'+s:s;}
+function ci(n){return Math.round(n).toLocaleString('en-GB');}
+function compute(){var std=S.indoor+S.outdoor+S.covered, total=std+S.singles; var dayEnd=S.open+S.hours; var offWk=Math.max(0,Math.min(dayEnd,PEAK_START)-S.open); var pkWk=Math.max(0,dayEnd-Math.max(S.open,PEAK_START)); var peakWeek=5*pkWk+2*S.hours, offWeek=5*offWk, f=S.dpm/7; var peakHpc=peakWeek*f, offHpc=offWeek*f, occ=S.occ/100; var peakRev=occ*(std*peakHpc*S.stdPeak+S.singles*peakHpc*S.sinPeak); var offRev=occ*(std*offHpc*S.stdOff+S.singles*offHpc*S.sinOff); var monthly=peakRev+offRev; var avail=total*S.hours*S.dpm, oh=occ*avail; return {std:std,total:total,avail:avail,oh:oh,peakRev:peakRev,offRev:offRev,monthly:monthly,yearly:monthly*12,per:total?monthly/total:0};}
+function render(){
+['indoor','outdoor','covered','singles','hours'].forEach(function(k){var e=out(k);if(e)e.textContent=S[k];});
+q('#cpTotal').textContent=S.indoor+S.outdoor+S.covered+S.singles; q('#cpOccNum').textContent=S.occ;
+var r=compute();
+q('#cpMonthly').textContent=money(r.monthly); q('#cpMonthlyF').textContent=ci(r.oh)+' booked court-hrs/mo';
+q('#cpYearly').textContent=money(r.yearly); q('#cpYearlyF').textContent=r.total+(r.total===1?' court':' courts');
+q('#cpPer').textContent=money(r.per); q('#cpPeakRev').textContent=money(r.peakRev); q('#cpOffRev').textContent=money(r.offRev);
+var annual=r.yearly;
+var staff=num('cpStaff',0), rr=num('cpRR',0), other=num('cpOther',0), utilP=num('cpUtil',1), maintP=num('cpMaint',1.2), softP=num('cpSoft',3.5);
+var utilities=rr*utilP/100, maintenance=annual*maintP/100, software=annual*softP/100;
+var totalCosts=staff+rr+utilities+maintenance+software+other;
+var ebitda=annual-totalCosts, margin=annual?ebitda/annual*100:0;
+if(IN('cpRevYr'))IN('cpRevYr').textContent=money(annual);
+if(IN('cpTotalCosts'))IN('cpTotalCosts').textContent=money(totalCosts);
+if(IN('cpEbitda')){IN('cpEbitda').textContent=money(ebitda); IN('cpEbitda').style.color=ebitda<0?'#ffd7d3':'#fff';}
+if(IN('cpEbitdaF'))IN('cpEbitdaF').textContent=margin.toFixed(1)+'% margin';
+if(IN('cpCostBreak'))IN('cpCostBreak').innerHTML='Staff '+money(staff)+' · Rent & rates '+money(rr)+' · Utilities '+money(utilities)+' ('+utilP+'% of R&R) · Maintenance '+money(maintenance)+' ('+maintP+'% of rev) · Software '+money(software)+' ('+softP+'% of rev) · Other '+money(other);
+root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;if(!LIM[k])return;st.querySelector('[data-dir="-1"]').disabled=S[k]<=LIM[k][0];st.querySelector('[data-dir="1"]').disabled=S[k]>=LIM[k][1];});
+}
+root.querySelectorAll('.cp-stepper').forEach(function(st){var k=st.dataset.step;st.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){var dir=+b.dataset.dir,lo=LIM[k][0],hi=LIM[k][1];S[k]=Math.max(lo,Math.min(hi,S[k]+dir));render();});});});
+var occ=q('#cpOccIn'); if(occ)occ.addEventListener('input',function(){var v=parseFloat(occ.value);if(isNaN(v))return;S.occ=v;render();});
+var op=q('#cpOpen'); if(op)op.addEventListener('input',function(){var p=op.value.split(':');var h=parseInt(p[0],10)+(parseInt(p[1],10)||0)/60;if(!isNaN(h))S.open=h;render();});
+root.querySelectorAll('input[data-rate]').forEach(function(inp){inp.addEventListener('input',function(){var v=parseFloat(inp.value);if(isNaN(v))return;S[inp.dataset.rate]=v;render();});});
+['cpStaff','cpRR','cpOther','cpUtil','cpMaint','cpSoft'].forEach(function(id){var e=IN(id); if(e) e.addEventListener('input',render);});
+var tabs=document.getElementById('cpTabs');
+if(tabs){tabs.querySelectorAll('.cp-tab').forEach(function(t){t.addEventListener('click',function(){tabs.querySelectorAll('.cp-tab').forEach(function(x){x.classList.remove('active');});t.classList.add('active');var name=t.dataset.tab;document.querySelectorAll('.cp-panel').forEach(function(p){p.hidden=(p.id!=='tab-'+name);});});});}
+render();
+})();</script>
+</body></html>
